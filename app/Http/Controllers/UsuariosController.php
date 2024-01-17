@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Cookie;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
@@ -13,13 +14,23 @@ class UsuariosController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = DB::table('colaboradores')
-        ->leftJoin('roles','roles.id_rol','=','colaboradores.id_rol')
-        ->paginate(10);
-
-        return view('Usuarios.index',['users'=>$users]);
+        if (!empty(Cookie::get('puesto'))) {
+            if (Cookie::get('puesto') == "ADMIN" || Cookie::get('puesto') == "OPERADOR") {
+                $users = DB::table('colaboradores')
+                ->where('colaboradores.user','LIKE',"%$request->buscar%")
+                ->orWhere('colaboradores.Nombre','LIKE',"%$request->buscar%")
+                ->leftJoin('roles','roles.id_rol','=','colaboradores.id_rol')
+                ->paginate(10);
+        
+                return view('Usuarios.index',['users'=>$users]);
+            } else {
+                return view('Errores.error403');
+            }
+        } else {
+            return redirect()->route('login');
+        }
     }
 
     /**
@@ -36,6 +47,14 @@ class UsuariosController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'user' => 'required|max:30',
+            'Nombre' => 'required',
+            'id_rol' => 'required',
+            'Estatus_col' => 'required',
+            'password' => 'required|max:8|min:0',
+        ]);
+        
         $contra = Crypt::encryptString($request->password);
         $datos = DB::select('select * from colaboradores where user = ?',[$request->user]);
 
@@ -89,6 +108,14 @@ class UsuariosController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $request->validate([
+            'user' => 'required|max:30',
+            'Nombre' => 'required',
+            'id_rol' => 'required',
+            'Estatus_col' => 'required',
+            'password' => 'required|max:8|min:0',
+        ]);
+
         $datos = DB::select('SELECT * FROM colaboradores
         WHERE user = ? AND Id_colaborador != ?',[$request->user,$id]);
         $usuario = DB::select('SELECT * FROM colaboradores
@@ -109,10 +136,10 @@ class UsuariosController extends Controller
                 'Estatus_col' => $request->Estatus_col
             ]);
 
-            if ($usuario[0]->password == $request->password) {
+            if ($request->password == "password") {
             }else{
                 $contra = Crypt::encryptString($request->password);
-                $update = DB::update('UPDATE colaboradores 
+                $update = DB::update('UPDATE colaboradores
                 SET password = ? WHERE Id_colaborador = ?', [$contra,$id]);
             }
     
