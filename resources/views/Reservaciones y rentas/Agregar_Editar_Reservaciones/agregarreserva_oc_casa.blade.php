@@ -180,6 +180,10 @@
                     </div>
                     </div>
                 </div>
+                <div class="input-group">
+                    <label for="nota_pago">Aqui Puedes Dejar Alguna Nota Para Aclaraciones Futuras</label>
+                    <textarea name="nota_pago" id="nota_pago" cols="35" rows="6" class="form-control"></textarea>
+                </div>
                 <div class="btns-group">
                     <a href="#" class="btn btn-prev">Anterior</a>
                     <input type="submit" value="Guardar" class="boton_finalizar" style="width: 170px">

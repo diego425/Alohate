@@ -8,7 +8,7 @@
 <!--LINKS-->
 <script src="https://kit.fontawesome.com/110428e727.js" crossorigin="anonymous"></script>
 <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
-<link rel="stylesheet" href="{{ asset('assets/formulario_Habs_Depas_Locs_style.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/form-rentar.css') }}">
 
 </head>
   <body>
