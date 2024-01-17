@@ -16,6 +16,8 @@ use RealRashid\SweetAlert\Facades\Alert;
 use App\Models\Locacion;
 use App\Models\Reservacion;
 use App\Models\Cliente;
+use App\Models\Contrato;
+use App\Models\Fiador;
 use App\Models\Plantas_pisos;
 use App\Models\Estado_ocupacion;
 use App\Models\Servicio_bano;
@@ -288,6 +290,7 @@ try{
         $reservacion->Monto_pagado_anticipo = $request->get('monto_anticipo');
         $reservacion->Metodo_pago_anticipo = $request->get('metodo_pago');
         $reservacion->Fecha_pago_anticipo = $request->get('fecha_pago');
+        $reservacion->Nota_pago_anticipo = $request->get('nota_pago');
         $reservacion->save();
         $lastreservacion =DB::getPdo()->lastInsertId();
         
@@ -385,7 +388,7 @@ public function ViewReservaHabOC($Id_locacion, $Id_habitacion){
 //funcion que guarda el registro para añadir una reservacion con cliente existente en una hab
 public function StoreReservaHabOC(Request $request, $Id_locacion, $Id_habitacion){
 
-try{
+ try{
 //consulta que me revisa las fechas ya agendadas en la bd para que no se repitan las fechas
     $fecha_bd = DB::table('reservacion')
     ->select('hab.Id_habitacion', 'Start_date', 'End_date' )
@@ -422,7 +425,8 @@ try{
         $reservacion->Tipo_de_cobro = $request->get('tipo_renta');
         $reservacion->Monto_pagado_anticipo = $request->get('monto_anticipo');
         $reservacion->Metodo_pago_anticipo = $request->get('metodo_pago');
-        $reservacion->Fecha_pago_anticipo = $request->get('fecha_pago');
+        $reservacion->Fecha_pago_anticipo = $request->get('fecha_pago'); 
+        $reservacion->Nota_pago_anticipo = $request->get('nota_pago'); 
         $reservacion->save();
         $lastreservacion =DB::getPdo()->lastInsertId();
 
@@ -482,8 +486,8 @@ try{
         return redirect()->back();
     }
 }catch(Exception $ex){
-    Alert::error('Error', 'La reservacion no se pudo registrar revisa que todo este en orden');
-    return redirect()->back();
+     Alert::error('Error', 'La reservacion no se pudo registrar revisa que todo este en orden');
+     return redirect()->back();
 }
 
 }
@@ -1360,24 +1364,24 @@ if($request->get('idcliente') == ""){
     
     
 //datos del cliente
-$agregarcamahab = new Cliente();
-$agregarcamahab-> Nombre = $request->get('nombre_c');
-$agregarcamahab-> Apellido_paterno = $request->get('apellido_pat');
-$agregarcamahab-> Apellido_materno = $request->get('apellido_mat');
-$agregarcamahab-> Numero_celular = $request->get('celular_c');
-$agregarcamahab-> Email = $request->get('email_c');
-$agregarcamahab-> Ciudad = $request->get('ciudad');
-$agregarcamahab-> Estado = $request->get('estado');
-$agregarcamahab-> Pais = $request->get('pais');
-$agregarcamahab-> Ref1_nombre = $request->get('nombre_p_e1');
-$agregarcamahab-> Ref2_nombre = $request->get('nombre_p_e2');
-$agregarcamahab-> Ref1_celular = $request->get('numero_p_e1');
-$agregarcamahab-> Ref2_celular = $request->get('numero_p_e2');
-$agregarcamahab-> Ref1_parentesco = $request->get('parentesco1');
-$agregarcamahab-> Ref2_parentesco = $request->get('parentesco2');
-$agregarcamahab-> Motivo_visita = $request->get('motivo_v');
-$agregarcamahab-> Lugar_motivo_visita = $request->get('lugar_v');
-$agregarcamahab->save();
+$agregarcliente = new Cliente();
+$agregarcliente-> Nombre = $request->get('nombre_c');
+$agregarcliente-> Apellido_paterno = $request->get('apellido_pat');
+$agregarcliente-> Apellido_materno = $request->get('apellido_mat');
+$agregarcliente-> Numero_celular = $request->get('celular_c');
+$agregarcliente-> Email = $request->get('email_c');
+$agregarcliente-> Ciudad = $request->get('ciudad');
+$agregarcliente-> Estado = $request->get('estado');
+$agregarcliente-> Pais = $request->get('pais');
+$agregarcliente-> Ref1_nombre = $request->get('nombre_p_e1');
+$agregarcliente-> Ref2_nombre = $request->get('nombre_p_e2');
+$agregarcliente-> Ref1_celular = $request->get('numero_p_e1');
+$agregarcliente-> Ref2_celular = $request->get('numero_p_e2');
+$agregarcliente-> Ref1_parentesco = $request->get('parentesco1');
+$agregarcliente-> Ref2_parentesco = $request->get('parentesco2');
+$agregarcliente-> Motivo_visita = $request->get('motivo_v');
+$agregarcliente-> Lugar_motivo_visita = $request->get('lugar_v');
+$agregarcliente->save();
 
 $idclient =DB::getPdo()->lastInsertId();
 
@@ -1768,7 +1772,162 @@ public function ViewRentarHab($Id_reservacion, $Id_habitacion, $Id_lugares_reser
 
 }
 
+public function StoreRentarHab(Request $request, Reservacion $reservacion, $Id_reservacion, $Id_habitacion, $Id_lugares_reservados){
 
+try{
+
+//fiador
+    $fiador = new Fiador();
+    $fiador -> Id_cliente  = $request->get('extras');
+    $fiador -> Nombre = $request->get('extras');
+    $fiador -> Apellido_pat = $request->get('extras');
+    $fiador -> Apellido_mat = $request->get('extras');
+    $fiador -> No_casa = $request->get('extras');
+    $fiador -> Calle = $request->get('extras');
+    $fiador -> Colonia = $request->get('extras');
+    $fiador -> Estado = $request->get('extras');
+    $fiador -> No_telefono = $request->get('extras');
+    $fiador -> INE_frontal_fiador = $request->get('extras');
+    $fiador -> INE_trasera_fiador = $request->get('extras');
+    $fiador->save();
+    $lastfiador =DB::getPdo()->lastInsertId();
+
+    $fiador = DB::table('fiador')
+    ->select('Id_fiador','Id_cliente', 'Id_colaborador','Nombre',
+    'Apellido_pat','Apellido_mat', 'No_casa','Calle','Colonia',
+    'Estado','No_telefono','INE_frontal_fiador','INE_trasera_fiador')
+    ->where('Id_fiador', '=', $lastfiador)
+    ->get();
+
+
+//array que guarda la foto de la ine de frente del fiador
+    $this->validate($request, array(
+    'img8' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img8');
+  
+    if($image != ''){
+        $nombreImagen = 'INE'.'_'.$fiador[0]->Apellido_pat.'_'.$fiador[0]->Apellido_mat.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen8;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso         
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/fiadores/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+        if ($guardarImagen !== false) {
+            DB::table('fiador')
+            ->where('Id_fiador', '=', $lastfiador)
+            ->update(['INE_frontal_fiador' => $nombreImagen]);
+    }}
+
+    
+
+//array que guarda la foto de la ine de atras del fiador
+    $this->validate($request, array(
+    'img9' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img9');
+  
+    if($image != ''){
+        $nombreImagen = 'INE'.'_'.$fiador[0]->Apellido_pat.'_'.$fiador[0]->Apellido_mat.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen9;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/fiadores/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+        if ($guardarImagen !== false) {
+            DB::table('fiador')
+            ->where('Id_fiador', '=', $lastfiador)
+            ->update(['INE_trasera_fiador' => $nombreImagen]);
+    }}
+
+
+
+    $reserva = DB::table('reservacion')
+    ->select( 'Start_date', 'End_date')
+    ->where('Id_reservacion', '=', $Id_reservacion)
+    ->get();
+
+//contrato
+    $contrato = new Contrato();
+    $contrato -> Id_fiador = $lastfiador;
+    $contrato -> Id_reservacion = $Id_reservacion;
+    $contrato -> Fecha_inicio = $reserva[0]->Start_date;
+    $contrato -> Fecha_termino = $reserva[0]->End_date;
+    $contrato -> Tipo_contrato = $request->get('tipo_contrato');
+    $contrato->save();
+    $lastcontrato =DB::getPdo()->lastInsertId();
+
+   $cliente = DB::table('lugares_reservados')
+   ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion','lugares_reservados.Id_locacion', 
+     'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
+     'est.Nombre_estado',
+     'reserva.Id_reservacion','reserva.Id_colaborador',
+     'reserva.Start_date','reserva.End_date', 'reserva.Title','reserva.Fecha_reservacion',
+     'reserva.Numero_personas_extras', 'reserva.Foto_comprobante_anticipo', 'reserva.Fecha_pago_anticipo',
+     'reserva.Foto_aviso_privacidad', 'reserva.Foto_reglamento','reserva.Monto_uso_cochera', 
+     'reserva.Metodo_pago_anticipo','reserva.Espacios_cochera','reserva.Monto_pagado_anticipo',
+     'reserva.Tipo_de_cobro','reserva.Nota_pago_anticipo',
+     'cliente.Id_cliente','cliente.Id_colaborador','cliente.Nombre',
+     'cliente.Apellido_paterno','cliente.Apellido_materno','cliente.Email', 
+     'cliente.Numero_celular','cliente.Ciudad','cliente.Estado',
+     'cliente.Pais', 'cliente.Ref1_nombre','cliente.Ref2_nombre',
+     'cliente.Ref1_celular','cliente.Ref2_celular','cliente.Ref1_parentesco',
+     'cliente.Ref2_parentesco','cliente.Motivo_visita', 'cliente.Lugar_motivo_visita', 
+     'cliente.Foto_cliente', 'cliente.INE_frente', 'cliente.INE_reverso',
+     'hab.Id_habitacion','hab.Id_locacion','hab.Id_estado_ocupacion', 
+     'hab.Id_colaborador','hab.Nombre_hab', 'hab.Capacidad_personas',  'hab.Deposito_garantia_hab', 
+     'hab.Precio_noche', 'hab.Precio_semana','hab.Precio_catorcedias', 'hab.Precio_mes', 
+     'hab.Encargado','hab.Espacio_superficie', 'hab.Nota','hab.Descripcion',
+     'hab.Cobro_p_ext_mes_h','hab.Cobro_p_ext_catorcena_h','hab.Cobro_p_ext_noche_h',
+     'hab.Cobro_anticipo_mes_h','hab.Cobro_anticipo_catorcena_h','hab.Camas_juntas',
+     'loc.Nombre_locacion')
+    ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
+    ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+    ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+    ->leftJoin("habitacion as hab", "hab.Id_habitacion", "=", "lugares_reservados.Id_habitacion")
+    ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
+    ->where('reserva.Id_reservacion', '=', $Id_reservacion)
+    ->where('hab.Id_habitacion', '=', $Id_habitacion)
+    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    ->get();
+
+
+//array que guarda la foto del contrato
+    $this->validate($request, array(
+    'img10' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img10');
+  
+    if($image != ''){
+        $nombreImagen = 'Contrato'.'_'.$cliente[0]->Apellido_paterno.'_'.$cliente[0]->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen10;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/contratos/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+        if ($guardarImagen !== false) {
+            DB::table('contratos')
+            ->where('Id_contrato', '=', $lastcontrato)
+            ->update(['Foto_contrato' => $nombreImagen]);
+    }}
+
+    Alert::success('Exito', 'Haz concluido el registro para pasar a rentar ahora el clente podra usar el lugar. puedes cerrrar esta ventana');
+    return redirect()->back();
+
+}catch(Exception $ex){
+    Alert::error('Error', 'los datos que ingresaste no son correctos, revisa que todo este en orden');
+    return redirect()->back();
+}
+}
 
 
 
@@ -1882,6 +2041,7 @@ public function StoreReservaDepOC(Request $request, $Id_locacion ,$Id_departamen
             $reservacion->Monto_pagado_anticipo = $request->get('monto_anticipo');
             $reservacion->Metodo_pago_anticipo = $request->get('metodo_pago');
             $reservacion->Fecha_pago_anticipo = $request->get('fecha_pago');
+            $reservacion->Nota_pago_anticipo = $request->get('nota_pago');
             $reservacion->save();
             $lastreservacion =DB::getPdo()->lastInsertId();
         
@@ -2029,6 +2189,7 @@ try{
         $reservacion->Monto_pagado_anticipo = $request->get('monto_anticipo');
         $reservacion->Metodo_pago_anticipo = $request->get('metodo_pago');
         $reservacion->Fecha_pago_anticipo = $request->get('fecha_pago');
+        $reservacion->Nota_pago_anticipo = $request->get('nota_pago');
         $reservacion->save();
         $lastreservacion =DB::getPdo()->lastInsertId();
     
@@ -2731,6 +2892,7 @@ try{
             $reservacion->Monto_pagado_anticipo = $request->get('monto_anticipo');
             $reservacion->Metodo_pago_anticipo = $request->get('metodo_pago');
             $reservacion->Fecha_pago_anticipo = $request->get('fecha_pago');
+            $reservacion->Nota_pago_anticipo = $request->get('nota_pago');
             $reservacion->save();
             $lastreservacion =DB::getPdo()->lastInsertId();
         
@@ -2862,6 +3024,7 @@ try{
         $reservacion->Monto_pagado_anticipo = $request->get('monto_anticipo');
         $reservacion->Metodo_pago_anticipo = $request->get('metodo_pago');
         $reservacion->Fecha_pago_anticipo = $request->get('fecha_pago');
+        $reservacion->Nota_pago_anticipo = $request->get('nota_pago');
         $reservacion->save();
         $lastreservacion =DB::getPdo()->lastInsertId();
     

@@ -58,8 +58,6 @@
                             <div><h5><label id="nombrec"></label> <label id="apellidopat" ></label> <label id="apellidomat"></label></h5></div>
                         <div><h4>Celular:</h4></div>
                             <div><h5><label id="celularc"></label></h5></div>
-                        <div><h4>Pais De Procedencia:</h4></div>
-                            <div><h5><label id="paisc"></label></h5></div>
                       
                     </div>
 
@@ -199,6 +197,10 @@
                     </div>
                     </div>
                 </div>
+                <div class="input-group">
+                    <label for="nota_pago">Aqui Puedes Dejar Alguna Nota Para Aclaraciones Futuras</label>
+                    <textarea name="nota_pago" id="nota_pago" cols="35" rows="6" class="form-control"></textarea>
+                </div>
                 <div class="btns-group">
                     <a href="#" class="btn btn-prev">Anterior</a>
                     <input type="submit" value="Guardar" class="boton_finalizar" style="width: 170px">
@@ -217,14 +219,13 @@
     <script type="module" src="{{ url('js/buscarnum.js')}}"></script>
 
 <script>
-    function seleccionar(Id_cliente, Nombre,Apellido_paterno,Apellido_materno,Numero_celular,Pais){
+    function seleccionar(Id_cliente, Nombre,Apellido_paterno,Apellido_materno,Numero_celular){
 
     $("#idcliente").val(Id_cliente);
     $("#nombrec").text(Nombre);
     $("#apellidopat").text(Apellido_paterno);
     $("#apellidomat").text(Apellido_materno);
     $("#celularc").text(Numero_celular);
-    $("#paisc").text(Pais);
     document.getElementById('showlist').style.display = 'none';
 }
 </script>
