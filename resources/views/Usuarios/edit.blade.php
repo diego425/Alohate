@@ -4,7 +4,8 @@
     <div class="container">
         <div class="card">
             <div class="card-body">
-                <form class="row g-3 needs-validation" action="" method="get" novalidate>
+                <form class="row g-3 needs-validation" action="{{route('user.update',$users[0]->Id_colaborador)}}" method="POST" novalidate>
+                    @csrf
                     <div class="col-md-4">
                         <label for="user" class="form-label">Usuario</label>
                         <input type="text" class="form-control" id="user" name="user" value="{{$users[0]->user}}" required>

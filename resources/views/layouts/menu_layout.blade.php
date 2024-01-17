@@ -91,6 +91,25 @@
       </div>
  </header>
 <body>
+   @if (session()->has('message'))
+       <div class="alert alert-success alert-dismissible fade show d-flex" role="alert" style="width: 80%; margin-left: 10%;">
+           <i class='bx bx-message-check bx-tada' ></i>
+           <div>
+               {{ session()->get('message') }}
+           </div>
+           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+       </div>
+   @else
+       @if (session()->has('error'))
+         <div class="alert alert-danger alert-dismissible fade show d-flex" role="alert" style="width: 80%; margin-left: 10%;">
+             <i class='bx bxs-error-alt bx-flashing' ></i>
+             <div>
+                 {{ session()->get('error') }}
+             </div>
+             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+         </div>
+       @endif
+   @endif
    @yield('MenuPrincipal')
 </body>
 <script type="text/javascript" src="{{ url('js/Menu_main.js')}}"></script>

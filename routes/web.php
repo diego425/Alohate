@@ -25,7 +25,8 @@ Route::get('menu', 'MenuController@VistaMenu')->name('menu');
 Route::get('home', 'HomeController@Vistahome')->name('home');
 
 //ruta para login
-Route::get('login', 'LoginController@VistaLogin')->name('login');
+Route::get('/', 'LoginController@VistaLogin')->name('login');
+Route::post('/LoginVerify/65a4s6d4a3d213a4d86w43a51d35434#$%#&"#$"#9865as4d56', 'LoginController@LoginVerify')->name('login.LoginVerify');
 
 //prueba de alertas
 Route::get('view_alertas', 'LocacionController@ViewAlertas')->name('alertas');

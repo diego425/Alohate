@@ -49,10 +49,6 @@ class UsuariosController extends Controller
     
             if ($insert) {
                 $upd = DB::update('UPDATE colaboradores set password = ? where Id_colaborador = ?', [$contra,$idUsuario]);
-
-                /* if (!empty($request->correoElectronico)) {
-                    Mail::to("".$request->correoElectronico."")->send(new mailContrasena($request->password, $request->razonSocial));
-                } */
             }
     
             if ($insert) {
@@ -93,7 +89,41 @@ class UsuariosController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $datos = DB::select('SELECT * FROM colaboradores
+        WHERE user = ? AND Id_colaborador != ?',[$request->user,$id]);
+        $usuario = DB::select('SELECT * FROM colaboradores
+        WHERE Id_colaborador = ?',[$id]);
+        if (count((array)$datos) == 0) {
+            $update = DB::table('colaboradores')
+            ->where('Id_colaborador', $id)
+            ->update([
+                'user' => $request->user,
+                'Nombre' => $request->Nombre,
+                'Apellido_pat' => $request->Apellido_pat,
+                'Apellido_mat' => $request->Apellido_mat,
+                'Numero_cel' => $request->Numero_cel,
+                'Calle' => $request->Calle,
+                'Numero_casa' => $request->Numero_casa,
+                'email' => $request->email,
+                'id_rol' => $request->id_rol,
+                'Estatus_col' => $request->Estatus_col
+            ]);
+
+            if ($usuario[0]->password == $request->password) {
+            }else{
+                $contra = Crypt::encryptString($request->password);
+                $update = DB::update('UPDATE colaboradores 
+                SET password = ? WHERE Id_colaborador = ?', [$contra,$id]);
+            }
+    
+            if ($update) {
+                return redirect()->route('user.index')->with('message','Registro actualizado');
+            }else {
+                return redirect()->back()->with('error','No se pudo actualizar el registro');
+            }
+        }else {
+            return redirect()->back()->with('error','El usuario ya lo tiene otro colaborador');
+        }
     }
 
     /**
