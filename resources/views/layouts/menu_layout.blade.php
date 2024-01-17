@@ -4,8 +4,10 @@
  <!--METAS-->
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
- <title></title>
+ <title>@yield('title')</title>
 <!--LINKS-->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/animations.min.css" integrity="sha512-GKHaATMc7acW6/GDGVyBhKV3rST+5rMjokVip0uTikmZHhdqFWC7fGBaq6+lf+DOS5BIO8eK6NcyBYUBCHUBXA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/css/boxicons.min.css" integrity="sha512-cn16Qw8mzTBKpu08X0fwhTSv02kK/FojjNLz0bwp2xJ4H+yalwzXKFw/5cLzuBZCxGWIA+95X4skzvo8STNtSg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
 <link rel="stylesheet" href="{{ asset('assets/Menu_style.css') }}" >
 <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
@@ -78,7 +80,7 @@
              </li>
 
              <li><a href="#" class="lol__link">Reportes de Limp y MTTO</a></li>
-             <li><a href="#" class="lol__link">Gestion de colaboradores</a></li>
+             <li><a href="{{route('user.index')}}" class="lol__link">Gestion de colaboradores</a></li>
              <li><a href="#" class="lol__link">Checador de entrada/salida</a></li>
              <li><a href="#" class="lol__link">Listas de asistencias</a></li>
              <li><a href="#" class="lol__link">Historial LOG</a></li>
@@ -89,13 +91,31 @@
       </div>
  </header>
 <body>
-
+   @if (session()->has('message'))
+       <div class="alert alert-success alert-dismissible fade show d-flex" role="alert" style="width: 80%; margin-left: 10%;">
+           <i class='bx bx-message-check bx-tada' ></i>
+           <div>
+               {{ session()->get('message') }}
+           </div>
+           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+       </div>
+   @else
+       @if (session()->has('error'))
+         <div class="alert alert-danger alert-dismissible fade show d-flex" role="alert" style="width: 80%; margin-left: 10%;">
+             <i class='bx bxs-error-alt bx-flashing' ></i>
+             <div>
+                 {{ session()->get('error') }}
+             </div>
+             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+         </div>
+       @endif
+   @endif
+   @yield('MenuPrincipal')
 </body>
 <script type="text/javascript" src="{{ url('js/Menu_main.js')}}"></script>
 <!--scripts-->
 <script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 <script src="https://kit.fontawesome.com/110428e727.js" crossorigin="anonymous"></script>
-
-@yield('MenuPrincipal')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.4/dist/boxicons.js" integrity="sha512-kWH92pHUC/rcjpSMu19lT+H6TlZwZCAftg9AuSw+AVYSdEKSlXXB8o6g12mg5f+Pj5xO40A7ju2ot/VdodCthw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </html>
