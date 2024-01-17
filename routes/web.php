@@ -15,6 +15,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LocacionController;
 use App\Http\Controllers\HabitacionController;
+use App\Http\Controllers\UsuariosController;
 
 
 //ruta para el menu
@@ -280,7 +281,15 @@ Route::get('view_editar_reservacasanc/reserva/{Id_reservacion}/loc/{Id_locacion}
 //ruta que edita el registro de una reservacion de una casa con nuevo cliente
 Route::put('update_reservacasanc/{reservacion}/{lugar_reservado}/{Id_locacion}', 'ReservacionRentasController@UpdateReservaCasaNC')->name('update_reservacasanc');
 
-
+Route::controller(UsuariosController::class)->group(function (){
+    Route::get('user', 'index')->name('user.index');
+    Route::get('user/create', 'create')->name('user.create');
+    Route::post('user/store', 'store')->name('user.store');
+    Route::get('user/{id}', 'show')->name('user.show');
+    Route::get('user/edit/{id}', 'edit')->name('user.edit');
+    Route::post('user/update/{id}', 'update')->name('user.update');
+    Route::post('user/destroy/{id}', 'destroy')->name('user.destroy');
+});
 
 
 
