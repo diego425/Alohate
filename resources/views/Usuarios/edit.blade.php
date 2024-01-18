@@ -1,7 +1,7 @@
 @extends('layouts.menu_layout')
 @section('title', 'Editar usuario')
 @section('MenuPrincipal')
-    <div class="container">
+    <div class="container">        
         <div class="card">
             <div class="card-body">
                 <form class="row g-3 needs-validation" action="{{route('user.update',$users[0]->Id_colaborador)}}" method="POST" novalidate>
@@ -79,7 +79,7 @@
                     </div>
                     <div class="col-md-4">
                         <label for="password" class="form-label">Contraseña</label>
-                        <input type="password" class="form-control" id="password" name="password" value="{{$users[0]->password}}" required>
+                        <input type="password" class="form-control" id="password" name="password" value="password" maxlength="8" minlength="0" required>
                         <div class="valid-feedback">
                             Looks good!
                         </div>
@@ -89,7 +89,7 @@
                     </div>
                     <div class="col-md-3">
                         <label for="id_rol" class="form-label">Rol</label>
-                        <select class="form-select" id="id_rol" name="id_rol" required>
+                        <select class="form-select @error('id_rol') is-invalid @enderror" id="id_rol" name="id_rol" required>
                             @foreach($roles as $rol)
                                 <option value="{{$rol->id_rol}}" {{$rol->id_rol == $users[0]->id_rol ? 'selected': ''}}>{{$rol->nameRol}}</option>
                             @endforeach
@@ -114,9 +114,16 @@
                             Campo requerido.
                         </div>
                     </div>
-                    <div class="col-12">
-                        <button class="btn btn-primary" type="submit">Guardar</button>
+                    <div class="col-sm-12">
+                    <div class="row">
+                        <div class="col-sm-2 mt-3">
+                            <button class="btn btn-primary" type="submit">Guardar</button>
+                        </div>
+                        <div class="col-sm-2 mt-3">
+                            <a href="{{route('user.index')}}" class="btn btn-danger">Cancelar</a>
+                        </div>
                     </div>
+                </div>
                 </form>
             </div>
         </div>

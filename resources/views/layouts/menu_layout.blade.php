@@ -80,12 +80,24 @@
              </li>
 
              <li><a href="#" class="lol__link">Reportes de Limp y MTTO</a></li>
-             <li><a href="{{route('user.index')}}" class="lol__link">Gestion de colaboradores</a></li>
+             @if(!empty(Cookie::get('puesto')))
+               @if(Cookie::get('puesto') == "ADMIN")               
+                  <li><a href="{{route('user.index')}}" class="lol__link">Gestion de colaboradores</a></li>
+               @endif
+             @endif
              <li><a href="#" class="lol__link">Checador de entrada/salida</a></li>
              <li><a href="#" class="lol__link">Listas de asistencias</a></li>
              <li><a href="#" class="lol__link">Historial LOG</a></li>
              <li><a href="#" class="lol__link">Reportes</a></li>
-
+             <li>
+               <form action="{{route('login.cerrarSesion')}}" method="post">
+                  @csrf
+                  <button type="submit" class="lol__link" title="Cerrar sesión">
+                     <i class='bx bx-log-out-circle'></i>
+                     Cerrar sesión
+                  </button>
+               </form>
+            </li>
           </ul>
        </div>
       </div>
@@ -109,6 +121,18 @@
              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
          </div>
        @endif
+   @endif
+
+   @if ($errors->any())
+       <div class="alert alert-danger alert-dismissible fade show d-flex" role="alert" style="width: 80%; margin-left: 10%;">
+         <i class='bx bxs-error-alt bx-flashing' ></i>
+           <ul>
+               @foreach ($errors->all() as $error)
+                   <li>{{ $error }}</li>
+               @endforeach
+           </ul>
+         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+       </div>
    @endif
    @yield('MenuPrincipal')
 </body>

@@ -8,13 +8,7 @@
             }
 
             table thead {
-                clip: rect(0 0 0 0);
-                height: 1px;
-                margin: -1px;
-                overflow: hidden;
-                padding: 0;
-                position: absolute;
-                width: 1px;
+                display: none;
             }
 
             table tr {
@@ -43,17 +37,26 @@
         }
     </style>
     <div class="container">
-        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-            <a class="btn btn-primary me-md-2" href="{{route('user.create')}}">
-                <i class='bx bx-user-plus'></i>
-            </a>
+        <div class="card">
+            <div class="card-body row">
+                <div class="col-sm-3">
+                    <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" action="{{route('user.index')}}" method="get" role="search">
+                        <input type="search" name="buscar" class="form-control" placeholder="Buscar..." aria-label="Search">
+                    </form>
+                </div>
+                <div class="col-sm-9">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a class="btn btn-primary me-md-2" href="{{route('user.create')}}">
+                            <i class='bx bx-user-plus'></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
+        <br>
         <div class="table-responsive">
-            <table class="table table-striped table-hover table-borderless table-primary align-middle">
-                <thead class="table-light">
-                    <caption>
-                        Usuarios
-                    </caption>
+            <table class="table table-striped table-hover align-middle">
+                <thead class="table-light">                    
                     <tr>
                         <th>User</th>
                         <th>Nombre</th>
@@ -62,16 +65,19 @@
                         <th colspan="1">Accion</th>
                     </tr>
                 </thead>
+                <caption>
+                    Usuarios
+                </caption>
                 <tbody class="table-group-divider">
                     @foreach ($users as $user)
-                        <tr class="table-primary">
+                        <tr class="">
                             <td data-label="User" scope="row">{{$user->user}}</td>
                             <td data-label="Nombre">{{$user->Nombre}}</td>
                             <td data-label="Email">{{$user->email}}</td>
                             <td data-label="Rol">{{$user->nameRol}}</td>
                             <td>
                                 <form action="{{route('user.edit',$user->Id_colaborador)}}" method="get">                                    
-                                    <button class="btn btn-warning" type="submit">
+                                    <button class="btn btn-warning" type="submit" title="Editar">
                                         <i class='bx bx-edit-alt'></i>
                                     </button>
                                 </form>
@@ -79,8 +85,7 @@
                         </tr>                        
                     @endforeach
                 </tbody>
-                <tfoot>
-                    
+                <tfoot>                    
                 </tfoot>
             </table>
             <div class="d-flex">

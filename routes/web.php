@@ -11,6 +11,7 @@
 |
 */
 
+use Illuminate\Support\Facades\Cookie;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LocacionController;
@@ -26,7 +27,8 @@ Route::get('home', 'HomeController@Vistahome')->name('home');
 
 //ruta para login
 Route::get('/', 'LoginController@VistaLogin')->name('login');
-Route::post('/LoginVerify/65a4s6d4a3d213a4d86w43a51d35434#$%#&"#$"#9865as4d56', 'LoginController@LoginVerify')->name('login.LoginVerify');
+Route::post('/LoginVerify', 'LoginController@LoginVerify')->name('login.LoginVerify');
+Route::post('/cerrarSesion', 'LoginController@cerrarSesion')->name('login.cerrarSesion');
 
 //prueba de alertas
 Route::get('view_alertas', 'LocacionController@ViewAlertas')->name('alertas');
@@ -282,6 +284,7 @@ Route::get('view_editar_reservacasanc/reserva/{Id_reservacion}/loc/{Id_locacion}
 //ruta que edita el registro de una reservacion de una casa con nuevo cliente
 Route::put('update_reservacasanc/{reservacion}/{lugar_reservado}/{Id_locacion}', 'ReservacionRentasController@UpdateReservaCasaNC')->name('update_reservacasanc');
 
+
 Route::controller(UsuariosController::class)->group(function (){
     Route::get('user', 'index')->name('user.index');
     Route::get('user/create', 'create')->name('user.create');
@@ -289,7 +292,7 @@ Route::controller(UsuariosController::class)->group(function (){
     Route::get('user/{id}', 'show')->name('user.show');
     Route::get('user/edit/{id}', 'edit')->name('user.edit');
     Route::post('user/update/{id}', 'update')->name('user.update');
-    Route::post('user/destroy/{id}', 'destroy')->name('user.destroy');
+    Route::post('user/destroy/{id}', 'destroy')->name('user.destroy');    
 });
 
 
