@@ -1775,7 +1775,8 @@ public function ViewRentarHab($Id_reservacion, $Id_habitacion, $Id_lugares_reser
 public function StoreRentarHab(Request $request, Reservacion $reservacion, $Id_reservacion, $Id_habitacion, $Id_lugares_reservados){
 
 try{
-
+//faltan fotos del reglamento y aviso de privacidad 
+//falta cambiar el estatus a rentado de los lugares rentados y del lugar que se usara
 //fiador
     $fiador = new Fiador();
     $fiador -> Id_cliente  = $request->get('extras');
@@ -1802,13 +1803,13 @@ try{
 
 //array que guarda la foto de la ine de frente del fiador
     $this->validate($request, array(
-    'img8' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    'img5' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
     ));
-    $image = $request->file('img8');
+    $image = $request->file('img5');
   
     if($image != ''){
         $nombreImagen = 'INE'.'_'.$fiador[0]->Apellido_pat.'_'.$fiador[0]->Apellido_mat.'_'.rand(). '.' . $image->getClientOriginalExtension();
-        $base64Img = $request->nuevaImagen8;
+        $base64Img = $request->nuevaImagen5;
         $base_to_php = explode(',',$base64Img);
         $data = base64_decode($base_to_php[1]);
 //aviso         
@@ -1826,13 +1827,13 @@ try{
 
 //array que guarda la foto de la ine de atras del fiador
     $this->validate($request, array(
-    'img9' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    'img6' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
     ));
-    $image = $request->file('img9');
+    $image = $request->file('img6');
   
     if($image != ''){
         $nombreImagen = 'INE'.'_'.$fiador[0]->Apellido_pat.'_'.$fiador[0]->Apellido_mat.'_'.rand(). '.' . $image->getClientOriginalExtension();
-        $base64Img = $request->nuevaImagen9;
+        $base64Img = $request->nuevaImagen6;
         $base_to_php = explode(',',$base64Img);
         $data = base64_decode($base_to_php[1]);
 //aviso
@@ -1900,13 +1901,13 @@ try{
 
 //array que guarda la foto del contrato
     $this->validate($request, array(
-    'img10' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    'img4' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
     ));
-    $image = $request->file('img10');
+    $image = $request->file('img4');
   
     if($image != ''){
         $nombreImagen = 'Contrato'.'_'.$cliente[0]->Apellido_paterno.'_'.$cliente[0]->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
-        $base64Img = $request->nuevaImagen10;
+        $base64Img = $request->nuevaImagen4;
         $base_to_php = explode(',',$base64Img);
         $data = base64_decode($base_to_php[1]);
 //aviso
