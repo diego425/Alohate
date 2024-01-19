@@ -36,7 +36,7 @@ class codigoLogin extends Mailable
      */
     public function build()
     {
-        return $this->from('pruebas@sonarmx.store', null)
+        return $this->from('sistema@cuartosags.com', null)
                     ->view('Login.Mail.codigoVerificacion');
     }
 }
