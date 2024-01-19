@@ -29,6 +29,9 @@ Route::get('home', 'HomeController@Vistahome')->name('home');
 Route::get('/', 'LoginController@VistaLogin')->name('login');
 Route::post('/LoginVerify', 'LoginController@LoginVerify')->name('login.LoginVerify');
 Route::post('/cerrarSesion', 'LoginController@cerrarSesion')->name('login.cerrarSesion');
+Route::post('/verificarCodigo', 'LoginController@verificarCodigo')->name('login.verificarCodigo');
+Route::get('/vistaCodigo/{user}', 'LoginController@vistaCodigo')->name('login.vistaCodigo');
+Route::post('/verificarUserPass', 'LoginController@verificarUserPass')->name('login.verificarUserPass');
 
 //prueba de alertas
 Route::get('view_alertas', 'LocacionController@ViewAlertas')->name('alertas');

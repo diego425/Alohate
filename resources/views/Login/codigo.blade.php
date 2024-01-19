@@ -1,17 +1,16 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 
 <head>
   <!--METAS-->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="csrf-url" content="{{ route('login.verificarUserPass') }}">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
   <title>LOGIN</title>
   <!--LINKS-->
   <link rel="stylesheet" href="{{ asset('assets/Login_style.css') }}">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
   <!--scripts-->
+  <script src="https://kit.fontawesome.com/110428e727.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -52,31 +51,19 @@
                   </div>
                   @endif
                   @endif
-                  <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
-                  <p class="text-white-50 mb-5">Bienvenido, coloca tus credenciales para ingresar</p>
-                  <form action="{{route('login.LoginVerify')}}" method="post" id="formulario">
+                  <h2 class="fw-bold mb-2 text-uppercase"></h2>
+                  <p class="text-white-50 mb-5">Enviamos un código de un solo uso al correo del administrador</p>
+                  <form action="{{route('login.verificarCodigo')}}" method="post" id="formulario">
                     @csrf
+                    <input type="hidden" name="user" value="{{$user}}">
                     <div class="form-outline form-white mb-4">
-                      <label class="form-label" for="user">Usuario</label>
-                      <input type="text" id="user" name="user" class="form-control form-control-lg @error('user') is-invalid @enderror" placeholder="Usuario">
-                      @error('user')
-                      <div class="invalid-feedback">{{ $message }}</div>
+                      <label class="form-label" for="codigo">Codigo</label>
+                      <input type="number" id="codigo" name="codigo" minlength="0" maxlength="7" class="form-control form-control-lg @error('codigo') is-invalid @enderror" placeholder="Ingrese el código">
+                      @error('codigo')
+                        <div class="invalid-feedback">{{ $message }}</div>
                       @enderror
                     </div>
-
-                    <div class="form-outline form-white mb-4">
-                      <label class="form-label" for="password">Contraseña</label>
-                      <input type="password" id="password" name="password" maxlength="8" minlength="0" class="form-control form-control-lg @error('password') is-invalid @enderror" placeholder="Contraseña" autocomplete="off">
-                      @error('password')
-                      <div class="invalid-feedback">{{ $message }}</div>
-                      @enderror
-                    </div>
-
-                    <!-- <p class="small mb-5 pb-lg-2">¿Olvidaste tu contraseña?
-                        <br> <a href=""><label for="">Haz click aqui</label></a>
-                        </p> -->
-                    <button class="btn btn-outline-light btn-lg px-5" type="button" id="submit">Entrar</button>
-                    <button type="submit" style="display: none;" id="btnsu"></button>
+                    <button class="btn btn-outline-light btn-lg px-5" type="submit" id="submit">Verificar</button>
                   </form>
                 </div>
               </div>
@@ -89,6 +76,5 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
 <script src="{{ asset('js/jquery-3.7.1.min.js') }}"></script>
-<script src="{{ asset('js/login.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/localstorage-slim"></script>
+
 </html>
