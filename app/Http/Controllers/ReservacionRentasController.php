@@ -1092,6 +1092,16 @@ if($request->get('idcliente') == $cliente_reserva[0]->Id_cliente){
    ->where('Id_reservacion', '=', $Id_reservacion)
    ->get();
 
+   
+   $nombrecliente = DB::table('cliente')
+   ->select('Nombre', 'Numero_celular')
+   ->where('Id_cliente', '=', $cliente_reserva[0]->Id_cliente)
+   ->get();
+
+   $actualizacion_title = DB::table('reservacion')
+    ->where('Id_reservacion', '=', $Id_reservacion)
+    ->update(['Title' => $nombrecliente]);
+
    $renta = DB::table('lugares_reservados')
     ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion','lugares_reservados.Id_locacion', 
      'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
@@ -1130,8 +1140,7 @@ if($request->get('idcliente') == $cliente_reserva[0]->Id_cliente){
             return view('Reservaciones y rentas.Rentar.intro_maspersonas', compact('Id_reservacion', 'Id_lugares_reservados', 'renta', 'Id_habitacion'));
     }else{
         if($num_personas_reserva[0]->Registro_personas == $total_personas[0]->Total_de_personas){
-            Alert::success('Exito', 'Haz terminado de registrar a los clientes que se hospedaran en este lugar, ahora termina el registro del lugar');
-            return view('Reservaciones y rentas.Rentar.form_rentar_hab', compact('Id_reservacion', 'Id_lugares_reservados', 'renta', 'Id_habitacion'));
+            return view('Reservaciones y rentas.Rentar.intro_rentar', compact('Id_reservacion', 'Id_lugares_reservados', 'renta', 'Id_habitacion'));
         }
     }
     
@@ -1265,6 +1274,15 @@ if($request->get('idcliente') == $cliente_reserva[0]->Id_cliente){
     ->where('Id_reservacion', '=', $Id_reservacion)
     ->get();
 
+    $nombrecliente = DB::table('cliente')
+   ->select('Nombre', 'Numero_celular')
+   ->where('Id_cliente', '=', $cambio_cliente->Id_cliente)
+   ->get();
+
+   $actualizacion_titlee = DB::table('reservacion')
+    ->where('Id_reservacion', '=', $Id_reservacion)
+    ->update(['Title' => $nombrecliente]);
+
     $renta = DB::table('lugares_reservados')
     ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion','lugares_reservados.Id_locacion', 
      'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
@@ -1303,8 +1321,7 @@ if($request->get('idcliente') == $cliente_reserva[0]->Id_cliente){
             return view('Reservaciones y rentas.Rentar.intro_maspersonas', compact('Id_reservacion', 'Id_lugares_reservados', 'renta', 'Id_habitacion'));
     }else{
         if($num_personas_reserva[0]->Registro_personas == $total_personas[0]->Total_de_personas){
-            Alert::success('Exito', 'Haz terminado de registrar a los clientes que se hospedaran en este lugar, ahora termina el registro del lugar');
-            return view('Reservaciones y rentas.Rentar.form_rentar_hab', compact('Id_reservacion', 'Id_lugares_reservados', 'renta', 'Id_habitacion'));
+            return view('Reservaciones y rentas.Rentar.intro_rentar', compact('Id_reservacion', 'Id_lugares_reservados', 'renta', 'Id_habitacion'));
         }
     }
 
@@ -1543,8 +1560,7 @@ if($num_personas_reserva[0]->Registro_personas < $total_personas[0]->Total_de_pe
     //return view('Reservaciones y rentas.Rentar.form_dato_c2_hab', compact('Id_reservacion', 'Id_lugares_reservados', 'renta', 'Id_habitacion'));
 }else{
 if($num_personas_reserva[0]->Registro_personas == $total_personas[0]->Total_de_personas){
-        Alert::success('Exito', 'Haz terminado de registrar a los clientes que se hospedaran en este lugar, ahora termina el registro del lugar');
-        return view('Reservaciones y rentas.Rentar.form_rentar_hab', compact('Id_reservacion', 'Id_lugares_reservados', 'renta', 'Id_habitacion'));
+        return view('Reservaciones y rentas.Rentar.intro_rentar', compact('Id_reservacion', 'Id_lugares_reservados', 'renta', 'Id_habitacion'));
 }
 }
 
@@ -1719,8 +1735,7 @@ if($num_personas_reserva[0]->Registro_personas < $total_personas[0]->Total_de_pe
     //return view('Reservaciones y rentas.Rentar.form_dato_c2_hab', compact('Id_reservacion', 'Id_lugares_reservados', 'renta', 'Id_habitacion'));
 }else{
 if($num_personas_reserva[0]->Registro_personas == $total_personas[0]->Total_de_personas){
-        Alert::success('Exito', 'Haz terminado de registrar a los clientes que se hospedaran en este lugar, ahora termina el registro del lugar');
-        return view('Reservaciones y rentas.Rentar.form_rentar_hab', compact('Id_reservacion', 'Id_lugares_reservados', 'renta', 'Id_habitacion'));
+    return view('Reservaciones y rentas.Rentar.intro_rentar', compact('Id_reservacion', 'Id_lugares_reservados', 'renta', 'Id_habitacion'));
 }}
 }
 }catch(Exception $ex){
@@ -1773,23 +1788,162 @@ public function ViewRentarHab($Id_reservacion, $Id_habitacion, $Id_lugares_reser
 }
 
 public function StoreRentarHab(Request $request, Reservacion $reservacion, $Id_reservacion, $Id_habitacion, $Id_lugares_reservados){
-
 try{
-//faltan fotos del reglamento y aviso de privacidad 
+//consulta para sacar el cliente de la reserva
+$cliente = DB::table('lugares_reservados')
+->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion','lugares_reservados.Id_locacion', 
+  'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
+  'est.Nombre_estado',
+  'reserva.Id_reservacion','reserva.Id_colaborador',
+  'reserva.Start_date','reserva.End_date', 'reserva.Title','reserva.Fecha_reservacion',
+  'reserva.Numero_personas_extras', 'reserva.Foto_comprobante_anticipo', 'reserva.Fecha_pago_anticipo',
+  'reserva.Foto_aviso_privacidad', 'reserva.Foto_reglamento','reserva.Monto_uso_cochera', 
+  'reserva.Metodo_pago_anticipo','reserva.Espacios_cochera','reserva.Monto_pagado_anticipo',
+  'reserva.Tipo_de_cobro','reserva.Nota_pago_anticipo',
+  'cliente.Id_cliente','cliente.Id_colaborador','cliente.Nombre',
+  'cliente.Apellido_paterno','cliente.Apellido_materno','cliente.Email', 
+  'cliente.Numero_celular','cliente.Ciudad','cliente.Estado',
+  'cliente.Pais', 'cliente.Ref1_nombre','cliente.Ref2_nombre',
+  'cliente.Ref1_celular','cliente.Ref2_celular','cliente.Ref1_parentesco',
+  'cliente.Ref2_parentesco','cliente.Motivo_visita', 'cliente.Lugar_motivo_visita', 
+  'cliente.Foto_cliente', 'cliente.INE_frente', 'cliente.INE_reverso',
+  'hab.Id_habitacion','hab.Id_locacion','hab.Id_estado_ocupacion', 
+  'hab.Id_colaborador','hab.Nombre_hab', 'hab.Capacidad_personas',  'hab.Deposito_garantia_hab', 
+  'hab.Precio_noche', 'hab.Precio_semana','hab.Precio_catorcedias', 'hab.Precio_mes', 
+  'hab.Encargado','hab.Espacio_superficie', 'hab.Nota','hab.Descripcion',
+  'hab.Cobro_p_ext_mes_h','hab.Cobro_p_ext_catorcena_h','hab.Cobro_p_ext_noche_h',
+  'hab.Cobro_anticipo_mes_h','hab.Cobro_anticipo_catorcena_h','hab.Camas_juntas',
+  'loc.Nombre_locacion')
+ ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
+ ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+ ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+ ->leftJoin("habitacion as hab", "hab.Id_habitacion", "=", "lugares_reservados.Id_habitacion")
+ ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
+ ->where('reserva.Id_reservacion', '=', $Id_reservacion)
+ ->where('hab.Id_habitacion', '=', $Id_habitacion)
+ ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+ ->get();
+
+//condicionales if que ayudan a saber que tipo de contrato se esta guardando y que datos se deben de guardar segun el contrato 
+//"-1" significa que no se usara contrato 
+if($request->get('tipo_contrato') == "-1"){
+    
+//array que guarda la foto del reglamento
+$this->validate($request, array(
+    'img3' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img3');
+  
+    if($image != ''){
+        $nombreImagen = 'Reglamento'.'_'.$cliente[0]->Apellido_paterno.'_'.$cliente[0]->Numero_celular.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen3;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso         
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/reglamentos_avisos/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+    if ($guardarImagen !== false) {
+        DB::table('reservacion')
+        ->where('Id_reservacion', '=', $Id_reservacion)
+        ->update(['Foto_reglamento' => $nombreImagen]);
+    }}
+
+
+//array que guarda la foto del aviso de privacidad
+$this->validate($request, array(
+    'img2' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img2');
+  
+    if($image != ''){
+        $nombreImagen = 'aviso_privacidad'.'_'.$cliente[0]->Apellido_paterno.'_'.$cliente[0]->Numero_celular.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen2;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso         
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/reglamentos_avisos/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+    if ($guardarImagen !== false) {
+        DB::table('reservacion')
+        ->where('Id_reservacion', '=', $Id_reservacion)
+        ->update(['Foto_aviso_privacidad' => $nombreImagen]);
+    }}
+
+//actualizo el estatus de la tabla de lugares reservados que es donde esta la reservacion
+    $affected = DB::table('lugares_reservados')
+    ->where('Id_lugares_reservados', '=', $Id_lugares_reservados)
+    ->update(['Id_estado_ocupacion' => 4]);
+
+//actualizo el estatus del lugar que se usara
+    $affecteded = DB::table('habitacion')
+    ->where('Id_habitacion', '=', $Id_habitacion)
+    ->update(['Id_estado_ocupacion' => 4]);
+
+ }else{
+//si es que se escoge contrato rigido se ejecutara este codigo
+if($request->get('tipo_contrato') == "Rigido"){
+    
+//array que guarda la foto del reglamento
+$this->validate($request, array(
+    'img3' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img3');
+  
+    if($image != ''){
+        $nombreImagen = 'Reglamento'.'_'.$cliente[0]->Apellido_paterno.'_'.$cliente[0]->Numero_celular.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen3;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso         
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/reglamentos_avisos/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+    if ($guardarImagen !== false) {
+        DB::table('reservacion')
+        ->where('Id_reservacion', '=', $Id_reservacion)
+        ->update(['Foto_reglamento' => $nombreImagen]);
+    }}
+
+
+//array que guarda la foto del aviso de privacidad
+$this->validate($request, array(
+    'img2' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img2');
+  
+    if($image != ''){
+        $nombreImagen = 'aviso_privacidad'.'_'.$cliente[0]->Apellido_paterno.'_'.$cliente[0]->Numero_celular.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen2;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso         
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/reglamentos_avisos/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+    if ($guardarImagen !== false) {
+        DB::table('reservacion')
+        ->where('Id_reservacion', '=', $Id_reservacion)
+        ->update(['Foto_aviso_privacidad' => $nombreImagen]);
+    }}
+
 //falta cambiar el estatus a rentado de los lugares rentados y del lugar que se usara
 //fiador
     $fiador = new Fiador();
-    $fiador -> Id_cliente  = $request->get('extras');
-    $fiador -> Nombre = $request->get('extras');
-    $fiador -> Apellido_pat = $request->get('extras');
-    $fiador -> Apellido_mat = $request->get('extras');
-    $fiador -> No_casa = $request->get('extras');
-    $fiador -> Calle = $request->get('extras');
-    $fiador -> Colonia = $request->get('extras');
-    $fiador -> Estado = $request->get('extras');
-    $fiador -> No_telefono = $request->get('extras');
-    $fiador -> INE_frontal_fiador = $request->get('extras');
-    $fiador -> INE_trasera_fiador = $request->get('extras');
+    $fiador -> Id_cliente  = $cliente[0]->Id_cliente;
+    $fiador -> Nombre = $request->get('nombre_f');
+    $fiador -> Apellido_pat = $request->get('apellido_pat_f');
+    $fiador -> Apellido_mat = $request->get('apellido_mat_f');
+    $fiador -> No_casa = $request->get('no_ext_casa');
+    $fiador -> Calle = $request->get('calle_f');
+    $fiador -> Colonia = $request->get('colonia_f');
+    $fiador -> Estado = $request->get('estado_f');
+    $fiador -> No_telefono = $request->get('num_telefono_f');
     $fiador->save();
     $lastfiador =DB::getPdo()->lastInsertId();
 
@@ -1799,7 +1953,6 @@ try{
     'Estado','No_telefono','INE_frontal_fiador','INE_trasera_fiador')
     ->where('Id_fiador', '=', $lastfiador)
     ->get();
-
 
 //array que guarda la foto de la ine de frente del fiador
     $this->validate($request, array(
@@ -1817,13 +1970,12 @@ try{
         $filepath = 'C:/xampp/htdocs/alohate/public/uploads/fiadores/'.$nombreImagen;
         $guardarImagen = file_put_contents($filepath, $data);
   
-        if ($guardarImagen !== false) {
-            DB::table('fiador')
-            ->where('Id_fiador', '=', $lastfiador)
-            ->update(['INE_frontal_fiador' => $nombreImagen]);
+    if ($guardarImagen !== false) {
+        DB::table('fiador')
+        ->where('Id_fiador', '=', $lastfiador)
+        ->update(['INE_frontal_fiador' => $nombreImagen]);
     }}
 
-    
 
 //array que guarda la foto de la ine de atras del fiador
     $this->validate($request, array(
@@ -1841,13 +1993,11 @@ try{
         $filepath = 'C:/xampp/htdocs/alohate/public/uploads/fiadores/'.$nombreImagen;
         $guardarImagen = file_put_contents($filepath, $data);
   
-        if ($guardarImagen !== false) {
-            DB::table('fiador')
-            ->where('Id_fiador', '=', $lastfiador)
-            ->update(['INE_trasera_fiador' => $nombreImagen]);
+    if ($guardarImagen !== false) {
+        DB::table('fiador')
+        ->where('Id_fiador', '=', $lastfiador)
+        ->update(['INE_trasera_fiador' => $nombreImagen]);
     }}
-
-
 
     $reserva = DB::table('reservacion')
     ->select( 'Start_date', 'End_date')
@@ -1898,6 +2048,133 @@ try{
     ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
+//array que guarda la foto del contrato
+    $this->validate($request, array(
+    'img4' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img4');
+  
+    if($image != ''){
+        $nombreImagen = 'Contrato'.'_'.$cliente[0]->Apellido_paterno.'_'.$cliente[0]->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen4;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/contratos/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+    if ($guardarImagen !== false) {
+        DB::table('contratos')
+        ->where('Id_contrato', '=', $lastcontrato)
+        ->update(['Foto_contrato' => $nombreImagen]);
+    }}
+
+//actualizo el estatus de la tabla de lugares reservados que es donde esta la reservacion
+    $affected = DB::table('lugares_reservados')
+    ->where('Id_lugares_reservados', '=', $Id_lugares_reservados)
+    ->update(['Id_estado_ocupacion' => 4]);
+
+//actualizo el estatus del lugar que se usara
+    $affecteded = DB::table('habitacion')
+    ->where('Id_habitacion', '=', $Id_habitacion)
+    ->update(['Id_estado_ocupacion' => 4]);
+
+
+}else{
+if($request->get('tipo_contrato') == "Flexible"){
+    
+//array que guarda la foto del reglamento
+$this->validate($request, array(
+    'img3' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img3');
+  
+    if($image != ''){
+        $nombreImagen = 'Reglamento'.'_'.$cliente[0]->Apellido_paterno.'_'.$cliente[0]->Numero_celular.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen3;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso         
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/reglamentos_avisos/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+    if ($guardarImagen !== false) {
+        DB::table('reservacion')
+        ->where('Id_reservacion', '=', $Id_reservacion)
+        ->update(['Foto_reglamento' => $nombreImagen]);
+    }}
+
+//array que guarda la foto del aviso de privacidad
+$this->validate($request, array(
+    'img2' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img2');
+  
+    if($image != ''){
+        $nombreImagen = 'aviso_privacidad'.'_'.$cliente[0]->Apellido_paterno.'_'.$cliente[0]->Numero_celular.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen2;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso         
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/reglamentos_avisos/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+    if ($guardarImagen !== false) {
+        DB::table('reservacion')
+        ->where('Id_reservacion', '=', $Id_reservacion)
+        ->update(['Foto_aviso_privacidad' => $nombreImagen]);
+    }}
+
+    $reserva = DB::table('reservacion')
+    ->select( 'Start_date', 'End_date')
+    ->where('Id_reservacion', '=', $Id_reservacion)
+    ->get();
+
+//contrato
+    $contrato = new Contrato();
+    $contrato -> Id_reservacion = $Id_reservacion;
+    $contrato -> Fecha_inicio = $reserva[0]->Start_date;
+    $contrato -> Fecha_termino = $reserva[0]->End_date;
+    $contrato -> Tipo_contrato = $request->get('tipo_contrato');
+    $contrato->save();
+    $lastcontrato =DB::getPdo()->lastInsertId();
+
+   $cliente = DB::table('lugares_reservados')
+   ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion','lugares_reservados.Id_locacion', 
+     'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
+     'est.Nombre_estado',
+     'reserva.Id_reservacion','reserva.Id_colaborador',
+     'reserva.Start_date','reserva.End_date', 'reserva.Title','reserva.Fecha_reservacion',
+     'reserva.Numero_personas_extras', 'reserva.Foto_comprobante_anticipo', 'reserva.Fecha_pago_anticipo',
+     'reserva.Foto_aviso_privacidad', 'reserva.Foto_reglamento','reserva.Monto_uso_cochera', 
+     'reserva.Metodo_pago_anticipo','reserva.Espacios_cochera','reserva.Monto_pagado_anticipo',
+     'reserva.Tipo_de_cobro','reserva.Nota_pago_anticipo',
+     'cliente.Id_cliente','cliente.Id_colaborador','cliente.Nombre',
+     'cliente.Apellido_paterno','cliente.Apellido_materno','cliente.Email', 
+     'cliente.Numero_celular','cliente.Ciudad','cliente.Estado',
+     'cliente.Pais', 'cliente.Ref1_nombre','cliente.Ref2_nombre',
+     'cliente.Ref1_celular','cliente.Ref2_celular','cliente.Ref1_parentesco',
+     'cliente.Ref2_parentesco','cliente.Motivo_visita', 'cliente.Lugar_motivo_visita', 
+     'cliente.Foto_cliente', 'cliente.INE_frente', 'cliente.INE_reverso',
+     'hab.Id_habitacion','hab.Id_locacion','hab.Id_estado_ocupacion', 
+     'hab.Id_colaborador','hab.Nombre_hab', 'hab.Capacidad_personas',  'hab.Deposito_garantia_hab', 
+     'hab.Precio_noche', 'hab.Precio_semana','hab.Precio_catorcedias', 'hab.Precio_mes', 
+     'hab.Encargado','hab.Espacio_superficie', 'hab.Nota','hab.Descripcion',
+     'hab.Cobro_p_ext_mes_h','hab.Cobro_p_ext_catorcena_h','hab.Cobro_p_ext_noche_h',
+     'hab.Cobro_anticipo_mes_h','hab.Cobro_anticipo_catorcena_h','hab.Camas_juntas',
+     'loc.Nombre_locacion')
+    ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
+    ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+    ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+    ->leftJoin("habitacion as hab", "hab.Id_habitacion", "=", "lugares_reservados.Id_habitacion")
+    ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
+    ->where('reserva.Id_reservacion', '=', $Id_reservacion)
+    ->where('hab.Id_habitacion', '=', $Id_habitacion)
+    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    ->get();
 
 //array que guarda la foto del contrato
     $this->validate($request, array(
@@ -1921,12 +2198,26 @@ try{
             ->update(['Foto_contrato' => $nombreImagen]);
     }}
 
-    Alert::success('Exito', 'Haz concluido el registro para pasar a rentar ahora el clente podra usar el lugar. puedes cerrrar esta ventana');
-    return redirect()->back();
+//actualizo el estatus de la tabla de lugares reservados que es donde esta la reservacion
+    $affected = DB::table('lugares_reservados')
+    ->where('Id_lugares_reservados', '=', $Id_lugares_reservados)
+    ->update(['Id_estado_ocupacion' => 4]);
+
+//actualizo el estatus del lugar que se usara
+    $affecteded = DB::table('habitacion')
+    ->where('Id_habitacion', '=', $Id_habitacion)
+    ->update(['Id_estado_ocupacion' => 4]);
+
+}
+}
+}
+
+     Alert::success('Exito', 'Haz concluido el registro para pasar a rentar ahora el clente podra usar el lugar. puedes cerrar esta ventana');
+     return redirect()->back();
 
 }catch(Exception $ex){
-    Alert::error('Error', 'los datos que ingresaste no son correctos, revisa que todo este en orden');
-    return redirect()->back();
+     Alert::error('Error', 'los datos que ingresaste no son correctos, revisa que todo este en orden');
+     return redirect()->back();
 }
 }
 

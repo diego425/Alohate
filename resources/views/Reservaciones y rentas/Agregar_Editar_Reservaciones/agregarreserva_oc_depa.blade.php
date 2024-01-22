@@ -119,19 +119,24 @@
                     <div class="input-group">
                         <p><label style="color: rgb(100, 0, 0)">Lo Sentimos Pero Ya No Quedan Espacios De Cochera Libres</label></p>
                     </div>
+                
+                @elseif($totalcocheras[0]->Total_cocheras == 0)
+                <div class="input-group">
+                    <p><label style="color: rgb(100, 0, 0)">Lo Sentimos Pero Ya No Quedan Espacios De Cochera Libres</label></p>
+                </div>
                 @else
-                    <div class="input-group">
-                        <label for="cochera">¿Quiere Usar Cochera?</label>
-                        <input type="checkbox" class="form-control" style="width: 20px; height: 20px;" name="cochera" id="cochera" onclick="activar_cochera()">
-                    </div>
-                    <div class="input-group">
-                        <label for="uso_cochera">¿Cuantos Espacios De Cochera Desea Usar?</label>
-                        <input type="number" class="form-control"  name="uso_cochera" id="uso_cochera" disabled>
-                    </div>
-                    <div class="input-group">
-                        <label for="num_cochera">Monto Por Uso De Cochera:</label>
-                        <input type="number" class="form-control"  name="num_cochera" id="num_cochera" disabled>
-                    </div>
+                <div class="input-group">
+                    <label for="cochera">¿Quiere Usar Cochera?</label>
+                    <input type="checkbox" class="form-control" style="width: 20px; height: 20px;" name="cochera" id="cochera" onclick="activar_cochera()">
+                </div>
+                <div class="input-group">
+                    <label for="uso_cochera">¿Cuantos Espacios De Cochera Desea Usar?</label>
+                    <input type="number" class="form-control"  name="uso_cochera" id="uso_cochera" disabled>
+                </div>
+                <div class="input-group">
+                    <label for="num_cochera">Monto Por Uso De Cochera:</label>
+                    <input type="number" class="form-control"  name="num_cochera" id="num_cochera" disabled>
+                </div>
                 @endif
                 <div class="btns-group">
                     <a href="#" class="btn btn-prev">Anterior</a>

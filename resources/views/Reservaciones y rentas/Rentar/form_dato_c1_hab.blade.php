@@ -43,13 +43,13 @@
                         <div class="centrar">
                             <label><h4><i class="fa-solid fa-magnifying-glass"></i> Autobuscador De Clientes</h4></label>
                         </div>
-                        <label>Busca Por Numero De Celular / <a href="" style="text-decoration: black; color:rgb(255, 0, 0);"><i class="fa-solid fa-user-plus"></i></a></label>
+                        <label>Busca Por Numero De Celular</label>
                         <input type="search" class="form-control" name="mysearch" id="mysearch" placeholder="#">
                         <ul id="showlist" tabindex="1" class="list-group"></ul>
                     </div>
                     <div class="input-group">
                         <div class="centrar">
-                            <label><h4>-Seleccionaste Al Cliente-</h4></label>
+                            <label><h4>Datos del cliente con el que se hizo la reservacion, Si no quiere usar estos datos edite los campos siguientes con la nueva informacion</h4></label>
                         </div>
                     </div>
 
