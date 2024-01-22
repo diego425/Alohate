@@ -29,11 +29,8 @@
                 <div class="progress-step progress-step-active" data-title="Contratos"></div>
             </div>
 
-<form action="" method="POST" enctype="multipart/form-data">
+<form action="{{route('storerentarhab',[$renta[0]->Id_reservacion, $renta[0]->Id_habitacion, $renta[0]->Id_lugares_reservados ])}}" method="POST" enctype="multipart/form-data">
 @csrf 
-
-
-
 
 <!-- Step 1 -->
             <div class="form-step form-step-active">
@@ -139,11 +136,11 @@
                     </div>
                     <div class="input-group">
                         <label for="fecha_inicio">Fecha De Inicio:</label>
-                        <input type="date" class="form-control"  name="fecha_inicio" id="fecha_inicio">
+                        <input type="date" class="form-control"  name="fecha_inicio" id="fecha_inicio" value="{{$renta[0]->Start_date}}" disabled>
                     </div>
                     <div class="input-group">
                         <label for="fecha_termino">Fecha De Termino:</label>
-                        <input type="date" class="form-control"  name="fecha_termino" id="fecha_termino">
+                        <input type="date" class="form-control"  name="fecha_termino" id="fecha_termino" value="{{$renta[0]->End_date}}" disabled>
                     </div>
                     <div class="input-group">
                         <label for="tipo_contrato">Tipo De Contrato</label>
@@ -204,36 +201,36 @@
                         </div>
                     </div>
                     <div class="input-group">
-                        <label for="nombre_f">Nombre</label>
+                        <label for="nombre_f">Nombre:</label>
                         <input type="text" id="nombre_f" name="nombre_f" placeholder="Nombre">
                     </div>
                     <div class="input-group">
-                        <label for="apellido_pat_f">Apellido Paterno</label>
+                        <label for="apellido_pat_f">Apellido Paterno:</label>
                         <input type="text" id="apellido_pat_f" name="apellido_pat_f" placeholder="Apellido Paterno">
                     </div>
                     <div class="input-group">
-                        <label for="apellido_mat_f">Apellido Materno</label>
+                        <label for="apellido_mat_f">Apellido Materno:</label>
                         <input type="text" id="apellido_mat_f" name="apellido_mat_f" placeholder="Apellido Materno">
                     </div>
                     <div class="input-group">
-                        <label for="no_ext_casa">Numero Ext. De La Casa Del Fiador</label>
-                        <input type="number" id="no_ext_casa" name="no_ext_casa" placeholder="#">
+                        <label for="no_ext_casa">Numero Ext. De La Casa Del Fiador:</label>
+                        <input type="text" id="no_ext_casa" name="no_ext_casa" placeholder="#">
                     </div>
                     <div class="input-group">
-                        <label for="calle_f">Calle</label>
+                        <label for="calle_f">Calle:</label>
                         <input type="text" id="calle_f" name="calle_f" placeholder="Calle">
                     </div>
                     <div class="input-group">
-                        <label for="colonia_f">Colonia</label>
+                        <label for="colonia_f">Colonia:</label>
                         <input type="text" id="colonia_f" name="colonia_f" placeholder="Colonia">
                     </div>
                     <div class="input-group">
-                        <label for="estado_f">Estado</label>
+                        <label for="estado_f">Estado:</label>
                         <input type="text" id="estado_f" name="estado_f" placeholder="Estado">
                     </div>
                     <div class="input-group">
-                        <label for="num_telefono_f">Colonia</label>
-                        <input type="text" id="num_telefono_f" name="num_telefono_f" placeholder="Colonia">
+                        <label for="num_telefono_f">Numero De Celular:</label>
+                        <input type="text" id="num_telefono_f" name="num_telefono_f" placeholder="#">
                     </div>
 
                     <div class="input-group">

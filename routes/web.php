@@ -98,6 +98,47 @@ Route::get('view_locales/{idlocacion}', 'LocacionController@ViewLocales')->name(
 Route::post('store_locs/{idlocacion}', 'LocacionController@LocsStore')->name('storeLocs');
 
 
+//rutas de reservaciones para una casa
+//ruta boton que muestra el form para agregar una reservacion de una casa con un cliente existente
+Route::get('view_reservacasaoc/locacion/{Id_locacion}/myurl', 'ReservacionRentasController@ViewReservaCasaOC')->name('viewreservacasaoc');
+//ruta para guardar el registro de una nueva reservacion para una casa con un cliente existente
+Route::post('store_reservacasaoc/locacion/{Id_locacion}', 'ReservacionRentasController@StoreReservaCasaOC')->name('storereservacasaoc');
+//ruta para la busqueda automatica de los clientes para una reserva de una casa
+Route::post('view_reservacasaoc/locacion/{Id_locacion}/myurl', 'ReservacionRentasController@ShowClientesCasa');
+//ruta para el form de hacer una reservacion con un nuevo cliente en una casa
+Route::get('view_reserva_nc_casa/locacion/{Id_locacion}', 'ReservacionRentasController@ViewReservaCasaNC')->name('viewreservacasanc');
+//ruta para guardar el registro de una nueva reservacion para una casa con un cliente nuevo
+Route::post('store_reservacasanc/locacion/{Id_locacion}', 'ReservacionRentasController@StoreReservaCasaNC')->name('storereservacasanc');
+
+//ruta boton que muestra la vista para los detalles de una reservacion de un depa
+Route::get('view_detalles_reservacasa/reserva/{Id_reservacion}/casa/{Id_locacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@DetalleReservaCasa')->name('detallesreservacasa');
+
+//ruta boton que muestra la vista para editar una reservacion de una casa
+Route::get('view_editar_reservacasa/reserva/{Id_reservacion}/loc/{Id_locacion}/lugar/{Id_lugares_reservados}/myurl', 'ReservacionRentasController@EditarReservaCasa')->name('editarreservacasa');
+//ruta que edita el registro de una reservacion de una casa
+Route::put('update_reservacasa/{reservacion}/{lugar_reservado}/{Id_locacion}', 'ReservacionRentasController@UpdateReservaCasa')->name('update_reservacasa');
+//ruta para la busqueda automatica de los clientes para editar una reserva de una casa
+Route::post('view_editar_reservacasa/reserva/{Id_reservacion}/loc/{Id_locacion}/lugar/{Id_lugares_reservados}/myurl', 'ReservacionRentasController@ShowClientesEditCasa');
+
+//ruta boton que muestra la vista para editar una reservacion de una casa con nuevo cliente
+Route::get('view_editar_reservacasanc/reserva/{Id_reservacion}/loc/{Id_locacion}/lugar/{Id_lugares_reservados}/myurl', 'ReservacionRentasController@EditarReservaCasaNC')->name('editarreservacasanc');
+//ruta que edita el registro de una reservacion de una casa con nuevo cliente
+Route::put('update_reservacasanc/{reservacion}/{lugar_reservado}/{Id_locacion}', 'ReservacionRentasController@UpdateReservaCasaNC')->name('update_reservacasanc');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //rutas para habitaciones
 //ruta boton que muestra las habitaciones de la casa
 Route::get('view_habitaciones/{idlocacion}', 'HabitacionController@ViewHabitaciones')->name('habitaciones');
@@ -119,58 +160,6 @@ Route::post('borrarimghab/{Id_foto_lugar}','HabitacionController@DestroyImgHab')
 Route::get('view_desactivar_hab/{Id_habitacion}', 'HabitacionController@ViewDesactHab')->name('view_desactivar_hab');
 //ruta que desactiva la hab
 Route::put('desactivar_hab/{habitaciones}', 'HabitacionController@DesactivarHab')->name('desactivar_hab');
-
-
-
-//rutas para departamentos
-//ruta boton que muestra los depas de la casa 
-Route::get('view_departamentos/{idlocacion}', 'DepartamentoController@ViewDepartamentos')->name('departamentos');
-//mensajes de error
-Route::get('error_agregar_depa', 'DepartamentoController@DepasLlenos')->name('depasllenos');
-//ruta boton que muestra el formulario de los depas
-Route::get('View_depa/{idlocacion}', 'DepartamentoController@ViewDepa')->name('viewdepa');
-//ruta que crea un nuevo registro de depa
-Route::post('store_depa/{idlocacion}', 'DepartamentoController@DepaStore')->name('depastore');
-//ruta de la vista para desactivar la depa
-Route::get('view_desactivar_depa/{Id_departamento}', 'DepartamentoController@ViewDesactDepa')->name('view_desactivar_depa');
-//ruta que desactiva la depa
-Route::put('desactivar_depa/{departamento}', 'DepartamentoController@DesactivarDepa')->name('desactivar_depa');
-//ruta boton que muestra los detalles del depa libre
-Route::get('detalles_depa_libre/locacion/{idlocacion}/depa/{Id_departamento}', 'DepartamentoController@DetallesDepaLibre')->name('detallesdepalibre');
-//ruta boton que muestra la vista para editar un registro de hab
-Route::get('view_editar_depa/{Id_departamento}', 'DepartamentoController@ViewEditarDepa')->name('view_editar_depa');
-//ruta que edita el registro de la hab
-Route::put('update_depa/{departamentos}/servicio/{servicio_bano}/cama/{servicio_cama}/planta/{plantas_pisos}', 'DepartamentoController@UpdateDepa')->name('update_depa');
-
-//ruta para borrar/destruir las fotos en el campo editar locacion
-Route::post('borrar_img_depa/{Id_foto_lugar}','DepartamentoController@DestroyImgDepa')->name('destroyimgdepa');
-
-
-
-//rutas para locales 
-//ruta boton que muestra los locales de la casa
-Route::get('view_locales_loc/{idlocacion}', 'LocalController@ViewLocalesLoc')->name('locales');
-//mensajes de locales llenas para el bton de agregar local
-Route::get('error_agregar_loc', 'LocalController@LocsLlenos')->name('loclleno');
-//ruta boton que muestra el formulario para agregar un local
-Route::get('view_local/{idlocacion}', 'LocalController@ViewLocal')->name('viewlocales');
-//ruta que guarda los registros del local
-Route::post('store_loc/{idlocacion}', 'LocalController@LocStore')->name('storeLoc');
-//ruta de la vista para desactivar el local
-Route::get('view_desactivar_local/{Id_local}', 'LocalController@ViewDesactLocal')->name('view_desactivar_local');
-//ruta que desactiva el local
-Route::put('desactivar_local/{local}', 'LocalController@DesactivarLocal')->name('desactivar_local');
-//ruta boton que muestra los detalles del local libre
-Route::get('detalles_local_libre/locacion/{idlocacion}/local/{Id_local}', 'LocalController@DetallesLocalLibre')->name('detalleslocallibre');
-//ruta boton que muestra la vista para editar un registro de local
-Route::get('view_editar_local/{idlocacion}', 'LocalController@ViewEditarLocal')->name('view_editar_local');
-//ruta que edita el registro del  local
-Route::put('update_local/{locales}/servicio/{servicio_bano}/planta/{plantas_pisos}', 'LocalController@UpdateLocal')->name('update_local');
-//ruta para borrar/destruir las fotos en el campo editar local
-Route::post('borrarimglocal/{Id_foto_lugar}','LocalController@DestroyImgLocal')->name('destroyimglocal');
-
-
-
 
 //rutas de reservaciones para una hab
 //ruta boton que muestra las habitaciones de la casa
@@ -200,11 +189,9 @@ Route::get('view_editar_reservahabnc/reserva/{Id_reservacion}/loc/{Id_locacion}/
 //ruta que edita el registro de una reservacion de una hab co un nuevo cliente
 Route::put('update_reservahabnc/{reservacion}/{lugar_reservado}/{Id_locacion}/{Id_habitacion}', 'ReservacionRentasController@UpdateReservaHabNC')->name('update_reservahabnc');
 
-
 //eliminar
 //ruta para la busqueda automatica de los clientes para una reserva de una habitacion
 Route::get('view_delete_reserva_hab', 'ReservacionRentasController@ViewDeleteReservaHab')->name('viewdeletereservahab');;
-
 
 //rutas de renta para una hab
 //ruta para la busqueda automatica de los clientes
@@ -213,7 +200,6 @@ Route::post('view_rentar_hab_c1/reserva/{Id_reservacion}/hab/{Id_habitacion}/lug
 Route::get('view_rentar_hab_c1/reserva/{Id_reservacion}/hab/{Id_habitacion}/lugar/{Id_lugares_reservados}/myurl', 'ReservacionRentasController@ViewCliente1Hab')->name('viewrentarc1hab');
 //ruta que guarda el registro del primero cliente
 Route::put('store_rentar_hab_c1/cliente/{cliente}/reserva/{Id_reservacion}/hab/{Id_habitacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@StoreRentarHabC')->name('storerentarhabc');
-
 
 //ruta para la busqueda automatica de los clientes 
 Route::post('view_rentar_hab_c2/reserva/{Id_reservacion}/hab/{Id_habitacion}/lugar/{Id_lugares_reservados}/myurl', 'ReservacionRentasController@ShowClientesEditHab');
@@ -227,6 +213,39 @@ Route::get('view_rentar_hab/reserva/{Id_reservacion}/hab/{Id_habitacion}/lugar/{
 //ruta que guarda el registro del form de los datos del lugar
 Route::post('store_rentar_hab/reserva/{Id_reservacion}/hab/{Id_habitacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@StoreRentarHab')->name('storerentarhab');
 
+
+
+
+
+
+
+
+
+
+
+
+//rutas para departamentos
+//ruta boton que muestra los depas de la casa 
+Route::get('view_departamentos/{idlocacion}', 'DepartamentoController@ViewDepartamentos')->name('departamentos');
+//mensajes de error
+Route::get('error_agregar_depa', 'DepartamentoController@DepasLlenos')->name('depasllenos');
+//ruta boton que muestra el formulario de los depas
+Route::get('View_depa/{idlocacion}', 'DepartamentoController@ViewDepa')->name('viewdepa');
+//ruta que crea un nuevo registro de depa
+Route::post('store_depa/{idlocacion}', 'DepartamentoController@DepaStore')->name('depastore');
+//ruta de la vista para desactivar la depa
+Route::get('view_desactivar_depa/{Id_departamento}', 'DepartamentoController@ViewDesactDepa')->name('view_desactivar_depa');
+//ruta que desactiva la depa
+Route::put('desactivar_depa/{departamento}', 'DepartamentoController@DesactivarDepa')->name('desactivar_depa');
+//ruta boton que muestra los detalles del depa libre
+Route::get('detalles_depa_libre/locacion/{idlocacion}/depa/{Id_departamento}', 'DepartamentoController@DetallesDepaLibre')->name('detallesdepalibre');
+//ruta boton que muestra la vista para editar un registro de hab
+Route::get('view_editar_depa/{Id_departamento}', 'DepartamentoController@ViewEditarDepa')->name('view_editar_depa');
+//ruta que edita el registro de la hab
+Route::put('update_depa/{departamentos}/servicio/{servicio_bano}/cama/{servicio_cama}/planta/{plantas_pisos}', 'DepartamentoController@UpdateDepa')->name('update_depa');
+
+//ruta para borrar/destruir las fotos en el campo editar locacion
+Route::post('borrar_img_depa/{Id_foto_lugar}','DepartamentoController@DestroyImgDepa')->name('destroyimgdepa');
 
 
 //rutas de reservaciones para un depa
@@ -260,32 +279,46 @@ Route::put('update_reservadepnc/{reservacion}/{lugar_reservado}/{Id_locacion}/{I
 
 
 
-//rutas de reservaciones para una casa
-//ruta boton que muestra el form para agregar una reservacion de una casa con un cliente existente
-Route::get('view_reservacasaoc/locacion/{Id_locacion}/myurl', 'ReservacionRentasController@ViewReservaCasaOC')->name('viewreservacasaoc');
-//ruta para guardar el registro de una nueva reservacion para una casa con un cliente existente
-Route::post('store_reservacasaoc/locacion/{Id_locacion}', 'ReservacionRentasController@StoreReservaCasaOC')->name('storereservacasaoc');
-//ruta para la busqueda automatica de los clientes para una reserva de una casa
-Route::post('view_reservacasaoc/locacion/{Id_locacion}/myurl', 'ReservacionRentasController@ShowClientesCasa');
-//ruta para el form de hacer una reservacion con un nuevo cliente en una casa
-Route::get('view_reserva_nc_casa/locacion/{Id_locacion}', 'ReservacionRentasController@ViewReservaCasaNC')->name('viewreservacasanc');
-//ruta para guardar el registro de una nueva reservacion para una casa con un cliente nuevo
-Route::post('store_reservacasanc/locacion/{Id_locacion}', 'ReservacionRentasController@StoreReservaCasaNC')->name('storereservacasanc');
 
-//ruta boton que muestra la vista para los detalles de una reservacion de un depa
-Route::get('view_detalles_reservacasa/reserva/{Id_reservacion}/casa/{Id_locacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@DetalleReservaCasa')->name('detallesreservacasa');
 
-//ruta boton que muestra la vista para editar una reservacion de una casa
-Route::get('view_editar_reservacasa/reserva/{Id_reservacion}/loc/{Id_locacion}/lugar/{Id_lugares_reservados}/myurl', 'ReservacionRentasController@EditarReservaCasa')->name('editarreservacasa');
-//ruta que edita el registro de una reservacion de una casa
-Route::put('update_reservacasa/{reservacion}/{lugar_reservado}/{Id_locacion}', 'ReservacionRentasController@UpdateReservaCasa')->name('update_reservacasa');
-//ruta para la busqueda automatica de los clientes para editar una reserva de una casa
-Route::post('view_editar_reservacasa/reserva/{Id_reservacion}/loc/{Id_locacion}/lugar/{Id_lugares_reservados}/myurl', 'ReservacionRentasController@ShowClientesEditCasa');
 
-//ruta boton que muestra la vista para editar una reservacion de una casa con nuevo cliente
-Route::get('view_editar_reservacasanc/reserva/{Id_reservacion}/loc/{Id_locacion}/lugar/{Id_lugares_reservados}/myurl', 'ReservacionRentasController@EditarReservaCasaNC')->name('editarreservacasanc');
-//ruta que edita el registro de una reservacion de una casa con nuevo cliente
-Route::put('update_reservacasanc/{reservacion}/{lugar_reservado}/{Id_locacion}', 'ReservacionRentasController@UpdateReservaCasaNC')->name('update_reservacasanc');
+
+
+
+
+
+
+
+
+//rutas para locales 
+//ruta boton que muestra los locales de la casa
+Route::get('view_locales_loc/{idlocacion}', 'LocalController@ViewLocalesLoc')->name('locales');
+//mensajes de locales llenas para el bton de agregar local
+Route::get('error_agregar_loc', 'LocalController@LocsLlenos')->name('loclleno');
+//ruta boton que muestra el formulario para agregar un local
+Route::get('view_local/{idlocacion}', 'LocalController@ViewLocal')->name('viewlocales');
+//ruta que guarda los registros del local
+Route::post('store_loc/{idlocacion}', 'LocalController@LocStore')->name('storeLoc');
+//ruta de la vista para desactivar el local
+Route::get('view_desactivar_local/{Id_local}', 'LocalController@ViewDesactLocal')->name('view_desactivar_local');
+//ruta que desactiva el local
+Route::put('desactivar_local/{local}', 'LocalController@DesactivarLocal')->name('desactivar_local');
+//ruta boton que muestra los detalles del local libre
+Route::get('detalles_local_libre/locacion/{idlocacion}/local/{Id_local}', 'LocalController@DetallesLocalLibre')->name('detalleslocallibre');
+//ruta boton que muestra la vista para editar un registro de local
+Route::get('view_editar_local/{idlocacion}', 'LocalController@ViewEditarLocal')->name('view_editar_local');
+//ruta que edita el registro del  local
+Route::put('update_local/{locales}/servicio/{servicio_bano}/planta/{plantas_pisos}', 'LocalController@UpdateLocal')->name('update_local');
+//ruta para borrar/destruir las fotos en el campo editar local
+Route::post('borrarimglocal/{Id_foto_lugar}','LocalController@DestroyImgLocal')->name('destroyimglocal');
+
+
+
+
+
+
+
+
 
 
 Route::controller(UsuariosController::class)->group(function (){
