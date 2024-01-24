@@ -3,6 +3,12 @@
 @section('MenuPrincipal')
     <div class="container">        
         <div class="card">
+            <div class="d-grid gap-2 d-md-block">
+                <a class="btn btn-danger" style="position: fixed;" type="button" href="{{route('user.index')}}">
+                    <i class='bx bx-arrow-back'></i>
+                </a>
+            </div>
+            <br>
             <div class="card-body">
                 <form class="row g-3 needs-validation" action="{{route('user.update',$users[0]->Id_colaborador)}}" method="POST" novalidate>
                     @csrf
@@ -118,9 +124,6 @@
                     <div class="row">
                         <div class="col-sm-2 mt-3">
                             <button class="btn btn-primary" type="submit">Guardar</button>
-                        </div>
-                        <div class="col-sm-2 mt-3">
-                            <a href="{{route('user.index')}}" class="btn btn-danger">Cancelar</a>
                         </div>
                     </div>
                 </div>

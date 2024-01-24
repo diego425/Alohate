@@ -87,7 +87,15 @@ class UsuariosController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $user = DB::select('SELECT * FROM colaboradores
+        LEFT JOIN roles AS rol ON rol.id_rol = colaboradores.id_rol
+        WHERE Id_colaborador  = ?', [$id]);
+        if (!empty($user[0])) {
+            $user = $user[0];
+            return view('Usuarios.show',['user'=>$user]);
+        } else {
+            return view('Errores.error500');
+        }
     }
 
     /**
@@ -159,5 +167,225 @@ class UsuariosController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function gestionLugares(Request $request,string $id) {
+        $user = DB::table('colaboradores')
+        ->where('Id_colaborador', $id)
+        ->get();
+        $user = json_decode(json_encode($user));
+        $user = $user[0];
+        $nombreLocacion = $request->locacion;
+        $tipoLugar = $request->tipoLugar;
+
+        $locales = DB::table('local')
+        ->selectRaw('("mostrar") AS mostrar,Id_local AS id,Id_locacion,Id_colaborador,(SELECT loc.Nombre_locacion FROM locacion AS loc WHERE loc.Id_locacion = local.Id_locacion LIMIT 1) AS nombreLocacion,
+        Id_colaborador, local.Nombre_local AS Nombre, ("Local") AS tipoLocacion, eo.Nombre_estado')
+        ->leftJoin('estado_ocupacion as eo','eo.Id_estado_ocupacion','=','local.Id_estado_ocupacion');
+        
+        $departamentos = DB::table('departamento')
+        ->selectRaw('("mostrar") AS mostrar,Id_departamento AS id,Id_locacion,Id_colaborador,(SELECT loc.Nombre_locacion FROM locacion AS loc WHERE loc.Id_locacion = departamento.Id_locacion LIMIT 1) AS nombreLocacion,
+        Id_colaborador, departamento.Nombre_depa AS Nombre, ("Departamento") AS tipoLocacion, eo.Nombre_estado')
+        ->leftJoin('estado_ocupacion as eo','eo.Id_estado_ocupacion','=','departamento.Id_estado_ocupacion');
+
+        $habitaciones = DB::table('habitacion')
+        ->selectRaw('("mostrar") AS mostrar,Id_habitacion AS id,Id_locacion,Id_colaborador,(SELECT loc.Nombre_locacion FROM locacion AS loc WHERE loc.Id_locacion = habitacion.Id_locacion LIMIT 1) AS nombreLocacion,
+        Id_colaborador, habitacion.Nombre_hab AS Nombre, ("Habitación") AS tipoLocacion, eo.Nombre_estado')
+        ->leftJoin('estado_ocupacion as eo','eo.Id_estado_ocupacion','=','habitacion.Id_estado_ocupacion');        
+
+        $locaciones = DB::table('locacion')
+        ->selectRaw('("mostrar") AS mostrar,Id_locacion AS id,Id_locacion,Id_colaborador,("General") AS nombreLocacion,
+        Id_colaborador, Nombre_locacion AS Nombre, ("Entera") AS tipoLocacion, eo.Nombre_estado')
+        ->leftJoin('estado_ocupacion as eo','eo.Id_estado_ocupacion','=','locacion.Id_estado_ocupacion')
+        ->union($locales)
+        ->union($habitaciones)
+        ->union($departamentos)
+        ->get();
+
+        if (!empty($nombreLocacion)) {
+            foreach ($locaciones as $key => $value) {
+                if ($value->Id_locacion == $nombreLocacion) {
+                }else{
+                    $locaciones[$key]->mostrar = "ocultar";
+                }
+            }
+        }
+        
+        if (!empty($tipoLugar)) {
+            foreach ($locaciones as $key => $value) {
+                if ($value->tipoLocacion == $tipoLugar) {
+                }else{
+                    $locaciones[$key]->mostrar = "ocultar";
+                }
+            }
+        }
+
+        $tipos = array(
+            array(
+                "tipoLocacion" => "Entera",
+                "total" => 0
+            ),array(
+                "tipoLocacion" => "Local",
+                "total" => 0
+            ),array(
+                "tipoLocacion" => "Departamento",
+                "total" => 0
+            ),array(
+                "tipoLocacion" => "Habitación",
+                "total" => 0
+            )
+        );
+        $tipos = json_decode(json_encode($tipos));
+
+        foreach ($locaciones as $key => $item) {
+            foreach ($tipos as $key2 => $tipo) {
+                if ($item->tipoLocacion == $tipo->tipoLocacion) {
+                    $tipos[$key2]->total++;
+                }
+            }
+        }
+
+        return view('Usuarios.gestionLugares',["locaciones" => $locaciones, "tipos" => $tipos, "user" => $user]);
+    }
+
+    public function asignarLugar(Request $request) {
+        if (!empty($request->id) && !empty($request->tipo) && !empty($request->Id_colaborador)) {
+            $regreso = array();
+
+            if ($request->check == "true") {
+                if ($request->tipo === "Entera") {
+                    $affected = DB::table('locacion')
+                    ->where('Id_locacion', $request->id)
+                    ->update(['Id_colaborador' => (int)$request->Id_colaborador]);
+                    if ($affected) {
+                        array_push($regreso, array(
+                            "mensaje" => "Se relaciono en todos los sub-lugares"
+                        ));
+                        
+                        $affected1 = DB::table('local')
+                        ->where('Id_locacion', $request->id)
+                        ->update(['Id_colaborador' => (int)$request->Id_colaborador]);
+                        if ($affected1) {
+                            array_push($regreso, array(
+                                "mensaje" => "Se relaciono el local"
+                            ));
+                        }
+                        
+                        $affected2 = DB::table('departamento')
+                        ->where('Id_locacion', $request->id)
+                        ->update(['Id_colaborador' => (int)$request->Id_colaborador]);
+                        if ($affected2) {
+                            array_push($regreso, array(
+                                "mensaje" => "Se relaciono el departamento"
+                            ));
+                        }
+                        
+                        $affected3 = DB::table('habitacion')
+                        ->where('Id_locacion', $request->id)
+                        ->update(['Id_colaborador' => (int)$request->Id_colaborador]);
+                        if ($affected3) {
+                            array_push($regreso, array(
+                                "mensaje" => "Se relaciono el habitacion"
+                            ));
+                        }                        
+                    }
+                }elseif ($request->tipo === "Local") {
+                    $affected = DB::table('local')
+                    ->where('id_local', $request->id)
+                    ->update(['Id_colaborador' => (int)$request->Id_colaborador]);
+                    if ($affected) {
+                        array_push($regreso, array(
+                            "mensaje" => "Se relaciono el local"
+                        ));
+                    }
+                }elseif ($request->tipo === "Departamento") {
+                    $affected2 = DB::table('departamento')
+                    ->where('Id_departamento', $request->id)
+                    ->update(['Id_colaborador' => (int)$request->Id_colaborador]);
+                    if ($affected2) {
+                        array_push($regreso, array(
+                            "mensaje" => "Se relaciono el departamento"
+                        ));
+                    }
+                }elseif ($request->tipo === "Habitación") {
+                    $affected3 = DB::table('habitacion')
+                    ->where('Id_habitacion', $request->id)
+                    ->update(['Id_colaborador' => (int)$request->Id_colaborador]);
+                    if ($affected3) {
+                        array_push($regreso, array(
+                            "mensaje" => "Se relaciono el habitacion"
+                        ));
+                    }
+                }
+            } else {
+                if ($request->tipo === "Entera") {
+                    $affected = DB::table('locacion')
+                    ->where('Id_locacion', $request->id)
+                    ->update(['Id_colaborador' => null]);
+                    if ($affected) {
+                        array_push($regreso, array(
+                            "mensaje" => "Se quito en todos los sub-lugares"
+                        ));
+
+                        $affected1 = DB::table('local')
+                        ->where('Id_locacion', $request->id)
+                        ->update(['Id_colaborador' => null]);
+                        if ($affected1) {
+                            array_push($regreso, array(
+                                "mensaje" => "Se relaciono el local"
+                            ));
+                        }
+                        
+                        $affected2 = DB::table('departamento')
+                        ->where('Id_locacion', $request->id)
+                        ->update(['Id_colaborador' => null]);
+                        if ($affected2) {
+                            array_push($regreso, array(
+                                "mensaje" => "Se relaciono el departamento"
+                            ));
+                        }
+                        
+                        $affected3 = DB::table('habitacion')
+                        ->where('Id_locacion', $request->id)
+                        ->update(['Id_colaborador' => null]);
+                        if ($affected3) {
+                            array_push($regreso, array(
+                                "mensaje" => "Se relaciono el habitacion"
+                            ));
+                        }
+                    }
+                }elseif ($request->tipo === "Local") {
+                    $affected = DB::table('local')
+                    ->where('id_local', $request->id)
+                    ->update(['Id_colaborador' => null]);
+                    if ($affected) {
+                        array_push($regreso, array(
+                            "mensaje" => "Se quito el local"
+                        ));
+                    }
+                }elseif ($request->tipo === "Departamento") {
+                    $affected2 = DB::table('departamento')
+                    ->where('Id_departamento', $request->id)
+                    ->update(['Id_colaborador' => null]);
+                    if ($affected2) {
+                        array_push($regreso, array(
+                            "mensaje" => "Se relaciono el departamento"
+                        ));
+                    }
+                }elseif ($request->tipo === "Habitación") {
+                    $affected3 = DB::table('habitacion')
+                    ->where('Id_habitacion', $request->id)
+                    ->update(['Id_colaborador' => null]);
+                    if ($affected3) {
+                        array_push($regreso, array(
+                            "mensaje" => "Se relaciono el habitacion"
+                        ));
+                    }
+                }
+            }
+            
+            return $regreso;
+        }
+        // print_r($request->all());
     }
 }

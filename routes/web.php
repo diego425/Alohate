@@ -370,7 +370,9 @@ Route::controller(UsuariosController::class)->group(function (){
     Route::get('user/{id}', 'show')->name('user.show');
     Route::get('user/edit/{id}', 'edit')->name('user.edit');
     Route::post('user/update/{id}', 'update')->name('user.update');
-    Route::post('user/destroy/{id}', 'destroy')->name('user.destroy');    
+    Route::post('user/destroy/{id}', 'destroy')->name('user.destroy');
+    Route::get('user/gestionLugares/{id}', 'gestionLugares')->name('user.gestionLugares');
+    Route::post('user/asignarLugar', 'asignarLugar')->name('user.asignarLugar');
 });
 
 

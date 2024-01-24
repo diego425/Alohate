@@ -34,6 +34,10 @@
             table td:last-child {
                 border-bottom: 0;
             }
+
+            .flex {
+                display: table-cell;
+            }
         }
     </style>
     <div class="container">
@@ -62,7 +66,7 @@
                         <th>Nombre</th>
                         <th>Email</th>
                         <th>Rol</th>
-                        <th colspan="1">Accion</th>
+                        <th colspan="3">Accion</th>
                     </tr>
                 </thead>
                 <caption>
@@ -75,14 +79,28 @@
                             <td data-label="Nombre">{{$user->Nombre}}</td>
                             <td data-label="Email">{{$user->email}}</td>
                             <td data-label="Rol">{{$user->nameRol}}</td>
-                            <td>
-                                <form action="{{route('user.edit',$user->Id_colaborador)}}" method="get">                                    
+                            <td class="flex" data-label="Editar">
+                                <form action="{{route('user.edit',$user->Id_colaborador)}}" method="get">
                                     <button class="btn btn-warning" type="submit" title="Editar">
                                         <i class='bx bx-edit-alt'></i>
                                     </button>
                                 </form>
                             </td>
-                        </tr>                        
+                            <td class="flex" data-label="Detalle">
+                                <form action="{{route('user.show',$user->Id_colaborador)}}" method="get">
+                                    <button class="btn btn-outline-light" type="submit" title="Mostrar detalle">
+                                        <i class='bx bxs-show bx-burst' style='color:#1764e6'></i>
+                                    </button>
+                                </form>
+                            </td>
+                            <td class="flex" data-label="Lugares">
+                                <form action="{{route('user.gestionLugares',$user->Id_colaborador)}}" method="get">
+                                    <button class="btn btn-outline-danger" type="submit" title="Mostrar detalle">
+                                        <i class='bx bx-building-house'></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
                     @endforeach
                 </tbody>
                 <tfoot>                    
