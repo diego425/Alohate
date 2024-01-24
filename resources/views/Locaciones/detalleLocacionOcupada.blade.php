@@ -909,7 +909,7 @@
                 <p><h5>Botones De Accion Para La Casa</h5>
                    <div class="gris">
                       <button class="btn btn-primary clickForm" href="{{route('view_editar_loc', $locacion[0]->Id_locacion)}}">Editar Casa</button>
-                      <button class="btn btn-warning">Reporte De MTTO.</button>
+                      <a href="{{route('limpieza.create')}}?tipoLocacion=Entera&id={{$locacion[0]->Id_locacion}}&Id_locacion={{$locacion[0]->Id_locacion}}" class="btn btn-warning">Reporte De MTTO.</a>
                    </div>
                 </p>
              </div>

@@ -446,12 +446,12 @@
                      <button class="btn btn-primary clickForm" href="{{route('view_editar_loc', $locacion[0]->Id_locacion)}}">Editar</button>
                      <button class="btn btn-danger clickForm" href="{{route('view_desactivar_loc', $locacion[0]->Id_locacion)}}" >Desactivar</button>
                      <button class="btn btn-success">Agendar Cita</button>
-                     <button class="btn btn-warning">Reporte De MTTO.</button>
+                     <a href="{{route('limpieza.create')}}?tipoLocacion=Entera&id={{$locacion[0]->Id_locacion}}&Id_locacion={{$locacion[0]->Id_locacion}}" class="btn btn-warning">Reporte De MTTO.</a>
                     
                      @else($locacion[0]->Tipo_renta == "Secciones")
                      <button class="btn btn-primary clickForm" href="{{route('view_editar_loc', $locacion[0]->Id_locacion)}}">Editar</button>
                      <button class="btn btn-danger clickForm" href="{{route('view_desactivar_loc', $locacion[0]->Id_locacion)}}" >Desactivar</button>
-                     <button class="btn btn-warning">Reporte De MTTO.</button>
+                     <a href="{{route('limpieza.create')}}?tipoLocacion=Entera&id={{$locacion[0]->Id_locacion}}&Id_locacion={{$locacion[0]->Id_locacion}}" class="btn btn-warning">Reporte De MTTO.</a>
                      @endif
 
 

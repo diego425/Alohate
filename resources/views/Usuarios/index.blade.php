@@ -38,6 +38,11 @@
             .flex {
                 display: table-cell;
             }
+
+            #tablaLugares_filter label{
+                text-justify: auto;
+                content: "Palabra clave";
+            }
         }
     </style>
     <div class="container">
@@ -76,12 +81,12 @@
                     @foreach ($users as $user)
                         <tr class="">
                             <td data-label="User" scope="row">{{$user->user}}</td>
-                            <td data-label="Nombre">{{$user->Nombre}}</td>
+                            <td data-label="Nombre">{{$user->Nombre." ".$user->Apellido_pat}}</td>
                             <td data-label="Email">{{$user->email}}</td>
                             <td data-label="Rol">{{$user->nameRol}}</td>
                             <td class="flex" data-label="Editar">
                                 <form action="{{route('user.edit',$user->Id_colaborador)}}" method="get">
-                                    <button class="btn btn-warning" type="submit" title="Editar">
+                                    <button class="btn btn-outline-warning" type="submit" title="Editar">
                                         <i class='bx bx-edit-alt'></i>
                                     </button>
                                 </form>
@@ -95,7 +100,7 @@
                             </td>
                             <td class="flex" data-label="Lugares">
                                 <form action="{{route('user.gestionLugares',$user->Id_colaborador)}}" method="get">
-                                    <button class="btn btn-outline-danger" type="submit" title="Mostrar detalle">
+                                    <button class="btn btn-outline-danger" type="submit" title="Mostrar lugares asignados">
                                         <i class='bx bx-building-house'></i>
                                     </button>
                                 </form>
@@ -106,7 +111,7 @@
                 <tfoot>                    
                 </tfoot>
             </table>
-            <div class="d-flex">
+            <div class="d-flex flex-row-reverse">
                 {{ $users->appends(Request::all())->render() }}
             </div>
         </div>        

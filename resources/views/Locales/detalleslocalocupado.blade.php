@@ -910,19 +910,19 @@
                    <div class="gris">
                     @if($locales[0]->Nombre_estado == "Reservada")
                     <button class="btn btn-primary clickForm" href="{{route('view_editar_hab', $habitaciones[0]->Id_habitacion)}}">Editar</button>
-                    <button class="btn btn-warning">Reporte De MTTO.</button>
+                    <a href="{{route('limpieza.create')}}?tipoLocacion=Local&id={{$locales[0]->Id_local}}&Id_locacion={{$locacion[0]->Id_locacion}}" class="btn btn-warning">Reporte De MTTO.</a>
                     <button class="btn btn-secondary">Rentar</button>
                     @endif
 
                     @if($locales[0]->Nombre_estado == "Cotizada")
                     <button class="btn btn-primary clickForm" href="{{route('view_editar_hab', $habitaciones[0]->Id_habitacion)}}">Editar</button>
-                    <button class="btn btn-warning">Reporte De MTTO.</button>
+                    <a href="{{route('limpieza.create')}}?tipoLocacion=Local&id={{$locales[0]->Id_local}}&Id_locacion={{$locacion[0]->Id_locacion}}" class="btn btn-warning">Reporte De MTTO.</a>
                     <button class="btn btn-secondary">Rentar</button>
                     @endif
 
                     @if($locales[0]->Nombre_estado == "Rentada")
                     <button class="btn btn-primary clickForm" href="{{route('view_editar_hab', $habitaciones[0]->Id_habitacion)}}">Editar</button>
-                    <button class="btn btn-warning">Reporte De MTTO.</button>
+                    <a href="{{route('limpieza.create')}}?tipoLocacion=Local&id={{$locales[0]->Id_local}}&Id_locacion={{$locacion[0]->Id_locacion}}" class="btn btn-warning">Reporte De MTTO.</a>
                     @endif
                    </div>
                 </p>
