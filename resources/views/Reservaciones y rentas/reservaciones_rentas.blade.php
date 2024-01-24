@@ -164,14 +164,14 @@
                                     @if($reservarenta->Id_locacion == "")
                                     @else
                                     <a class="btn btn-info" href="{{route('detallesreservacasa', [$reservarenta->Id_reservacion, $reservarenta->Id_locacion, $reservarenta->Id_lugares_reservados ])}}"><i class="ri-information-line"></i></a>
-                                    <button class="btn btn-success clickForm" href="">Rentar</button>
+                                    <button class="btn btn-success clickForm" href="{{route('viewrentarc1casa', [$reservarenta->Id_reservacion, $reservarenta->Id_locacion, $reservarenta->Id_lugares_reservados ])}}">Rentar</button>
                                     <button class="btn btn-danger clickForm" href="" >Terminar</button>
                                     @endif
 
                                     @if($reservarenta->Id_departamento == "")
                                     @else
                                     <a class="btn btn-info" href="{{route('detallesreservadep', [$reservarenta->Id_reservacion, $reservarenta->Id_departamento, $reservarenta->Id_lugares_reservados ])}}"><i class="ri-information-line"></i></a>
-                                    <button class="btn btn-success clickForm" href="">Rentar</button>
+                                    <button class="btn btn-success clickForm" href="{{route('viewrentarc1dep', [$reservarenta->Id_reservacion, $reservarenta->Id_departamento, $reservarenta->Id_lugares_reservados ])}}">Rentar</button>
                                     <button class="btn btn-danger clickForm" href="" >Terminar</button>
                                     @endif
 

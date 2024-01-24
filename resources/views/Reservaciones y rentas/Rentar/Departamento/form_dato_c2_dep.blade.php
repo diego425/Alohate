@@ -18,7 +18,7 @@
 <!-- titulo central -->        
         <div class="titulo_central">
             <div class="centrar">
-                <label><h2>Renta Del Lugar para la segunda p</h2></label>
+                <label><h2>Renta Del Lugar</h2></label>
             </div>
         </div>
         <br><br>
@@ -26,8 +26,8 @@
             <div class="progressbar">
                 <div class="progress" id="progress"></div>
                 <div class="progress-step progress-step-active" data-title="Cliente"></div>
-                <div class="progress-step progress-step-active" data-title="Documentos"></div>
-                <div class="progress-step progress-step-active" data-title="C.Emergencia"></div>
+                <div class="progress-step" data-title="Documentos"></div>
+                <div class="progress-step" data-title="C.Emergencia"></div>
             </div>
 
 <!-- Step 1 -->
@@ -53,7 +53,7 @@
                         </div>
                     </div>
 
-<form action="{{route('storerentarhabc2',[$renta[0]->Id_reservacion, $renta[0]->Id_habitacion, $renta[0]->Id_lugares_reservados ])}}" method="POST" enctype="multipart/form-data">
+<form action="{{route('storerentardepc2',[$renta[0]->Id_reservacion, $renta[0]->Id_departamento, $renta[0]->Id_lugares_reservados ])}}" method="POST" enctype="multipart/form-data">
 @csrf 
 
 <input type="text" style="display: none;" id="idcliente" name="idcliente" value="">

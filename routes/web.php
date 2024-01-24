@@ -111,7 +111,7 @@ Route::get('view_reserva_nc_casa/locacion/{Id_locacion}', 'ReservacionRentasCont
 //ruta para guardar el registro de una nueva reservacion para una casa con un cliente nuevo
 Route::post('store_reservacasanc/locacion/{Id_locacion}', 'ReservacionRentasController@StoreReservaCasaNC')->name('storereservacasanc');
 
-//ruta boton que muestra la vista para los detalles de una reservacion de un depa
+//ruta boton que muestra la vista para los detalles de una reservacion de una casa
 Route::get('view_detalles_reservacasa/reserva/{Id_reservacion}/casa/{Id_locacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@DetalleReservaCasa')->name('detallesreservacasa');
 
 //ruta boton que muestra la vista para editar una reservacion de una casa
@@ -125,6 +125,26 @@ Route::post('view_editar_reservacasa/reserva/{Id_reservacion}/loc/{Id_locacion}/
 Route::get('view_editar_reservacasanc/reserva/{Id_reservacion}/loc/{Id_locacion}/lugar/{Id_lugares_reservados}/myurl', 'ReservacionRentasController@EditarReservaCasaNC')->name('editarreservacasanc');
 //ruta que edita el registro de una reservacion de una casa con nuevo cliente
 Route::put('update_reservacasanc/{reservacion}/{lugar_reservado}/{Id_locacion}', 'ReservacionRentasController@UpdateReservaCasaNC')->name('update_reservacasanc');
+
+//rutas de renta para una casa
+//ruta para la busqueda automatica de los clientes
+Route::post('view_rentar_casa_c1/reserva/{Id_reservacion}/casa/{Id_locacion}/lugar/{Id_lugares_reservados}/myurl', 'ReservacionRentasController@ShowClientesEditCasa');
+//ruta para el form de el primer cliente para pasar a rentar  
+Route::get('view_rentar_casa_c1/reserva/{Id_reservacion}/casa/{Id_locacion}/lugar/{Id_lugares_reservados}/myurl', 'ReservacionRentasController@ViewCliente1Casa')->name('viewrentarc1casa');
+//ruta que guarda el registro del primer cliente 
+Route::put('store_rentar_casa_c1/cliente/{cliente}/reserva/{Id_reservacion}/casa/{Id_locacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@StoreRentarCasaC')->name('storerentarcasac');
+
+//ruta para la busqueda automatica de los clientes 
+Route::post('view_rentar_casa_c2/reserva/{Id_reservacion}/casa/{Id_locacion}/lugar/{Id_lugares_reservados}/myurl', 'ReservacionRentasController@ShowClientesEditCasa');
+//ruta para el form de el segundo cliente para pasar a rentar 
+Route::get('view_rentar_casa_c2/reserva/{Id_reservacion}/casa/{Id_locacion}/lugar/{Id_lugares_reservados}/myurl', 'ReservacionRentasController@ViewIntroCasaC2')->name('viewintroc2casa');
+//ruta que guarda el registro en el caso de que haya una segunda persona que se hospedara en el lugar
+Route::post('store_rentar_casa_c2/reserva/{Id_reservacion}/casa/{Id_locacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@StoreRentarCasaC2')->name('storerentarcasac2');
+
+//ruta para la vista del form que toma los datos del lugar para pasar a rentar una casa
+Route::get('view_rentar_casa/reserva/{Id_reservacion}/casa/{Id_locacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@ViewRentarCasa')->name('viewrentarcasa');
+//ruta que guarda el registro del form de los datos del lugar que es reglamento, contrato y fiador de una casa
+Route::post('store_rentar_casa/reserva/{Id_reservacion}/casa/{Id_locacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@StoreRentarCasa')->name('storerentarcasa');
 
 
 
@@ -162,10 +182,12 @@ Route::get('view_desactivar_hab/{Id_habitacion}', 'HabitacionController@ViewDesa
 //ruta que desactiva la hab
 Route::put('desactivar_hab/{habitaciones}', 'HabitacionController@DesactivarHab')->name('desactivar_hab');
 
-//rutas de reservaciones para una hab
-//ruta boton que muestra las habitaciones de la casa
+
+
+//ruta que muestra los registros de las reservaciones de todos los lugares
 Route::get('view_reservaciones_rentas', 'ReservacionRentasController@ViewReservacionRentas')->name('reservaciones_renta');
 
+//rutas de reservaciones para una hab
 //ruta boton que muestra el form para agregar una reservacion de una habitacion con un cliente existente
 Route::get('view_reservahaboc/locacion/{Id_locacion}/habitacion/{Id_habitacion}/myurl', 'ReservacionRentasController@ViewReservaHabOC')->name('viewreservahaboc');
 //ruta para guardar el registro de una nueva reservacion para una habitacion con un cliente existente
@@ -187,11 +209,11 @@ Route::post('view_editar_reservahab/reserva/{Id_reservacion}/loc/{Id_locacion}/h
 Route::put('update_reservahab/{reservacion}/{lugar_reservado}/{Id_locacion}/{Id_habitacion}', 'ReservacionRentasController@UpdateReservaHab')->name('update_reservahab');
 //ruta boton que muestra la vista para editar una reservacion de hab con un nuevo cliente
 Route::get('view_editar_reservahabnc/reserva/{Id_reservacion}/loc/{Id_locacion}/hab/{Id_habitacion}/lugar/{Id_lugares_reservados}/myurl', 'ReservacionRentasController@EditarReservaHabNC')->name('editarreservahabnc');
-//ruta que edita el registro de una reservacion de una hab co un nuevo cliente
+//ruta que edita el registro de una reservacion de una hab con un nuevo cliente
 Route::put('update_reservahabnc/{reservacion}/{lugar_reservado}/{Id_locacion}/{Id_habitacion}', 'ReservacionRentasController@UpdateReservaHabNC')->name('update_reservahabnc');
 
 //eliminar
-//ruta para la busqueda automatica de los clientes para una reserva de una habitacion
+//ruta para la busqueda automatica de los clientes para eliminar una reservacion
 Route::get('view_delete_reserva_hab', 'ReservacionRentasController@ViewDeleteReservaHab')->name('viewdeletereservahab');;
 
 //rutas de renta para una hab
@@ -199,7 +221,7 @@ Route::get('view_delete_reserva_hab', 'ReservacionRentasController@ViewDeleteRes
 Route::post('view_rentar_hab_c1/reserva/{Id_reservacion}/hab/{Id_habitacion}/lugar/{Id_lugares_reservados}/myurl', 'ReservacionRentasController@ShowClientesEditHab');
 //ruta para el form de el primer cliente para pasar a rentar 
 Route::get('view_rentar_hab_c1/reserva/{Id_reservacion}/hab/{Id_habitacion}/lugar/{Id_lugares_reservados}/myurl', 'ReservacionRentasController@ViewCliente1Hab')->name('viewrentarc1hab');
-//ruta que guarda el registro del primero cliente
+//ruta que guarda el registro del primer cliente
 Route::put('store_rentar_hab_c1/cliente/{cliente}/reserva/{Id_reservacion}/hab/{Id_habitacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@StoreRentarHabC')->name('storerentarhabc');
 
 //ruta para la busqueda automatica de los clientes 
@@ -211,8 +233,9 @@ Route::post('store_rentar_hab_c2/reserva/{Id_reservacion}/hab/{Id_habitacion}/lu
 
 //ruta para la vista del form que toma los datos del lugar para pasar a rentar
 Route::get('view_rentar_hab/reserva/{Id_reservacion}/hab/{Id_habitacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@ViewRentarHab')->name('viewrentarhab');
-//ruta que guarda el registro del form de los datos del lugar
+//ruta que guarda el registro del form de los datos del lugar que es reglamento, contrato y fiador
 Route::post('store_rentar_hab/reserva/{Id_reservacion}/hab/{Id_habitacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@StoreRentarHab')->name('storerentarhab');
+
 
 
 
@@ -240,12 +263,12 @@ Route::get('view_desactivar_depa/{Id_departamento}', 'DepartamentoController@Vie
 Route::put('desactivar_depa/{departamento}', 'DepartamentoController@DesactivarDepa')->name('desactivar_depa');
 //ruta boton que muestra los detalles del depa libre
 Route::get('detalles_depa_libre/locacion/{idlocacion}/depa/{Id_departamento}', 'DepartamentoController@DetallesDepaLibre')->name('detallesdepalibre');
-//ruta boton que muestra la vista para editar un registro de hab
+//ruta boton que muestra la vista para editar un registro del depa
 Route::get('view_editar_depa/{Id_departamento}', 'DepartamentoController@ViewEditarDepa')->name('view_editar_depa');
-//ruta que edita el registro de la hab
+//ruta que edita el registro del depa
 Route::put('update_depa/{departamentos}/servicio/{servicio_bano}/cama/{servicio_cama}/planta/{plantas_pisos}', 'DepartamentoController@UpdateDepa')->name('update_depa');
 
-//ruta para borrar/destruir las fotos en el campo editar locacion
+//ruta para borrar/destruir las fotos del registro del depa
 Route::post('borrar_img_depa/{Id_foto_lugar}','DepartamentoController@DestroyImgDepa')->name('destroyimgdepa');
 
 
@@ -275,6 +298,25 @@ Route::get('view_editar_reservadepnc/reserva/{Id_reservacion}/loc/{Id_locacion}/
 //ruta que edita el registro de una reservacion de un depa
 Route::put('update_reservadepnc/{reservacion}/{lugar_reservado}/{Id_locacion}/{Id_departamento}', 'ReservacionRentasController@UpdateReservaDepNC')->name('update_reservadepnc');
 
+//rutas de renta para un depa
+//ruta para la busqueda automatica de los clientes
+Route::post('view_rentar_depa_c1/reserva/{Id_reservacion}/dep/{Id_departamento}/lugar/{Id_lugares_reservados}/myurl', 'ReservacionRentasController@ShowClientesEditDep');
+//ruta para el form de el primer cliente para pasar a rentar  
+Route::get('view_rentar_depa_c1/reserva/{Id_reservacion}/dep/{Id_departamento}/lugar/{Id_lugares_reservados}/myurl', 'ReservacionRentasController@ViewCliente1Dep')->name('viewrentarc1dep');
+//ruta que guarda el registro del primer cliente 
+Route::put('store_rentar_depa_c1/cliente/{cliente}/reserva/{Id_reservacion}/dep/{Id_departamento}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@StoreRentarDepC')->name('storerentardepc');
+
+//ruta para la busqueda automatica de los clientes 
+Route::post('view_rentar_depa_c2/reserva/{Id_reservacion}/dep/{Id_departamento}/lugar/{Id_lugares_reservados}/myurl', 'ReservacionRentasController@ShowClientesEditDep');
+//ruta para el form de el segundo cliente para pasar a rentar 
+Route::get('view_rentar_depa_c2/reserva/{Id_reservacion}/dep/{Id_departamento}/lugar/{Id_lugares_reservados}/myurl', 'ReservacionRentasController@ViewIntroDepC2')->name('viewintroc2dep');
+//ruta que guarda el registro en el caso de que haya una segunda persona que se hospedara en el lugar
+Route::post('store_rentar_depa_c2/reserva/{Id_reservacion}/dep/{Id_departamento}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@StoreRentarDepC2')->name('storerentardepc2');
+
+//ruta para la vista del form que toma los datos del lugar para pasar a rentar un depa
+Route::get('view_rentar_depa/reserva/{Id_reservacion}/dep/{Id_departamento}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@ViewRentarDep')->name('viewrentardep');
+//ruta que guarda el registro del form de los datos del lugar que es reglamento, contrato y fiador de un depa
+Route::post('store_rentar_depa/reserva/{Id_reservacion}/dep/{Id_departamento}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@StoreRentarDep')->name('storerentardep');
 
 
 

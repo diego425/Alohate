@@ -171,17 +171,17 @@
                               @if($locacion->Numero_total_habitaciones <= 0)
 
                               @else($locacion->Numero_total_habitaciones > 0)
-                              <th>Habitaciones Libres</th>
+                              <th>Habitaciones</th>
                               @endif
                               @if($locacion->Numero_total_depas <= 0)
 
                               @else($locacion->Numero_total_depas > 0)
-                              <th>Departamentos Libres</th>
+                              <th>Departamentos</th>
                               @endif
                               @if($locacion->Numero_total_locales <= 0)
 
                               @else($locacion->Numero_total_locales > 0)
-                              <th>Locales Libres</th>
+                              <th>Locales</th>
                               @endif
 
                               <th>TIPO DE RENTA</th>
@@ -197,7 +197,7 @@
                               @if($locacion->Numero_total_habitaciones <= 0)
 
                               @else($locacion->totalhabslibres > 0)
-                              <td data-label="Habitaciones Libres">
+                              <td data-label="Habitaciones">
                                     <div class="lugareslibres">Libres: {{$locacion->totalhabslibres}}</div>
                                     <div class="textohdl">Rentadas: {{$locacion->totalhabsocupadas}}</div>
                                     <div class="reserva">Reservadas: {{$locacion->totalhabsreservada}}</div>
@@ -208,7 +208,7 @@
                               @if($locacion->Numero_total_depas <= 0)
 
                               @else($locacion->totaldepaslibres > 0)
-                              <td data-label="Departamentos Libres">
+                              <td data-label="Departamentos">
                                     <div class="lugareslibres">Libres: {{$locacion->totaldepaslibres}}</div>
                                     <div class="textohdl">Rentadas: {{$locacion->totaldepasocupadas}}</div>
                                     <div class="reserva">Reservadas: {{$locacion->totaldepasreservada}}</div>
@@ -219,7 +219,7 @@
                               @if($locacion->Numero_total_locales <= 0)
 
                               @else($locacion->totallocslibres > 0)
-                              <td data-label="Locales Libres">
+                              <td data-label="Locales">
                                     <div class="lugareslibres">Libres: {{$locacion->totallocslibres}}</div>
                                     <div class="textohdl">Rentadas: {{$locacion->totallocsocupadas}}</div>
                                     <div class="reserva">Reservadas: {{$locacion->totallocsreservada}}</div>
