@@ -308,7 +308,7 @@
             <div class="centrar_texto">
                <p><h5>Botones De Accion</h5>
                   <div class="gris">
-                    <button class="btn btn-info clickForm" href="">Pasar a rentar</button>
+                     <button class="btn btn-success clickForm" href="{{route('viewrentarc1dep', [$detallereserva[0]->Id_reservacion, $detallereserva[0]->Id_departamento, $detallereserva[0]->Id_lugares_reservados ])}}">Pasar a rentar</button>
                     <button class="btn btn-warning clickForm" href="{{route('editarreservadep', [$detallereserva[0]->Id_reservacion, $detallereserva[0]->Id_locacion, $detallereserva[0]->Id_departamento, $detallereserva[0]->Id_lugares_reservados])}}">Editar</button>
                     <a class="btn btn-danger" href="">Eliminar</a>
                   </div>

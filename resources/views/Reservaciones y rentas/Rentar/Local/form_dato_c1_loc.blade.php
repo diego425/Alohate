@@ -26,8 +26,8 @@
             <div class="progressbar">
                 <div class="progress" id="progress"></div>
                 <div class="progress-step progress-step-active" data-title="Cliente"></div>
-                <div class="progress-step progress-step-active" data-title="Documentos"></div>
-                <div class="progress-step progress-step-active" data-title="C.Emergencia"></div>
+                <div class="progress-step" data-title="Documentos"></div>
+                <div class="progress-step" data-title="C.Emergencia"></div>
             </div>
 
 <!-- Step 1 -->
@@ -53,7 +53,7 @@
                         </div>
                     </div>
 
-<form action="{{route('storerentarhabc',[$renta[0]->Id_cliente, $renta[0]->Id_reservacion, $renta[0]->Id_habitacion, $renta[0]->Id_lugares_reservados ])}}" method="POST" enctype="multipart/form-data">
+<form action="{{route('storerentarlocc',[$renta[0]->Id_cliente, $renta[0]->Id_reservacion, $renta[0]->Id_local, $renta[0]->Id_lugares_reservados ])}}" method="POST" enctype="multipart/form-data">
 @csrf 
 @method('PUT')
 
