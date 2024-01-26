@@ -253,8 +253,6 @@
     <script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.print.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        const locaciones = @json($locaciones);
-        console.log(locaciones);
         $(document).ready(function() {
             var table = $('#tablaLugares').DataTable();
 

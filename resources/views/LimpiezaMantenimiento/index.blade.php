@@ -120,26 +120,28 @@
                     <td data-label="Fecha">{{$reporte->Fecha_del_reporte}}</td>
                     <td data-label="Estatus">{{$reporte->Estatus}}</td>
                     <td class="flex" data-label="Detalle">
-                        <form action="{{route('limpieza.show',$reporte->Id_colaborador)}}" method="get">
+                        <form action="{{route('limpieza.show',$reporte->Id_reporte_ml)}}" method="get">
                             <button class="btn btn-outline-light" type="submit" title="Mostrar detalle">
                                 <i class='bx bxs-show bx-burst' style='color:#1764e6'></i>
                             </button>
                         </form>
                     </td>
                     <td class="flex" data-label="Editar">
-                        <form action="{{route('limpieza.edit',$reporte->Id_colaborador)}}" method="get">
+                        <form action="{{route('limpieza.edit',$reporte->Id_reporte_ml)}}" method="get">
                             <button class="btn btn-outline-warning" type="submit" title="Editar">
                                 <i class='bx bx-edit-alt'></i>
                             </button>
                         </form>
                     </td>
-                    <td class="flex" data-label="Lugares">
-                        <form action="{{route('limpieza.show',$reporte->Id_colaborador)}}" method="get">
+                    @if($reporte->Estatus != "Terminado")
+                    <td class="flex" data-label="Realizar tarea">
+                        <form action="{{route('limpieza.realizar',$reporte->Id_reporte_ml)}}" method="get">
                             <button class="btn btn-outline-success" type="submit" title="Realizar tarea">
-                                <i class='bx bx-spreadsheet' ></i>
+                                <i class='bx bx-spreadsheet'></i>
                             </button>
                         </form>
                     </td>
+                    @endif
                 </tr>
                 @endforeach
             </tbody>

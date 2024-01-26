@@ -372,6 +372,8 @@ Route::controller(LimpiezaMantenimientoController::class)->group(function (){
     Route::get('limpieza/edit/{id}', 'edit')->name('limpieza.edit');
     Route::post('limpieza/update/{id}', 'update')->name('limpieza.update');
     Route::post('limpieza/destroy/{id}', 'destroy')->name('limpieza.destroy');
+    Route::get('limpieza/realizar/{id}', 'realizar')->name('limpieza.realizar');
+    Route::post('limpieza/guardarTarea', 'guardarTarea')->name('limpieza.guardarTarea');
 });
 
 Route::controller(UsuariosController::class)->group(function (){
