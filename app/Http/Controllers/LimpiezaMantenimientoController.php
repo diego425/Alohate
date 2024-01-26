@@ -120,7 +120,8 @@ class LimpiezaMantenimientoController extends Controller
                 'Fecha_del_reporte' => date("Y-m-d"),
                 'Estatus' => "Pendiente",
                 'Categoria_mtto' => $request->Categoria_mtto,
-                'Tipo_reporte' => $request->Tipo_reporte
+                'Tipo_reporte' => $request->Tipo_reporte,
+                'tipoLocacion' => $request->tipoLocacion,
             ]);
         }elseif ($request->tipoLocacion === "Local") {
             $insert = DB::table('reportes_m_l')->insert([
@@ -131,7 +132,8 @@ class LimpiezaMantenimientoController extends Controller
                 'Fecha_del_reporte' => date("Y-m-d"),
                 'Estatus' => "Pendiente",
                 'Categoria_mtto' => $request->Categoria_mtto,
-                'Tipo_reporte' => $request->Tipo_reporte
+                'Tipo_reporte' => $request->Tipo_reporte,
+                'tipoLocacion' => $request->tipoLocacion,
             ]);
         }elseif ($request->tipoLocacion === "Departamento") {
             $insert = DB::table('reportes_m_l')->insert([
@@ -142,7 +144,8 @@ class LimpiezaMantenimientoController extends Controller
                 'Fecha_del_reporte' => date("Y-m-d"),
                 'Estatus' => "Pendiente",
                 'Categoria_mtto' => $request->Categoria_mtto,
-                'Tipo_reporte' => $request->Tipo_reporte
+                'Tipo_reporte' => $request->Tipo_reporte,
+                'tipoLocacion' => $request->tipoLocacion,
             ]);
         }elseif ($request->tipoLocacion === "Habitación") {
             $insert = DB::table('reportes_m_l')->insert([
@@ -153,7 +156,8 @@ class LimpiezaMantenimientoController extends Controller
                 'Fecha_del_reporte' => date("Y-m-d"),
                 'Estatus' => "Pendiente",
                 'Categoria_mtto' => $request->Categoria_mtto,
-                'Tipo_reporte' => $request->Tipo_reporte
+                'Tipo_reporte' => $request->Tipo_reporte,
+                'tipoLocacion' => $request->tipoLocacion,
             ]);
         }
 
@@ -168,9 +172,41 @@ class LimpiezaMantenimientoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $Id_reporte_ml)
     {
-        //
+        $tipos = array(
+            "Id_habitacion",
+            "Id_departamento",
+            "Id_local",
+            "Id_locacion"
+        );
+
+        $reporte = DB::table('reportes_m_l AS rml')
+        ->selectRaw('rml.*,loc.*,TIMEDIFF(rml.Fecha_termino,rml.Fecha_inicio) AS tiempoTotal')
+        ->leftJoin('locacion as loc','loc.Id_locacion','=','rml.Id_locacion')
+        ->where('rml.Id_reporte_ml',$Id_reporte_ml)
+        ->get();
+        $reporte = json_decode(json_encode($reporte),true);
+        $reporte = $reporte[0];
+
+        $id = null;
+        $lugar = array();
+        for ($i=0; $i < 4; $i++) {
+            if (!empty($reporte[$tipos[$i]])) {
+                $id = $reporte[$tipos[$i]];
+                break;
+            }
+        }
+
+        $lugar = DB::select('call seleccionarLugar(?,?,?);',[$id,$reporte["tipoLocacion"],$reporte["Id_locacion"]]);
+        $lugar = json_decode(json_encode($lugar));
+        $reporte = json_decode(json_encode($reporte));
+
+        $fotos = DB::select('SELECT * FROM `fotos_tarea_limpieza` WHERE Id_reporte_ml = ?;',[$Id_reporte_ml]);
+        $fotos = json_decode(json_encode($fotos),true);
+        
+        // print_r($fotos);
+        return view('LimpiezaMantenimiento.show',['reporte' => $reporte, 'lugar' => $lugar, 'fotos' => $fotos]);
     }
 
     /**
@@ -195,5 +231,89 @@ class LimpiezaMantenimientoController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    function realizar(string $id) {
+        $tipos = array(
+            "Id_habitacion",
+            "Id_departamento",
+            "Id_local",
+            "Id_locacion"
+        );
+
+        $reporte = DB::table('reportes_m_l AS rml')
+        ->selectRaw('rml.*,loc.*,TIMEDIFF(rml.Fecha_termino,rml.Fecha_inicio) AS tiempoTotal')
+        ->leftJoin('locacion as loc','loc.Id_locacion','=','rml.Id_locacion')
+        ->where('Id_reporte_ml',$id)
+        ->get();
+        $reporte = json_decode(json_encode($reporte),true);
+        $reporte = $reporte[0];
+
+        $id = null;
+        $lugar = array();
+        for ($i=0; $i < 4; $i++) {
+            if (!empty($reporte[$tipos[$i]])) {
+                $id = $reporte[$tipos[$i]];
+                break;
+            }
+        }
+
+        $lugar = DB::select('call seleccionarLugar(?,?,?);',[$id,$reporte["tipoLocacion"],$reporte["Id_locacion"]]);
+        $lugar = json_decode(json_encode($lugar));
+        $reporte = json_decode(json_encode($reporte));
+        
+        if ($reporte->Estatus == 'Terminado') {
+            return redirect()->route('limpieza.index')->with('message','Esta tarea ya esta terminada');
+        } else {
+            return view('LimpiezaMantenimiento.realizarTarea',['reporte' => $reporte, 'lugar' => $lugar]);
+        }
+        
+    }
+
+    function guardarTarea(Request $request) {
+        $request->validate([
+            'foto1' => 'required',
+            'Tipo' => 'required',
+        ]);
+
+        // print_r($request->all());
+
+        $Estatus = "Iniciada";
+        if ($request->Tipo == "Antes") {
+            $Estatus = "Iniciado";
+        } elseif ($request->Tipo == "Despues") {
+            $Estatus = "Terminado";
+        }
+        
+        $insert = DB::table('fotos_tarea_limpieza')->insert([
+            'Id_reporte_ml' => $request->id,
+            'Tipo' => $request->Tipo,
+            'foto1' => $request->foto1,
+            'foto2' => $request->foto2,
+            'foto3' => $request->foto3
+        ]);
+
+        if ($insert) {
+            if ($request->Tipo == "Antes") {
+                $affected = DB::table('reportes_m_l')
+                ->where('Id_reporte_ml', $request->id)
+                ->update([
+                    'Estatus' => $Estatus,
+                    'Fecha_inicio' => date("Y-m-d h:i:s")
+                ]);
+            } elseif ($request->Tipo == "Despues") {
+                $affected = DB::table('reportes_m_l')
+                ->where('Id_reporte_ml', $request->id)
+                ->update([
+                    'Estatus' => $Estatus,
+                    'Fecha_termino' => date("Y-m-d h:i:s")
+                ]);
+            }
+
+            return redirect()->route('limpieza.index')->with('message','Registro insertado');
+        }else {
+            session()->flashInput($request->input());
+            return redirect()->back()->with('error','No se pudo insertar el registro');
+        }
     }
 }
