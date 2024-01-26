@@ -19,14 +19,14 @@
   <body>
 
     <div class="titulo">
-      <p >¡Genial!</p>
+      <p >¡WoW!</p>
     </div>
     <div class="titulo">
-      <p>Terminaste los datos de renta. Ya solo queda tomar las fotos del reglamento y aviso de privacidad</p>
+      <p>Terminaste de registrar a la persona encargada del local ahora registra los datos de renta</p>
     </div> 
  
       <div class="centrar">
-          <a href="{{route('viewrentarloc',[$Id_local, $nombreclient, $lugar_renta[0]->Id_reservacion, $lugar_renta[0]->Id_lugares_reservados ])}}" class="boton_entera"> Continuar</a>
+          <a href="{{route('viewreservaloc',[$Id_local, $nombreclient[0]->Id_cliente])}}" class="boton_entera">Continuar</a>
       </div>
          
   </body>

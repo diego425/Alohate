@@ -187,13 +187,7 @@
       
                                           @if($local->Nombre_estado == "Desocupada")
                                           <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
-                                          @endif
-      
-                                          @if($local->Nombre_estado == "Reservada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
-                                          <a href="" class="btn btn-danger">Terminar</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
+                                          <button class="btn btn-secondary clickForm" href="{{route('viewintroc2loc',$local->Id_local)}}">Rentar</button>
                                           @endif
       
                                           @if($local->Nombre_estado == "Desactivada")
@@ -315,13 +309,7 @@
       
                                           @if($local->Nombre_estado == "Desocupada")
                                           <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
-                                          @endif
-      
-                                          @if($local->Nombre_estado == "Reservada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
-                                          <a href="" class="btn btn-danger">Terminar</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
+                                          <button class="btn btn-secondary clickForm" href="{{route('viewintroc2loc',$local->Id_local)}}">Rentar</button>
                                           @endif
       
                                           @if($local->Nombre_estado == "Desactivada")
@@ -443,13 +431,7 @@
       
                                           @if($local->Nombre_estado == "Desocupada")
                                           <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
-                                          @endif
-      
-                                          @if($local->Nombre_estado == "Reservada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
-                                          <a href="" class="btn btn-danger">Terminar</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
+                                          <button class="btn btn-secondary clickForm" href="{{route('viewintroc2loc',$local->Id_local)}}">Rentar</button>
                                           @endif
       
                                           @if($local->Nombre_estado == "Desactivada")
@@ -570,13 +552,7 @@
       
                                           @if($local->Nombre_estado == "Desocupada")
                                           <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
-                                          @endif
-      
-                                          @if($local->Nombre_estado == "Reservada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
-                                          <a href="" class="btn btn-danger">Terminar</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
+                                          <button class="btn btn-secondary clickForm" href="{{route('viewintroc2loc',$local->Id_local)}}">Rentar</button>
                                           @endif
       
                                           @if($local->Nombre_estado == "Desactivada")
@@ -699,13 +675,7 @@
       
                                           @if($local->Nombre_estado == "Desocupada")
                                           <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
-                                          @endif
-      
-                                          @if($local->Nombre_estado == "Reservada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
-                                          <a href="" class="btn btn-danger">Terminar</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
+                                          <button class="btn btn-secondary clickForm" href="{{route('viewintroc2loc',$local->Id_local)}}">Rentar</button>
                                           @endif
       
                                           @if($local->Nombre_estado == "Desactivada")
@@ -826,13 +796,7 @@
       
                                           @if($local->Nombre_estado == "Desocupada")
                                           <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
-                                          @endif
-      
-                                          @if($local->Nombre_estado == "Reservada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
-                                          <a href="" class="btn btn-danger">Terminar</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
+                                          <button class="btn btn-secondary clickForm" href="{{route('viewintroc2loc',$local->Id_local)}}">Rentar</button>
                                           @endif
       
                                           @if($local->Nombre_estado == "Desactivada")
@@ -953,13 +917,7 @@
       
                                           @if($local->Nombre_estado == "Desocupada")
                                           <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
-                                          @endif
-      
-                                          @if($local->Nombre_estado == "Reservada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
-                                          <a href="" class="btn btn-danger">Terminar</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
+                                          <button class="btn btn-secondary clickForm" href="{{route('viewintroc2loc',$local->Id_local)}}">Rentar</button>
                                           @endif
       
                                           @if($local->Nombre_estado == "Desactivada")

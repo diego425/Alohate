@@ -29,7 +29,7 @@
                 <div class="progress-step" data-title="Contratos"></div>
             </div>
 
-<form action="{{route('storerentarloc',[$renta[0]->Id_reservacion, $renta[0]->Id_local, $renta[0]->Id_lugares_reservados ])}}" method="POST" enctype="multipart/form-data">
+<form action="{{route('storerentarloc',[$Id_local, $nombreclient, $lugar_renta[0]->Id_reservacion,  $lugar_renta[0]->Id_lugares_reservados ])}}" method="POST" enctype="multipart/form-data">
 @csrf 
 
 <!-- Step 1 -->
@@ -136,11 +136,11 @@
                     </div>
                     <div class="input-group">
                         <label for="fecha_inicio">Fecha De Inicio:</label>
-                        <input type="date" class="form-control"  name="fecha_inicio" id="fecha_inicio" value="{{$renta[0]->Start_date}}" disabled>
+                        <input type="date" class="form-control"  name="fecha_inicio" id="fecha_inicio" value="{{$lugar_renta[0]->Start_date}}" disabled>
                     </div>
                     <div class="input-group">
                         <label for="fecha_termino">Fecha De Termino:</label>
-                        <input type="date" class="form-control"  name="fecha_termino" id="fecha_termino" value="{{$renta[0]->End_date}}" disabled>
+                        <input type="date" class="form-control"  name="fecha_termino" id="fecha_termino" value="{{$lugar_renta[0]->End_date}}" disabled>
                     </div>
                     <div class="input-group">
                         <label for="tipo_contrato">Tipo De Contrato</label>
