@@ -355,7 +355,23 @@ Route::put('update_local/{locales}/servicio/{servicio_bano}/planta/{plantas_piso
 Route::post('borrarimglocal/{Id_foto_lugar}','LocalController@DestroyImgLocal')->name('destroyimglocal');
 
 
+//rutas de renta para un local
 
+//ruta para la busqueda automatica de los clientes 
+Route::post('view_rentar_loc_c2/loc/{Id_local}/myurl', 'ReservacionRentasController@ShowClientesEditDep');
+//ruta para el form de el segundo cliente para pasar a rentar 
+Route::get('view_rentar_loc_c2/loc/{Id_local}/myurl', 'ReservacionRentasController@ViewIntroLocC2')->name('viewintroc2loc');
+//ruta que guarda el registro en el caso de que haya una segunda persona que se hospedara en el lugar
+Route::post('store_rentar_loc_c2/loc/{Id_local}', 'ReservacionRentasController@StoreRentarLocC2')->name('storerentarlocc2');
+//ruta para la vista del form que toma los datos del lugar para pasar a rentar un local
+Route::get('view_rentar_loc/loc/{Id_local}/client/{nombreclient}/reserva/{Id_reservacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@ViewRentarLoc')->name('viewrentarloc');
+//ruta que guarda el registro del form de los datos del lugar que es reglamento, contrato y fiador de un local
+Route::post('store_rentar_loc/loc/{Id_local}/client/{nombreclient}/reserva/{Id_reservacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@StoreRentarLoc')->name('storerentarloc');
+
+//ruta boton que muestra el form para agregar una renta del local
+Route::get('view_reservaloc/loc/{Id_local}/client/{nombreclient}', 'ReservacionRentasController@ViewAlojamientoLoc')->name('viewreservaloc');
+//ruta para guardar el registro de una nueva renta para el local
+Route::post('store_reservaloc/loc/{Id_local}/client/{nombreclient}', 'ReservacionRentasController@StoreReservaLoc')->name('storereservaloc');
 
 
 

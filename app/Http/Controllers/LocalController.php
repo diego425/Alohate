@@ -31,71 +31,71 @@ class LocalController extends Controller
 
 public function ViewLocalesLoc($Id_locacion, Request $request){
 
-        $estatus_loc =  Estado_ocupacion::get();
-        //variables para el buscador
-        //variables para el buscador   
+   $estatus_loc =  Estado_ocupacion::get();
+//variables para el buscador
+//variables para el buscador   
             
         
-        //consulta padre que me trae los registros de las habitaciones
-            $locales = DB::table('local')
-            ->select('local.Id_local', 'Id_colaborador','est.Nombre_estado', 'local.Id_locacion','Nombre_local',
-            'Precio_renta','Espacio_superficie', 'Encargado','Nota','Descripcion', 'Deposito_garantia_local' ,'planta.Nombre_planta',
-            'bano.Bano_compartido','bano.Bano_medio', 'bano.Bano_completo', 'bano.Bano_completo_RL')
+//consulta padre que me trae los registros de las habitaciones
+   $locales = DB::table('local')
+   ->select('local.Id_local', 'Id_colaborador','est.Nombre_estado', 'local.Id_locacion','Nombre_local',
+   'Precio_renta','Espacio_superficie', 'Encargado','Nota','Descripcion', 'Deposito_garantia_local' ,'planta.Nombre_planta',
+   'bano.Bano_compartido','bano.Bano_medio', 'bano.Bano_completo', 'bano.Bano_completo_RL')
         //joins que me vinculan a otras tablas para hacer consultas 
-           ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "local.Id_estado_ocupacion")
-           ->leftJoin("servicio_bano as bano", "bano.Id_local", "=", "local.Id_local")
-           ->leftJoin("plantas_pisos as planta", "planta.Id_local", "=", "local.Id_local")
+   ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "local.Id_estado_ocupacion")
+   ->leftJoin("servicio_bano as bano", "bano.Id_local", "=", "local.Id_local")
+   ->leftJoin("plantas_pisos as planta", "planta.Id_local", "=", "local.Id_local")
         
-        //consulta crudas de sql que me cuenta los registros que esten en las plantas para poder mostrarlos en la vista 
-        //planta baja
-            ->selectRaw("(SELECT COUNT(*) AS piso1 FROM `local` 
-            LEFT JOIN plantas_pisos AS piso ON piso.Id_local = local.Id_local
-            WHERE piso.Nombre_planta = 'Planta baja'
-            AND local.Id_locacion =  ".$Id_locacion.") as totallocpisobajo")
-        //piso 1
-            ->selectRaw("(SELECT COUNT(*) AS piso1 FROM `local` 
-            LEFT JOIN plantas_pisos AS piso ON piso.Id_local = local.Id_local
-            WHERE piso.Nombre_planta = 'Planta 1'
-             AND local.Id_locacion =  ".$Id_locacion.") as totallocpiso1")
-        //piso 2
-            ->selectRaw("(SELECT COUNT(*) AS piso1 FROM `local` 
-            LEFT JOIN plantas_pisos AS piso ON piso.Id_local = local.Id_local
-            WHERE piso.Nombre_planta = 'Planta 2'
-             AND local.Id_locacion =  ".$Id_locacion.") as totallocpiso2")
-        //piso 3
-            ->selectRaw("(SELECT COUNT(*) AS piso1 FROM `local` 
-            LEFT JOIN plantas_pisos AS piso ON piso.Id_local = local.Id_local
-            WHERE piso.Nombre_planta = 'Planta 3'
-            AND local.Id_locacion =  ".$Id_locacion.") as totallocpiso3")
-        //piso 4
-            ->selectRaw("(SELECT COUNT(*) AS piso4 FROM `local` 
-            LEFT JOIN plantas_pisos AS piso ON piso.Id_local = local.Id_local
-            WHERE piso.Nombre_planta = 'Planta 4'
-             AND local.Id_locacion =  ".$Id_locacion.") as totallocpiso4")
-        //piso 5
-            ->selectRaw("(SELECT COUNT(*) AS piso1 FROM `local` 
-            LEFT JOIN plantas_pisos AS piso ON piso.Id_local = local.Id_local
-            WHERE piso.Nombre_planta = 'Planta 5'
-             AND local.Id_locacion =  ".$Id_locacion.") as totallocpiso5")
-        //piso 6
-            ->selectRaw("(SELECT COUNT(*) AS piso1 FROM `local` 
-            LEFT JOIN plantas_pisos AS piso ON piso.Id_local = local.Id_local
-            WHERE piso.Nombre_planta = 'Planta 6'
-             AND local.Id_locacion =  ".$Id_locacion.") as totallocpiso6")
+//consulta crudas de sql que me cuenta los registros que esten en las plantas para poder mostrarlos en la vista 
+//planta baja
+   ->selectRaw("(SELECT COUNT(*) AS piso1 FROM `local` 
+   LEFT JOIN plantas_pisos AS piso ON piso.Id_local = local.Id_local
+   WHERE piso.Nombre_planta = 'Planta baja'
+   AND local.Id_locacion =  ".$Id_locacion.") as totallocpisobajo")
+//piso 1
+   ->selectRaw("(SELECT COUNT(*) AS piso1 FROM `local` 
+   LEFT JOIN plantas_pisos AS piso ON piso.Id_local = local.Id_local
+   WHERE piso.Nombre_planta = 'Planta 1'
+   AND local.Id_locacion =  ".$Id_locacion.") as totallocpiso1")
+//piso 2
+   ->selectRaw("(SELECT COUNT(*) AS piso1 FROM `local` 
+   LEFT JOIN plantas_pisos AS piso ON piso.Id_local = local.Id_local
+   WHERE piso.Nombre_planta = 'Planta 2'
+   AND local.Id_locacion =  ".$Id_locacion.") as totallocpiso2")
+//piso 3
+   ->selectRaw("(SELECT COUNT(*) AS piso1 FROM `local` 
+   LEFT JOIN plantas_pisos AS piso ON piso.Id_local = local.Id_local
+   WHERE piso.Nombre_planta = 'Planta 3'
+   AND local.Id_locacion =  ".$Id_locacion.") as totallocpiso3")
+//piso 4
+   ->selectRaw("(SELECT COUNT(*) AS piso4 FROM `local` 
+   LEFT JOIN plantas_pisos AS piso ON piso.Id_local = local.Id_local
+   WHERE piso.Nombre_planta = 'Planta 4'
+   AND local.Id_locacion =  ".$Id_locacion.") as totallocpiso4")
+//piso 5
+   ->selectRaw("(SELECT COUNT(*) AS piso1 FROM `local` 
+   LEFT JOIN plantas_pisos AS piso ON piso.Id_local = local.Id_local
+   WHERE piso.Nombre_planta = 'Planta 5'
+   AND local.Id_locacion =  ".$Id_locacion.") as totallocpiso5")
+//piso 6
+   ->selectRaw("(SELECT COUNT(*) AS piso1 FROM `local` 
+   LEFT JOIN plantas_pisos AS piso ON piso.Id_local = local.Id_local
+   WHERE piso.Nombre_planta = 'Planta 6'
+   AND local.Id_locacion =  ".$Id_locacion.") as totallocpiso6")
         
-           ->where('local.Id_locacion', '=', $Id_locacion)
-           ->get();
+   ->where('local.Id_locacion', '=', $Id_locacion)
+   ->get();
         
         
-            $locacion=DB::table('locacion')
-           ->select('locacion.Id_locacion', 'Nombre_locacion', 'est.Nombre_estado' ,'Tipo_renta', 'Calle',
-                'Numero_ext', 'Colonia', 'Ubi_google_maps', 'Numero_total_de_pisos', 
-                'Numero_total_habitaciones','Numero_habs_actuales','Numero_total_depas', 'Numero_depas_actuales', 'Numero_locs_actuales', 'Numero_total_locales',
-                'Capacidad_personas', 'Precio_noche', 'Precio_semana', 'Precio_catorcedias',
-                'Precio_mes', 'Deposito_garantia_casa', 'Uso_cocheras', 'Total_cocheras', 'Espacio_superficie', 'Zona_ciudad')
-           ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "locacion.Id_estado_ocupacion")
-           ->where('Id_locacion', '=', $Id_locacion)
-           ->get();
+   $locacion=DB::table('locacion')
+   ->select('locacion.Id_locacion', 'Nombre_locacion', 'est.Nombre_estado' ,'Tipo_renta', 'Calle',
+         'Numero_ext', 'Colonia', 'Ubi_google_maps', 'Numero_total_de_pisos', 
+         'Numero_total_habitaciones','Numero_habs_actuales','Numero_total_depas', 'Numero_depas_actuales', 'Numero_locs_actuales', 'Numero_total_locales',
+         'Capacidad_personas', 'Precio_noche', 'Precio_semana', 'Precio_catorcedias',
+         'Precio_mes', 'Deposito_garantia_casa', 'Uso_cocheras', 'Total_cocheras', 'Espacio_superficie', 'Zona_ciudad')
+   ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "locacion.Id_estado_ocupacion")
+   ->where('Id_locacion', '=', $Id_locacion)
+   ->get();
         
      
 return view('Locales.locales', compact('locacion', 'locales', 'estatus_loc'));

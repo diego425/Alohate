@@ -17,6 +17,7 @@ use App\Models\Locacion;
 use App\Models\Reservacion;
 use App\Models\Cliente;
 use App\Models\Contrato;
+use App\Models\Cobro_renta;
 use App\Models\Fiador;
 use App\Models\Plantas_pisos;
 use App\Models\Estado_ocupacion;
@@ -54,13 +55,15 @@ public function ViewReservacionRentas(){
         'cliente.Numero_celular',
         'hab.Nombre_hab','hab.Id_habitacion',
         'loc.Nombre_locacion', 'loc.Id_locacion',
-        'depa.Nombre_depa', 'depa.Id_departamento')
+        'depa.Nombre_depa', 'depa.Id_departamento',
+        'local.Id_local', 'local.Nombre_local')
     ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
     ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
     ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
     ->leftJoin("habitacion as hab", "hab.Id_habitacion", "=", "lugares_reservados.Id_habitacion")
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "lugares_reservados.Id_locacion")
     ->leftJoin("departamento as depa", "depa.Id_departamento", "=", "lugares_reservados.Id_departamento")
+    ->leftJoin("local", "local.Id_local", "=", "lugares_reservados.Id_local")
     ->paginate(4);
     
     return view('Reservaciones y rentas.reservaciones_rentas', compact('reservarentas'));
@@ -1785,6 +1788,150 @@ try{
     ->where('hab.Id_habitacion', '=', $Id_habitacion)
     ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
+
+
+    $detallereserva = DB::table('lugares_reservados')
+    ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion','lugares_reservados.Id_locacion', 
+        'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
+        'est.Nombre_estado',
+        'reserva.Id_reservacion','reserva.Id_colaborador',
+        'reserva.Start_date','reserva.End_date', 'reserva.Title','reserva.Fecha_reservacion',
+        'reserva.Numero_personas_extras', 'reserva.Foto_comprobante_anticipo', 'reserva.Fecha_pago_anticipo',
+        'reserva.Foto_aviso_privacidad', 'reserva.Foto_reglamento','reserva.Monto_uso_cochera', 
+        'reserva.Metodo_pago_anticipo','reserva.Espacios_cochera','reserva.Monto_pagado_anticipo',
+        'reserva.Tipo_de_cobro','reserva.Nota_pago_anticipo',
+        'cliente.Nombre','cliente.Apellido_paterno','cliente.Apellido_materno','cliente.Email',
+        'cliente.Numero_celular',
+        'hab.Id_habitacion','hab.Id_locacion','hab.Id_estado_ocupacion', 
+        'hab.Id_colaborador','hab.Nombre_hab', 'hab.Capacidad_personas',  'hab.Deposito_garantia_hab', 
+        'hab.Precio_noche', 'hab.Precio_semana','hab.Precio_catorcedias', 'hab.Precio_mes', 
+        'hab.Encargado','hab.Espacio_superficie', 'hab.Nota','hab.Descripcion',
+        'hab.Cobro_p_ext_mes_h','hab.Cobro_p_ext_catorcena_h','hab.Cobro_p_ext_noche_h',
+        'hab.Cobro_anticipo_mes_h','hab.Cobro_anticipo_catorcena_h','hab.Camas_juntas',
+        'loc.Nombre_locacion')
+        ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
+        ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+        ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+        ->leftJoin("habitacion as hab", "hab.Id_habitacion", "=", "lugares_reservados.Id_habitacion")
+        ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
+        ->where('reserva.Id_reservacion', '=', $Id_reservacion)
+        ->where('hab.Id_habitacion', '=', $Id_habitacion)
+        ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+        ->get();
+
+//funcion para calcular dias entre 2 fechas
+    $fecha1 =   $detallereserva[0]->Start_date;
+    $fecha2 =   $detallereserva[0]->End_date;
+//aqui saco los segundos de las fechas
+    $segfecha1 = strtotime($fecha1);
+    $segfecha2 = strtotime($fecha2);
+//segundos de diferencia entre las 2 fechas
+    $segtranscurridos = $segfecha2 - $segfecha1;
+//minutos transcurridos entre las 2 fechas
+    $mintranscurridos = $segtranscurridos/60;
+//horas transcurridas entre las 2 fechas
+    $horastranscurridas = $mintranscurridos/60;
+//dias transcurridos entre las 2 fechas
+    $diastranscurridos = $horastranscurridas/24;
+//redondeando los dias para que esten completos
+    $diasredondeados = floor($diastranscurridos);
+
+switch ($detallereserva[0]->Tipo_de_cobro) {
+    case 'Noche':
+//variable que trae los dias
+        $diasredondeados;
+//variable que me saca el costo de los dias de estancia
+        $monto_por_dias = $diasredondeados * $detallereserva[0]->Precio_noche;
+//variable que me trae el costo por personas extra ya no se cobraran las personas extras por noche
+//$monto_por_p_extras = $detallereserva[0]->Cobro_p_ext_noche_h * $detallereserva[0]->Numero_personas_extras;
+//variable que me hace la suma total            
+        $suma_monto = $monto_por_dias  + $detallereserva[0]->Deposito_garantia_hab + $detallereserva[0]->Monto_uso_cochera;
+
+//insertado de datos para la tabla de cobro de renta 
+        $cobro = new Cobro_renta();
+        $cobro -> Id_reservacion  = $Id_reservacion;
+        $cobro -> Id_lugares_reservados = $Id_lugares_reservados;
+        $cobro -> Cobro_persona_extra = 0;
+        $cobro -> Periodo_total = $diastranscurridos;
+        $cobro -> Estatus_cobro = 7;
+        $cobro -> Deposito_garantia = $detallereserva[0]->Deposito_garantia_hab;
+        $cobro -> Monto_total = $suma_monto;
+        $cobro->save();
+
+    break;
+        
+    case 'Semana':
+        $calculosemana = $diasredondeados/7;
+        $redondeosema = floor($calculosemana);
+//variable que me saca el costo de los dias de estancia
+        $monto_por_dias = $redondeosema * $detallereserva[0]->Precio_semana;
+//variable que me trae el costo por personas extra
+        $monto_por_p_extras = $detallereserva[0]->Cobro_p_ext_catorcena_h * $detallereserva[0]->Numero_personas_extras;
+//variable que me hace la suma total y me resta el monto de anticipo       
+        $suma_monto = $monto_por_dias + $monto_por_p_extras + $detallereserva[0]->Deposito_garantia_hab + $detallereserva[0]->Monto_uso_cochera - $detallereserva[0]->Cobro_anticipo_catorcena_h;
+
+
+
+//insertado de datos para la tabla de cobro de renta 
+        $cobro = new Cobro_renta();
+        $cobro -> Id_reservacion  = $Id_reservacion;
+        $cobro -> Id_lugares_reservados = $Id_lugares_reservados;
+        $cobro -> Cobro_persona_extra = $monto_por_p_extras;
+        $cobro -> Periodo_total = $diastranscurridos;
+        $cobro -> Estatus_cobro = 7;
+        $cobro -> Deposito_garantia = $detallereserva[0]->Deposito_garantia_hab;
+        $cobro -> Monto_total = $suma_monto;
+        $cobro->save();
+
+    break;
+         
+    case 'Catorcena':
+        $calculocatorcena = $diasredondeados/14;
+        $redondeocatorcena = floor($calculocatorcena);
+//variable que me saca el costo de los dias de estancia
+        $monto_por_dias = $redondeocatorcena * $detallereserva[0]->Precio_catorcedias;
+//variable que me trae el costo por personas extra
+        $monto_por_p_extras = $detallereserva[0]->Cobro_p_ext_catorcena_h * $detallereserva[0]->Numero_personas_extras;
+//variable que me hace la suma total y me resta el monto de anticipo       
+        $suma_monto = $monto_por_dias + $monto_por_p_extras + $detallereserva[0]->Deposito_garantia_hab + $detallereserva[0]->Monto_uso_cochera - $detallereserva[0]->Cobro_anticipo_catorcena_h;
+            
+//insertado de datos para la tabla de cobro de renta 
+        $cobro = new Cobro_renta();
+        $cobro -> Id_reservacion  = $Id_reservacion;
+        $cobro -> Id_lugares_reservados = $Id_lugares_reservados;
+        $cobro -> Cobro_persona_extra = $monto_por_p_extras;
+        $cobro -> Periodo_total = $diastranscurridos;
+        $cobro -> Estatus_cobro = 7;
+        $cobro -> Deposito_garantia = $detallereserva[0]->Deposito_garantia_hab;
+        $cobro -> Monto_total = $suma_monto;
+        $cobro->save();
+
+    break;
+
+    case 'Mes':
+
+        $calculomes = $diasredondeados/28;
+        $redondeomes = floor($calculomes);
+//variable que me saca el costo de los dias de estancia
+        $monto_por_dias = $redondeomes * $detallereserva[0]->Precio_mes;
+//variable que me trae el costo por personas extra
+        $monto_por_p_extras = $detallereserva[0]->Cobro_p_ext_mes_h * $detallereserva[0]->Numero_personas_extras;
+//variable que me hace la suma total y me resta el monto de anticipo       
+        $suma_monto = $monto_por_dias + $monto_por_p_extras + $detallereserva[0]->Deposito_garantia_hab + $detallereserva[0]->Monto_uso_cochera - $detallereserva[0]->Cobro_anticipo_mes_h;
+            
+//insertado de datos para la tabla de cobro de renta 
+        $cobro = new Cobro_renta();
+        $cobro -> Id_reservacion  = $Id_reservacion;
+        $cobro -> Id_lugares_reservados = $Id_lugares_reservados;
+        $cobro -> Cobro_persona_extra = $monto_por_p_extras;
+        $cobro -> Periodo_total = $diastranscurridos;
+        $cobro -> Estatus_cobro = 7;
+        $cobro -> Deposito_garantia = $detallereserva[0]->Deposito_garantia_hab;
+        $cobro -> Monto_total = $suma_monto;
+        $cobro->save();
+
+    break;
+    }
 
 //condicionales if que ayudan a saber que tipo de contrato se esta guardando y que datos se deben de guardar segun el contrato 
 //"-1" significa que no se usara contrato 
@@ -3940,6 +4087,149 @@ $cliente = DB::table('lugares_reservados')
     ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
+
+    $detallereserva = DB::table('lugares_reservados')
+    ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_locacion', 
+    'lugares_reservados.Id_local', 'lugares_reservados.Id_departamento', 'lugares_reservados.Id_cliente',
+    'est.Nombre_estado',
+    'reserva.Id_reservacion','reserva.Id_colaborador',
+    'reserva.Start_date','reserva.End_date', 'reserva.Title','reserva.Fecha_reservacion',
+    'reserva.Numero_personas_extras', 'reserva.Foto_comprobante_anticipo', 'reserva.Fecha_pago_anticipo',
+    'reserva.Foto_aviso_privacidad', 'reserva.Foto_reglamento','reserva.Monto_uso_cochera', 
+    'reserva.Metodo_pago_anticipo','reserva.Espacios_cochera','reserva.Monto_pagado_anticipo',
+    'reserva.Tipo_de_cobro',
+    'cliente.Nombre','cliente.Apellido_paterno','cliente.Apellido_materno','cliente.Email',
+    'cliente.Numero_celular',
+    'dep.Id_departamento','dep.Id_locacion','dep.Id_estado_ocupacion', 
+    'dep.Id_colaborador','dep.Nombre_depa','dep.Capacidad_personas', 'dep.Deposito_garantia_dep', 
+    'dep.Precio_noche','dep.Precio_semana', 'dep.Precio_catorcedias', 'dep.Precio_mes', 
+    'dep.Habitaciones_total', 'dep.Encargado','dep.Espacio_superficie','dep.Nota',
+    'dep.Descripcion','dep.Cobro_p_ext_mes_d','dep.Cobro_p_ext_catorcena_d','dep.Cobro_p_ext_noche_d',
+    'dep.Cobro_anticipo_mes_d','dep.Cobro_anticipo_catorcena_d','dep.Camas_juntas',
+    'loc.Nombre_locacion')
+    ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
+    ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+    ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+    ->leftJoin("departamento as dep", "dep.Id_departamento", "=", "lugares_reservados.Id_departamento")
+    ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "dep.Id_locacion")
+    ->where('reserva.Id_reservacion', '=', $Id_reservacion)
+    ->where('dep.Id_departamento', '=', $Id_departamento)
+    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    ->get();
+
+//funcion para calcular dias entre 2 fechas
+    $fecha1 =   $detallereserva[0]->Start_date;
+    $fecha2 =   $detallereserva[0]->End_date;
+//aqui saco los segundos de las fechas
+    $segfecha1 = strtotime($fecha1);
+    $segfecha2 = strtotime($fecha2);
+//segundos de diferencia entre las 2 fechas
+    $segtranscurridos = $segfecha2 - $segfecha1;
+//minutos transcurridos entre las 2 fechas
+    $mintranscurridos = $segtranscurridos/60;
+//horas transcurridas entre las 2 fechas
+    $horastranscurridas = $mintranscurridos/60;
+//dias transcurridos entre las 2 fechas
+    $diastranscurridos = $horastranscurridas/24;
+//redondeando los dias para que esten completos
+    $diasredondeados = floor($diastranscurridos);
+
+switch ($detallereserva[0]->Tipo_de_cobro) {
+case 'Noche':
+//variable que trae los dias
+    $diasredondeados;
+//variable que me saca el costo de los dias de estancia
+    $monto_por_dias = $diasredondeados * $detallereserva[0]->Precio_noche;
+//variable que me trae el costo por personas extra ya no se cobrara la persona extra por noche
+//$monto_por_p_extras = $detallereserva[0]->Cobro_p_ext_noche_d * $detallereserva[0]->Numero_personas_extras;
+//variable que me hace la suma total            
+    $suma_monto = $monto_por_dias + $detallereserva[0]->Deposito_garantia_dep + $detallereserva[0]->Monto_uso_cochera;
+
+//insertado de datos para la tabla de cobro de renta 
+    $cobro = new Cobro_renta();
+    $cobro -> Id_reservacion  = $Id_reservacion;
+    $cobro -> Id_lugares_reservados = $Id_lugares_reservados;
+    $cobro -> Cobro_persona_extra = 0;
+    $cobro -> Periodo_total = $diastranscurridos;
+    $cobro -> Estatus_cobro = 7;
+    $cobro -> Deposito_garantia = $detallereserva[0]->Deposito_garantia_dep;
+    $cobro -> Monto_total = $suma_monto;
+    $cobro->save();
+
+break;
+        
+case 'Semana':
+
+    $calculosemana = $diasredondeados/7;
+    $redondeosema = floor($calculosemana);
+//variable que me saca el costo de los dias de estancia
+    $monto_por_dias = $redondeosema * $detallereserva[0]->Precio_semana;
+//variable que me trae el costo por personas extra
+    $monto_por_p_extras = $detallereserva[0]->Cobro_p_ext_catorcena_d * $detallereserva[0]->Numero_personas_extras;
+//variable que me hace la suma total y me resta el monto de anticipo       
+    $suma_monto = $monto_por_dias + $monto_por_p_extras + $detallereserva[0]->Deposito_garantia_dep + $detallereserva[0]->Monto_uso_cochera - $detallereserva[0]->Cobro_anticipo_catorcena_d;
+
+//insertado de datos para la tabla de cobro de renta 
+    $cobro = new Cobro_renta();
+    $cobro -> Id_reservacion  = $Id_reservacion;
+    $cobro -> Id_lugares_reservados = $Id_lugares_reservados;
+    $cobro -> Cobro_persona_extra = $monto_por_p_extras;
+    $cobro -> Periodo_total = $diastranscurridos;
+    $cobro -> Estatus_cobro = 7;
+    $cobro -> Deposito_garantia = $detallereserva[0]->Deposito_garantia_dep;
+    $cobro -> Monto_total = $suma_monto;
+    $cobro->save();
+
+break;
+         
+case 'Catorcena':
+
+    $calculocatorcena = $diasredondeados/14;
+    $redondeocatorcena = floor($calculocatorcena);
+//variable que me saca el costo de los dias de estancia
+    $monto_por_dias = $redondeocatorcena * $detallereserva[0]->Precio_catorcedias;
+//variable que me trae el costo por personas extra
+    $monto_por_p_extras = $detallereserva[0]->Cobro_p_ext_catorcena_d * $detallereserva[0]->Numero_personas_extras;
+//variable que me hace la suma total y me resta el monto de anticipo       
+    $suma_monto = $monto_por_dias + $monto_por_p_extras + $detallereserva[0]->Deposito_garantia_dep + $detallereserva[0]->Monto_uso_cochera - $detallereserva[0]->Cobro_anticipo_catorcena_d;
+//insertado de datos para la tabla de cobro de renta 
+    $cobro = new Cobro_renta();
+    $cobro -> Id_reservacion  = $Id_reservacion;
+    $cobro -> Id_lugares_reservados = $Id_lugares_reservados;
+    $cobro -> Cobro_persona_extra = $monto_por_p_extras;
+    $cobro -> Periodo_total = $diastranscurridos;
+    $cobro -> Estatus_cobro = 7;
+    $cobro -> Deposito_garantia = $detallereserva[0]->Deposito_garantia_dep;
+    $cobro -> Monto_total = $suma_monto;
+    $cobro->save();
+
+break;
+
+case 'Mes':
+
+    $calculomes = $diasredondeados/28;
+    $redondeomes = floor($calculomes);
+//variable que me saca el costo de los dias de estancia
+    $monto_por_dias = $redondeomes * $detallereserva[0]->Precio_mes;
+//variable que me trae el costo por personas extra
+    $monto_por_p_extras = $detallereserva[0]->Cobro_p_ext_mes_d * $detallereserva[0]->Numero_personas_extras;
+//variable que me hace la suma total y me resta el monto de anticipo       
+    $suma_monto = $monto_por_dias + $monto_por_p_extras + $detallereserva[0]->Deposito_garantia_dep + $detallereserva[0]->Monto_uso_cochera - $detallereserva[0]->Cobro_anticipo_mes_d;
+            
+//insertado de datos para la tabla de cobro de renta 
+    $cobro = new Cobro_renta();
+    $cobro -> Id_reservacion  = $Id_reservacion;
+    $cobro -> Id_lugares_reservados = $Id_lugares_reservados;
+    $cobro -> Cobro_persona_extra = $monto_por_p_extras;
+    $cobro -> Periodo_total = $diastranscurridos;
+    $cobro -> Estatus_cobro = 7;
+    $cobro -> Deposito_garantia = $detallereserva[0]->Deposito_garantia_dep;
+    $cobro -> Monto_total = $suma_monto;
+    $cobro->save();
+break;
+}
+    
+
 //condicionales if que ayudan a saber que tipo de contrato se esta guardando y que datos se deben de guardar segun el contrato 
 //"-1" significa que no se usara contrato 
 if($request->get('tipo_contrato') == "-1"){
@@ -5461,7 +5751,7 @@ if($request->get('idcliente') == $cliente_reserva[0]->Id_cliente){
 }
 
 
-//seguir pasando las funciones para rentar un depa
+
 public function ViewIntroCasaC2($Id_reservacion, $Id_locacion, $Id_lugares_reservados){
 
     
@@ -6000,6 +6290,150 @@ try{
     ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
+    $detallereserva = DB::table('lugares_reservados')
+    ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_locacion', 
+        'lugares_reservados.Id_cliente',
+        'est.Nombre_estado',
+        'reserva.Id_reservacion','reserva.Id_colaborador',
+        'reserva.Start_date','reserva.End_date', 'reserva.Title','reserva.Fecha_reservacion',
+        'reserva.Numero_personas_extras', 'reserva.Foto_comprobante_anticipo', 'reserva.Fecha_pago_anticipo',
+        'reserva.Foto_aviso_privacidad', 'reserva.Foto_reglamento','reserva.Monto_uso_cochera', 
+        'reserva.Metodo_pago_anticipo','reserva.Espacios_cochera','reserva.Monto_pagado_anticipo',
+        'reserva.Tipo_de_cobro',
+        'cliente.Nombre','cliente.Apellido_paterno','cliente.Apellido_materno','cliente.Email',
+        'cliente.Numero_celular',
+        'loc.Id_locacion', 'loc.Id_estado_ocupacion',
+        'loc.Nombre_locacion','loc.Tipo_renta', 'loc.Calle',
+        'loc.Numero_ext', 'loc.Colonia', 'loc.Ubi_google_maps', 
+        'loc.Numero_total_de_pisos','loc.Numero_total_habitaciones', 'loc.Numero_total_depas', 
+        'loc.Numero_total_locales','loc.Capacidad_personas', 'loc.Precio_noche', 'loc.Precio_semana',
+        'loc.Precio_catorcedias','loc.Precio_mes', 'loc.Deposito_garantia_casa', 
+        'loc.Uso_cocheras', 'loc.Total_cocheras','loc.Encargado',
+        'loc.Espacio_superficie','loc.Zona_ciudad', 'loc.Numero_habs_actuales', 
+        'loc.Numero_depas_actuales', 'loc.Numero_locs_actuales','loc.Nota','loc.Descripcion',
+        'loc.Cobro_p_ext_mes_c','loc.Cobro_p_ext_catorcena_c','loc.Cobro_p_ext_noche_c',
+        'loc.Cobro_anticipo_mes_c','loc.Cobro_anticipo_catorcena_c','loc.Camas_juntas')
+    ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
+    ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+    ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+    ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "lugares_reservados.Id_locacion")
+    ->where('reserva.Id_reservacion', '=', $Id_reservacion)
+    ->where('loc.Id_locacion', '=', $Id_locacion)
+    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    ->get();
+    
+//funcion para calcular dias entre 2 fechas
+    $fecha1 =   $detallereserva[0]->Start_date;
+    $fecha2 =   $detallereserva[0]->End_date;
+//aqui saco los segundos de las fechas
+    $segfecha1 = strtotime($fecha1);
+    $segfecha2 = strtotime($fecha2);
+//segundos de diferencia entre las 2 fechas
+    $segtranscurridos = $segfecha2 - $segfecha1;
+//minutos transcurridos entre las 2 fechas
+    $mintranscurridos = $segtranscurridos/60;
+//horas transcurridas entre las 2 fechas
+    $horastranscurridas = $mintranscurridos/60;
+//dias transcurridos entre las 2 fechas
+    $diastranscurridos = $horastranscurridas/24;
+//redondeando los dias para que esten completos
+        $diasredondeados = floor($diastranscurridos);
+    
+switch ($detallereserva[0]->Tipo_de_cobro) {
+    case 'Noche':
+//variable que trae los dias
+        $diasredondeados;
+//variable que me saca el costo de los dias de estancia
+        $monto_por_dias = $diasredondeados * $detallereserva[0]->Precio_noche;
+//variable que me trae el costo por personas extra ya no se cobrara las personas extras por noche
+//$monto_por_p_extras = $detallereserva[0]->Cobro_p_ext_noche_c * $detallereserva[0]->Numero_personas_extras;
+//variable que me hace la suma total            
+        $suma_monto = $monto_por_dias + $detallereserva[0]->Deposito_garantia_casa;
+
+//insertado de datos para la tabla de cobro de renta 
+    $cobro = new Cobro_renta();
+    $cobro -> Id_reservacion  = $Id_reservacion;
+    $cobro -> Id_lugares_reservados = $Id_lugares_reservados;
+    $cobro -> Cobro_persona_extra = 0;
+    $cobro -> Periodo_total = $diastranscurridos;
+    $cobro -> Estatus_cobro = 7;
+    $cobro -> Deposito_garantia = $detallereserva[0]->Deposito_garantia_casa;
+    $cobro -> Monto_total = $suma_monto;
+    $cobro->save();
+
+    break;
+            
+    case 'Semana':
+        $calculosemana = $diasredondeados/7;
+        $redondeosema = floor($calculosemana);
+//variable que me saca el costo de los dias de estancia
+        $monto_por_dias = $redondeosema * $detallereserva[0]->Precio_semana;
+//variable que me trae el costo por personas extra
+        $monto_por_p_extras = $detallereserva[0]->Cobro_p_ext_catorcena_c * $detallereserva[0]->Numero_personas_extras;
+//variable que me hace la suma total y me resta el monto de anticipo       
+        $suma_monto = $monto_por_dias + $monto_por_p_extras + $detallereserva[0]->Deposito_garantia_casa - $detallereserva[0]->Cobro_anticipo_catorcena_c;
+    
+//insertado de datos para la tabla de cobro de renta 
+    $cobro = new Cobro_renta();
+    $cobro -> Id_reservacion  = $Id_reservacion;
+    $cobro -> Id_lugares_reservados = $Id_lugares_reservados;
+    $cobro -> Cobro_persona_extra = $monto_por_p_extras;
+    $cobro -> Periodo_total = $diastranscurridos;
+    $cobro -> Estatus_cobro = 7;
+    $cobro -> Deposito_garantia = $detallereserva[0]->Deposito_garantia_casa;
+    $cobro -> Monto_total = $suma_monto;
+    $cobro->save();
+
+    break;
+             
+    case 'Catorcena':
+    
+        $calculocatorcena = $diasredondeados/14;
+        $redondeocatorcena = floor($calculocatorcena);
+//variable que me saca el costo de los dias de estancia
+        $monto_por_dias = $redondeocatorcena * $detallereserva[0]->Precio_catorcedias;
+//variable que me trae el costo por personas extra
+        $monto_por_p_extras = $detallereserva[0]->Cobro_p_ext_catorcena_c * $detallereserva[0]->Numero_personas_extras;
+//variable que me hace la suma total y me resta el monto de anticipo       
+        $suma_monto = $monto_por_dias + $monto_por_p_extras + $detallereserva[0]->Deposito_garantia_casa - $detallereserva[0]->Cobro_anticipo_catorcena_c;
+                
+//insertado de datos para la tabla de cobro de renta 
+    $cobro = new Cobro_renta();
+    $cobro -> Id_reservacion  = $Id_reservacion;
+    $cobro -> Id_lugares_reservados = $Id_lugares_reservados;
+    $cobro -> Cobro_persona_extra = $monto_por_p_extras;
+    $cobro -> Periodo_total = $diastranscurridos;
+    $cobro -> Estatus_cobro = 7;
+    $cobro -> Deposito_garantia = $detallereserva[0]->Deposito_garantia_casa;
+    $cobro -> Monto_total = $suma_monto;
+    $cobro->save();
+
+    break;
+    
+    case 'Mes':
+        $calculomes = $diasredondeados/28;
+        $redondeomes = floor($calculomes);
+//variable que me saca el costo de los dias de estancia
+        $monto_por_dias = $redondeomes * $detallereserva[0]->Precio_mes;
+//variable que me trae el costo por personas extra
+        $monto_por_p_extras = $detallereserva[0]->Cobro_p_ext_mes_c * $detallereserva[0]->Numero_personas_extras;
+//variable que me hace la suma total y me resta el monto de anticipo       
+        $suma_monto = $monto_por_dias + $monto_por_p_extras + $detallereserva[0]->Deposito_garantia_casa - $detallereserva[0]->Cobro_anticipo_mes_c;
+                
+//insertado de datos para la tabla de cobro de renta 
+    $cobro = new Cobro_renta();
+    $cobro -> Id_reservacion  = $Id_reservacion;
+    $cobro -> Id_lugares_reservados = $Id_lugares_reservados;
+    $cobro -> Cobro_persona_extra = $monto_por_p_extras;
+    $cobro -> Periodo_total = $diastranscurridos;
+    $cobro -> Estatus_cobro = 7;
+    $cobro -> Deposito_garantia = $detallereserva[0]->Deposito_garantia_casa;
+    $cobro -> Monto_total = $suma_monto;
+    $cobro->save();
+
+    break;
+    }
+
 //condicionales if que ayudan a saber que tipo de contrato se esta guardando y que datos se deben de guardar segun el contrato 
 //"-1" significa que no se usara contrato 
 if($request->get('tipo_contrato') == "-1"){
@@ -6417,6 +6851,930 @@ $this->validate($request, array(
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//funciones para pasar a rentar un local
+public function ViewIntroLocC2($Id_local){
+
+    $renta = DB::table('local')
+    ->select('Id_local', 'Id_colaborador','Id_estado_ocupacion',
+    'Id_locacion','Nombre_local', 'Precio_renta','Espacio_superficie', 
+    'Encargado','Nota','Descripcion', 'local.Deposito_garantia_local')
+    ->where('Id_local', '=', $Id_local)
+    ->get();
+
+
+     return view('Reservaciones y rentas.Rentar.Local.form_dato_c2_loc', compact('renta', 'Id_local')); 
 }
 
 
+public function StoreRentarLocC2(Request $request, $Id_local){
+try{
+
+if($request->get('idcliente') == ""){  
+//datos del cliente
+    $agregarcliente = new Cliente();
+    $agregarcliente-> Nombre = $request->get('nombre_c');
+    $agregarcliente-> Apellido_paterno = $request->get('apellido_pat');
+    $agregarcliente-> Apellido_materno = $request->get('apellido_mat');
+    $agregarcliente-> Numero_celular = $request->get('celular_c');
+    $agregarcliente-> Email = $request->get('email_c');
+    $agregarcliente-> Ciudad = $request->get('ciudad');
+    $agregarcliente-> Estado = $request->get('estado');
+    $agregarcliente-> Pais = $request->get('pais');
+    $agregarcliente-> Ref1_nombre = $request->get('nombre_p_e1');
+    $agregarcliente-> Ref2_nombre = $request->get('nombre_p_e2');
+    $agregarcliente-> Ref1_celular = $request->get('numero_p_e1');
+    $agregarcliente-> Ref2_celular = $request->get('numero_p_e2');
+    $agregarcliente-> Ref1_parentesco = $request->get('parentesco1');
+    $agregarcliente-> Ref2_parentesco = $request->get('parentesco2');
+    $agregarcliente-> Motivo_visita = $request->get('motivo_v');
+    $agregarcliente-> Lugar_motivo_visita = $request->get('lugar_v');
+    $agregarcliente->save();
+
+    $idclient =DB::getPdo()->lastInsertId();
+
+    $nombreclient = DB::table('cliente')
+    ->select( 'Id_cliente','Id_colaborador','Nombre',
+    'Apellido_paterno','Apellido_materno','Email', 
+    'Numero_celular','Ciudad','Estado',
+    'Pais', 'Ref1_nombre','Ref2_nombre',
+    'Ref1_celular','Ref2_celular','Ref1_parentesco',
+    'Ref2_parentesco','Motivo_visita', 'Lugar_motivo_visita', 
+    'Foto_cliente', 'INE_frente', 'INE_reverso')
+    ->where('Id_cliente', '=', $idclient)
+    ->get();
+
+
+//array que guarda la foto del cliente
+    $this->validate($request, array(
+    'img2' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img2');
+
+    if($image != ''){
+        $nombreImagen = $nombreclient[0]->Nombre.'_'.$nombreclient[0]->Apellido_paterno.'_'.$nombreclient[0]->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen2;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso         
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+    $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
+    $guardarImagen = file_put_contents($filepath, $data);
+
+    if ($guardarImagen !== false) {
+        DB::table('cliente')
+        ->where('Id_cliente', '=', $nombreclient[0]->Id_cliente)
+        ->update(['Foto_cliente' => $nombreImagen]);
+}}
+
+
+//array que guarda la foto de la ine de frente del cliente
+    $this->validate($request, array(
+    'img3' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img3');
+
+    if($image != ''){
+        $nombreImagen = 'INE'.'_'.$nombreclient[0]->Apellido_paterno.'_'.$nombreclient[0]->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen3;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso         
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+    $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
+    $guardarImagen = file_put_contents($filepath, $data);
+
+    if ($guardarImagen !== false) {
+        DB::table('cliente')
+        ->where('Id_cliente', '=', $nombreclient[0]->Id_cliente)
+        ->update(['INE_frente' => $nombreImagen]);
+}}
+
+
+//array que guarda la foto de la ine de atras del cliente
+    $this->validate($request, array(
+    'img4' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img4');
+
+    if($image != ''){
+        $nombreImagen = 'INE'.'_'.$nombreclient[0]->Apellido_paterno.'_'.$nombreclient[0]->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen4;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso         
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+    $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
+    $guardarImagen = file_put_contents($filepath, $data);
+
+    if ($guardarImagen !== false) {
+        DB::table('cliente')
+        ->where('Id_cliente', '=', $nombreclient[0]->Id_cliente)
+        ->update(['INE_reverso' => $nombreImagen]);
+}}
+
+    // $lugarlocal = DB::table('local')
+    // ->where('Id_local', '=', $Id_local)
+    // ->get();
+
+    
+return view('Reservaciones y rentas.Rentar.Local.introalojamiento', compact('Id_local', 'nombreclient')); 
+    
+
+}else{
+    
+    
+//consulta para buscar el registro de la persona seleccionada    
+    $cambio_cliente = Cliente::findOrFail($request->get('idcliente'));
+//actualizacion de los datos del cliente
+    $cambio_cliente->Nombre = $request->nombre_c;
+    $cambio_cliente->Apellido_paterno = $request->apellido_pat;
+    $cambio_cliente->Apellido_materno = $request->apellido_mat;
+    $cambio_cliente->Numero_celular = $request->celular_c;
+    $cambio_cliente->Email = $request->email_c;
+    $cambio_cliente->Ciudad = $request->ciudad;
+    $cambio_cliente->Estado = $request->estado;
+    $cambio_cliente->Pais = $request->pais;
+    $cambio_cliente->Ref1_nombre = $request->nombre_p_e1;
+    $cambio_cliente->Ref2_nombre = $request->nombre_p_e2;
+    $cambio_cliente->Ref1_celular = $request->numero_p_e1;
+    $cambio_cliente->Ref2_celular = $request->numero_p_e2;
+    $cambio_cliente->Ref1_parentesco = $request->parentesco1;
+    $cambio_cliente->Ref2_parentesco = $request->parentesco2;
+    $cambio_cliente->Motivo_visita = $request->motivo_v;
+    $cambio_cliente->Lugar_motivo_visita = $request->lugar_v;
+    $cambio_cliente->save();
+
+//array que guarda la foto del cliente
+    $this->validate($request, array(
+    'img2' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img2');
+  
+    if($image != ''){
+        $nombreImagen = $cambio_cliente->Nombre.'_'.$cambio_cliente->Apellido_paterno.'_'.$cambio_cliente->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen2;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso         
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+        if ($guardarImagen !== false) {
+            DB::table('cliente')
+            ->where('Id_cliente', '=', $cambio_cliente->Id_cliente)
+            ->update(['Foto_cliente' => $nombreImagen]);
+    }}
+    
+
+//array que guarda la foto de la ine de frente del cliente
+    $this->validate($request, array(
+    'img3' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img3');
+  
+    if($image != ''){
+        $nombreImagen = 'INE'.'_'.$cambio_cliente->Apellido_paterno.'_'.$cambio_cliente->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen3;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso         
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+        if ($guardarImagen !== false) {
+            DB::table('cliente')
+            ->where('Id_cliente', '=', $cambio_cliente->Id_cliente)
+            ->update(['INE_frente' => $nombreImagen]);
+    }}
+
+
+//array que guarda la foto de la ine de atras del cliente
+    $this->validate($request, array(
+    'img4' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img4');
+  
+    if($image != ''){
+        $nombreImagen = 'INE'.'_'.$cambio_cliente->Apellido_paterno.'_'.$cambio_cliente->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen4;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso         
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+        if ($guardarImagen !== false) {
+            DB::table('cliente')
+            ->where('Id_cliente', '=', $cambio_cliente->Id_cliente)
+            ->update(['INE_reverso' => $nombreImagen]);
+    }}
+
+
+    $nombreclient = DB::table('cliente')
+    ->select( 'Id_cliente','Id_colaborador','Nombre',
+    'Apellido_paterno','Apellido_materno','Email', 
+    'Numero_celular','Ciudad','Estado',
+    'Pais', 'Ref1_nombre','Ref2_nombre',
+    'Ref1_celular','Ref2_celular','Ref1_parentesco',
+    'Ref2_parentesco','Motivo_visita', 'Lugar_motivo_visita', 
+    'Foto_cliente', 'INE_frente', 'INE_reverso')
+    ->where('Id_cliente', '=', $cambio_cliente->Id_cliente)
+    ->get();
+
+    // $lugarlocal = DB::table('local')
+    // ->where('Id_local', '=', $Id_local)
+    // ->get();
+
+    return view('Reservaciones y rentas.Rentar.Local.introalojamiento', compact('Id_local', 'nombreclient')); 
+    
+
+}
+}catch(Exception $ex){
+     Alert::error('Error', 'los datos que ingresaste no son correctos, revisa que todo este en orden');
+     return redirect()->back();
+}
+}
+
+
+//funcion que muestra el formulario para añadir una reservacion con cliente existente desde un depa
+public function ViewAlojamientoLoc($Id_local, $nombreclient){
+
+    $renta = DB::table('local')
+    ->select('Id_local', 'Id_colaborador','Id_estado_ocupacion',
+    'Id_locacion','Nombre_local', 'Precio_renta','Espacio_superficie', 
+    'Encargado','Nota','Descripcion', 'local.Deposito_garantia_local')
+    ->where('Id_local', '=', $Id_local)
+    ->get();
+    
+    $totalcocheras = DB::table('locacion')
+    ->select( 'Id_locacion', 'Total_cocheras', 'Uso_cocheras')
+    ->where('Id_locacion', '=', $renta[0]->Id_locacion)
+    ->get();
+
+    $local = DB::table('local')
+    ->where('Id_local', '=', $Id_local)
+    ->get();
+
+    $dato1 = DB::table('locacion')
+    ->select( 'Id_locacion', 'Uso_cocheras')
+    ->where('Id_locacion', '=', $renta[0]->Id_locacion)
+    ->get();
+
+    $dato2 = DB::table('locacion')
+    ->select( 'Id_locacion', 'Total_cocheras')
+    ->where('Id_locacion', '=', $renta[0]->Id_locacion)
+    ->get();
+
+    $result_resta = (int)$dato2[0]->Total_cocheras - (int)$dato1[0]->Uso_cocheras;
+
+    $nombreclient;
+
+    return view('Reservaciones y rentas.Rentar.Local.form_alojamiento_loc', compact('Id_local', 'nombreclient', 'result_resta', 'totalcocheras')); 
+
+}
+
+//funcion que guarda el registro de una reservacion de un cliente existete en un depa
+public function StoreReservaLoc( $Id_local, $nombreclient, Request $request,){
+
+try{
+//consulta que me revisa las fechas ya agendadas en la bd para que no se repitan las fechas
+        $fecha_bd = DB::table('reservacion')
+        ->select('local.Id_local', 'Start_date', 'End_date' )
+        ->leftJoin("lugares_reservados as lugar_res", "lugar_res.Id_reservacion", "=", "reservacion.Id_reservacion")
+        ->leftJoin("local", "local.Id_local", "=", "lugar_res.Id_local")
+        ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
+        ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+        ->where('local.Id_local', '=', $Id_local)
+        ->get();
+
+        $renta = DB::table('local')
+        ->select('Id_local', 'Id_colaborador','Id_estado_ocupacion',
+        'Id_locacion','Nombre_local', 'Precio_renta','Espacio_superficie', 
+        'Encargado','Nota','Descripcion', 'local.Deposito_garantia_local')
+        ->where('Id_local', '=', $Id_local)
+        ->get();
+
+//con el if pongo la regla, si no hay algun registro con la fecha dada que se haga el registro nuevo, si no que me alerte para tomar otra fecha
+        if(count($fecha_bd) == 0){
+
+            $nombrecliente = DB::table('cliente')
+            ->select('Nombre', 'Numero_celular')
+            ->where('Id_cliente', '=', $nombreclient)
+            ->get();
+            
+            $reservacion = new Reservacion();
+            $reservacion->Title = $nombrecliente;
+            $reservacion->Fecha_reservacion = date('y-m-d');
+            $reservacion->Start_date = $request->get('f_entrada');
+            $reservacion->End_date = $request->get('f_salida');
+            $reservacion->Total_de_personas = 1;
+            $reservacion->Monto_uso_cochera = $request->get('num_cochera');
+            $reservacion->Espacios_cochera = $request->get('uso_cochera');
+            $reservacion->Tipo_de_cobro = $request->get('tipo_renta');
+            $reservacion->save();
+            $lastreservacion =DB::getPdo()->lastInsertId();
+
+            $affected = DB::table('local')
+            ->where('Id_local', '=', $Id_local)
+            ->update(['Monto_garantia_pagado' => $request->get('monto_anticipo')]);
+
+            $affect = DB::table('local')
+            ->where('Id_local', '=', $Id_local)
+            ->update(['Metodo_garantia_pago' => $request->get('metodo_pago')]);
+
+            $affectedde = DB::table('local')
+            ->where('Id_local', '=', $Id_local)
+              ->update(['Fecha_garantia_pago' => $request->get('fecha_pago')]);
+        
+            $lugar_reserva = new Lugares_reservados();
+            $lugar_reserva-> Id_reservacion  = $lastreservacion;
+            $lugar_reserva-> Id_local = $Id_local;
+            $lugar_reserva-> Id_cliente = $nombreclient;
+            $lugar_reserva-> Id_estado_ocupacion  = "4";
+            $lugar_reserva->save();
+            $lastlugar =DB::getPdo()->lastInsertId();
+
+            $affected = DB::table('local')
+            ->where('Id_local', '=', $Id_local)
+            ->update(['Id_estado_ocupacion' => "4"]);
+
+            $consulta_cocheras = DB::table('locacion')
+            ->select('Uso_cocheras')
+            ->where('Id_locacion', '=', $renta[0]->Id_locacion)
+            ->get();
+
+            $result_suma_cocheras = (int)$consulta_cocheras[0]->Uso_cocheras + (int)$request->get('uso_cochera');
+
+            $locacion_update = DB::table('locacion')
+            ->where('Id_locacion', '=', $renta[0]->Id_locacion)
+            ->update(['Uso_cocheras' => $result_suma_cocheras]);
+
+
+        //array que guarda la foto 2
+            $this->validate($request, array(
+            'img2' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+            ));
+            $image = $request->file('img2');
+
+            if($image != ''){
+                $nombreImagen = "GARANTIA".'_'.$nombrecliente[0]->Numero_celular.'_'.$request->get('fecha_pago').'_'.rand(). '.' . $image->getClientOriginalExtension();
+                $base64Img = $request->nuevaImagen2;
+                $base_to_php = explode(',',$base64Img);
+                $data = base64_decode($base_to_php[1]);
+        //aviso         
+        //en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+                $filepath = 'C:/xampp/htdocs/alohate/public/uploads/comprobantes_pago_anticipo/'.$nombreImagen;
+                $guardarImagen = file_put_contents($filepath, $data);
+
+                if ($guardarImagen !== false) {
+                    DB::table('local')
+                    ->where('Id_local', '=', $Id_local)
+                    ->update(['Foto_garantia_comprobante' => $nombreImagen]);
+            }}
+
+            $lugar_renta = DB::table('lugares_reservados')
+            ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_departamento','lugares_reservados.Id_locacion', 
+            'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
+            'est.Nombre_estado',
+            'reserva.Id_reservacion','reserva.Id_colaborador',
+            'reserva.Start_date','reserva.End_date', 'reserva.Title','reserva.Fecha_reservacion',
+            'reserva.Numero_personas_extras', 'reserva.Foto_comprobante_anticipo', 'reserva.Fecha_pago_anticipo',
+            'reserva.Foto_aviso_privacidad', 'reserva.Foto_reglamento','reserva.Monto_uso_cochera', 
+            'reserva.Metodo_pago_anticipo','reserva.Espacios_cochera','reserva.Monto_pagado_anticipo',
+            'reserva.Tipo_de_cobro','reserva.Nota_pago_anticipo',
+            'cliente.Id_cliente','cliente.Id_colaborador','cliente.Nombre',
+            'cliente.Apellido_paterno','cliente.Apellido_materno','cliente.Email', 
+            'cliente.Numero_celular','cliente.Ciudad','cliente.Estado',
+            'cliente.Pais', 'cliente.Ref1_nombre','cliente.Ref2_nombre',
+            'cliente.Ref1_celular','cliente.Ref2_celular','cliente.Ref1_parentesco',
+            'cliente.Ref2_parentesco','cliente.Motivo_visita', 'cliente.Lugar_motivo_visita', 
+            'cliente.Foto_cliente', 'cliente.INE_frente', 'cliente.INE_reverso',
+            'local.Id_local', 'local.Id_colaborador','local.Id_estado_ocupacion',
+            'local.Id_locacion','local.Nombre_local', 'local.Precio_renta','local.Espacio_superficie', 
+            'local.Encargado','local.Nota','local.Descripcion', 'local.Deposito_garantia_local')
+            ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
+            ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+            ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+            ->leftJoin("local", "local.Id_local", "=", "lugares_reservados.Id_local")
+            ->where('reserva.Id_reservacion', '=', $lastreservacion)
+            ->where('local.Id_local', '=', $Id_local)
+            ->where('lugares_reservados.Id_lugares_reservados', '=', $lastlugar)
+            ->get();
+
+            return view('Reservaciones y rentas.Rentar.Local.intro_rentar', compact('Id_local', 'nombreclient', 'lugar_renta', 'renta')); 
+
+        }else{
+            Alert::warning('Advertencia', 'La fecha seleccionada ya esta ocupada, por favor selecciona otra');
+            return redirect()->back();
+        }
+
+}catch(Exception $ex){
+        Alert::error('Error', 'La renta no se pudo registrar revisa que todo este en orden');
+        return redirect()->back();
+}
+    
+}
+
+
+
+//ruta para la vista de la intro ya para los ultimos datos de la renta
+public function ViewRentarLoc($Id_local, $nombreclient, $Id_reservacion, $Id_lugares_reservados ){
+
+    $lugar_renta = DB::table('lugares_reservados')
+    ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_departamento','lugares_reservados.Id_locacion', 
+    'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
+    'est.Nombre_estado',
+    'reserva.Id_reservacion','reserva.Id_colaborador',
+    'reserva.Start_date','reserva.End_date', 'reserva.Title','reserva.Fecha_reservacion',
+    'reserva.Numero_personas_extras', 'reserva.Foto_comprobante_anticipo', 'reserva.Fecha_pago_anticipo',
+    'reserva.Foto_aviso_privacidad', 'reserva.Foto_reglamento','reserva.Monto_uso_cochera', 
+    'reserva.Metodo_pago_anticipo','reserva.Espacios_cochera','reserva.Monto_pagado_anticipo',
+    'reserva.Tipo_de_cobro','reserva.Nota_pago_anticipo',
+    'cliente.Id_cliente','cliente.Id_colaborador','cliente.Nombre',
+    'cliente.Apellido_paterno','cliente.Apellido_materno','cliente.Email', 
+    'cliente.Numero_celular','cliente.Ciudad','cliente.Estado',
+    'cliente.Pais', 'cliente.Ref1_nombre','cliente.Ref2_nombre',
+    'cliente.Ref1_celular','cliente.Ref2_celular','cliente.Ref1_parentesco',
+    'cliente.Ref2_parentesco','cliente.Motivo_visita', 'cliente.Lugar_motivo_visita', 
+    'cliente.Foto_cliente', 'cliente.INE_frente', 'cliente.INE_reverso',
+    'local.Id_local', 'local.Id_colaborador','local.Id_estado_ocupacion',
+    'local.Id_locacion','local.Nombre_local', 'local.Precio_renta','local.Espacio_superficie', 
+    'local.Encargado','local.Nota','local.Descripcion', 'local.Deposito_garantia_local')
+    ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
+    ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+    ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+    ->leftJoin("local", "local.Id_local", "=", "lugares_reservados.Id_local")
+    ->where('reserva.Id_reservacion', '=', $Id_reservacion)
+    ->where('local.Id_local', '=', $Id_local)
+    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    ->get();
+
+    return view('Reservaciones y rentas.Rentar.Local.form_rentar_loc', compact('Id_reservacion', 'Id_lugares_reservados', 'lugar_renta', 'Id_local', 'nombreclient'));
+
+}
+
+public function StoreRentarLoc($Id_local, $nombreclient, $Id_reservacion, $Id_lugares_reservados, Request $request, Reservacion $reservacion){
+try{
+//consulta para sacar el cliente de la reserva
+    $cliente = DB::table('lugares_reservados')
+    ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_departamento','lugares_reservados.Id_locacion', 
+    'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
+    'est.Nombre_estado',
+    'reserva.Id_reservacion','reserva.Id_colaborador',
+    'reserva.Start_date','reserva.End_date', 'reserva.Title','reserva.Fecha_reservacion',
+    'reserva.Numero_personas_extras', 'reserva.Foto_comprobante_anticipo', 'reserva.Fecha_pago_anticipo',
+    'reserva.Foto_aviso_privacidad', 'reserva.Foto_reglamento','reserva.Monto_uso_cochera', 
+    'reserva.Metodo_pago_anticipo','reserva.Espacios_cochera','reserva.Monto_pagado_anticipo',
+    'reserva.Tipo_de_cobro','reserva.Nota_pago_anticipo',
+    'cliente.Id_cliente','cliente.Id_colaborador','cliente.Nombre',
+    'cliente.Apellido_paterno','cliente.Apellido_materno','cliente.Email', 
+    'cliente.Numero_celular','cliente.Ciudad','cliente.Estado',
+    'cliente.Pais', 'cliente.Ref1_nombre','cliente.Ref2_nombre',
+    'cliente.Ref1_celular','cliente.Ref2_celular','cliente.Ref1_parentesco',
+    'cliente.Ref2_parentesco','cliente.Motivo_visita', 'cliente.Lugar_motivo_visita', 
+    'cliente.Foto_cliente', 'cliente.INE_frente', 'cliente.INE_reverso',
+    'local.Id_local', 'local.Id_colaborador','local.Id_estado_ocupacion',
+    'local.Id_locacion','local.Nombre_local', 'local.Precio_renta','local.Espacio_superficie', 
+    'local.Encargado','local.Nota','local.Descripcion', 'local.Deposito_garantia_local')
+    ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
+    ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+    ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+    ->leftJoin("local", "local.Id_local", "=", "lugares_reservados.Id_local")
+    ->where('reserva.Id_reservacion', '=', $Id_reservacion)
+    ->where('local.Id_local', '=', $Id_local)
+    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    ->get();
+
+//condicionales if que ayudan a saber que tipo de contrato se esta guardando y que datos se deben de guardar segun el contrato 
+//"-1" significa que no se usara contrato 
+if($request->get('tipo_contrato') == "-1"){
+    
+//array que guarda la foto del reglamento
+$this->validate($request, array(
+    'img3' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img3');
+  
+    if($image != ''){
+        $nombreImagen = 'Reglamento'.'_'.$cliente[0]->Apellido_paterno.'_'.$cliente[0]->Numero_celular.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen3;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso         
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/reglamentos_avisos/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+    if ($guardarImagen !== false) {
+        DB::table('reservacion')
+        ->where('Id_reservacion', '=', $Id_reservacion)
+        ->update(['Foto_reglamento' => $nombreImagen]);
+    }}
+
+
+//array que guarda la foto del aviso de privacidad
+$this->validate($request, array(
+    'img2' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img2');
+  
+    if($image != ''){
+        $nombreImagen = 'aviso_privacidad'.'_'.$cliente[0]->Apellido_paterno.'_'.$cliente[0]->Numero_celular.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen2;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso         
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/reglamentos_avisos/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+    if ($guardarImagen !== false) {
+        DB::table('reservacion')
+        ->where('Id_reservacion', '=', $Id_reservacion)
+        ->update(['Foto_aviso_privacidad' => $nombreImagen]);
+    }}
+
+//actualizo el estatus de la tabla de lugares reservados que es donde esta la reservacion
+    $affected = DB::table('lugares_reservados')
+    ->where('Id_reservacion', '=', $Id_reservacion)
+    ->update(['Id_estado_ocupacion' => 4]);
+
+//actualizo el estatus del lugar que se usara
+    $affecteded = DB::table('local')
+    ->where('Id_local', '=', $Id_local)
+    ->update(['Id_estado_ocupacion' => 4]);
+
+ }else{
+//si es que se escoge contrato rigido se ejecutara este codigo
+if($request->get('tipo_contrato') == "Rigido"){
+    
+//array que guarda la foto del reglamento
+$this->validate($request, array(
+    'img3' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img3');
+  
+    if($image != ''){
+        $nombreImagen = 'Reglamento'.'_'.$cliente[0]->Apellido_paterno.'_'.$cliente[0]->Numero_celular.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen3;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso         
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/reglamentos_avisos/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+    if ($guardarImagen !== false) {
+        DB::table('reservacion')
+        ->where('Id_reservacion', '=', $Id_reservacion)
+        ->update(['Foto_reglamento' => $nombreImagen]);
+    }}
+
+
+//array que guarda la foto del aviso de privacidad
+$this->validate($request, array(
+    'img2' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img2');
+  
+    if($image != ''){
+        $nombreImagen = 'aviso_privacidad'.'_'.$cliente[0]->Apellido_paterno.'_'.$cliente[0]->Numero_celular.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen2;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso         
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/reglamentos_avisos/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+    if ($guardarImagen !== false) {
+        DB::table('reservacion')
+        ->where('Id_reservacion', '=', $Id_reservacion)
+        ->update(['Foto_aviso_privacidad' => $nombreImagen]);
+    }}
+
+//falta cambiar el estatus a rentado de los lugares rentados y del lugar que se usara
+//fiador
+    $fiador = new Fiador();
+    $fiador -> Id_cliente  = $cliente[0]->Id_cliente;
+    $fiador -> Nombre = $request->get('nombre_f');
+    $fiador -> Apellido_pat = $request->get('apellido_pat_f');
+    $fiador -> Apellido_mat = $request->get('apellido_mat_f');
+    $fiador -> No_casa = $request->get('no_ext_casa');
+    $fiador -> Calle = $request->get('calle_f');
+    $fiador -> Colonia = $request->get('colonia_f');
+    $fiador -> Estado = $request->get('estado_f');
+    $fiador -> No_telefono = $request->get('num_telefono_f');
+    $fiador->save();
+    $lastfiador =DB::getPdo()->lastInsertId();
+
+    $fiador = DB::table('fiador')
+    ->select('Id_fiador','Id_cliente', 'Id_colaborador','Nombre',
+    'Apellido_pat','Apellido_mat', 'No_casa','Calle','Colonia',
+    'Estado','No_telefono','INE_frontal_fiador','INE_trasera_fiador')
+    ->where('Id_fiador', '=', $lastfiador)
+    ->get();
+
+//array que guarda la foto de la ine de frente del fiador
+    $this->validate($request, array(
+    'img5' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img5');
+  
+    if($image != ''){
+        $nombreImagen = 'INE'.'_'.$fiador[0]->Apellido_pat.'_'.$fiador[0]->Apellido_mat.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen5;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso         
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/fiadores/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+    if ($guardarImagen !== false) {
+        DB::table('fiador')
+        ->where('Id_fiador', '=', $lastfiador)
+        ->update(['INE_frontal_fiador' => $nombreImagen]);
+    }}
+
+
+//array que guarda la foto de la ine de atras del fiador
+    $this->validate($request, array(
+    'img6' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img6');
+  
+    if($image != ''){
+        $nombreImagen = 'INE'.'_'.$fiador[0]->Apellido_pat.'_'.$fiador[0]->Apellido_mat.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen6;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/fiadores/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+    if ($guardarImagen !== false) {
+        DB::table('fiador')
+        ->where('Id_fiador', '=', $lastfiador)
+        ->update(['INE_trasera_fiador' => $nombreImagen]);
+    }}
+
+    $reserva = DB::table('reservacion')
+    ->select( 'Start_date', 'End_date')
+    ->where('Id_reservacion', '=', $Id_reservacion)
+    ->get();
+
+//contrato
+    $contrato = new Contrato();
+    $contrato -> Id_fiador = $lastfiador;
+    $contrato -> Id_reservacion = $Id_reservacion;
+    $contrato -> Fecha_inicio = $reserva[0]->Start_date;
+    $contrato -> Fecha_termino = $reserva[0]->End_date;
+    $contrato -> Tipo_contrato = $request->get('tipo_contrato');
+    $contrato->save();
+    $lastcontrato =DB::getPdo()->lastInsertId();
+
+   $cliente = DB::table('lugares_reservados')
+   ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_departamento','lugares_reservados.Id_locacion', 
+    'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
+    'est.Nombre_estado',
+    'reserva.Id_reservacion','reserva.Id_colaborador',
+    'reserva.Start_date','reserva.End_date', 'reserva.Title','reserva.Fecha_reservacion',
+    'reserva.Numero_personas_extras', 'reserva.Foto_comprobante_anticipo', 'reserva.Fecha_pago_anticipo',
+    'reserva.Foto_aviso_privacidad', 'reserva.Foto_reglamento','reserva.Monto_uso_cochera', 
+    'reserva.Metodo_pago_anticipo','reserva.Espacios_cochera','reserva.Monto_pagado_anticipo',
+    'reserva.Tipo_de_cobro','reserva.Nota_pago_anticipo',
+    'cliente.Id_cliente','cliente.Id_colaborador','cliente.Nombre',
+    'cliente.Apellido_paterno','cliente.Apellido_materno','cliente.Email', 
+    'cliente.Numero_celular','cliente.Ciudad','cliente.Estado',
+    'cliente.Pais', 'cliente.Ref1_nombre','cliente.Ref2_nombre',
+    'cliente.Ref1_celular','cliente.Ref2_celular','cliente.Ref1_parentesco',
+    'cliente.Ref2_parentesco','cliente.Motivo_visita', 'cliente.Lugar_motivo_visita', 
+    'cliente.Foto_cliente', 'cliente.INE_frente', 'cliente.INE_reverso',
+    'local.Id_local', 'local.Id_colaborador','local.Id_estado_ocupacion',
+    'local.Id_locacion','local.Nombre_local', 'local.Precio_renta','local.Espacio_superficie', 
+    'local.Encargado','local.Nota','local.Descripcion', 'local.Deposito_garantia_local')
+    ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
+    ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+    ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+    ->leftJoin("local", "local.Id_local", "=", "lugares_reservados.Id_local")
+    ->where('reserva.Id_reservacion', '=', $Id_reservacion)
+    ->where('local.Id_local', '=', $Id_local)
+    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    ->get();
+
+//array que guarda la foto del contrato
+    $this->validate($request, array(
+    'img4' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img4');
+  
+    if($image != ''){
+        $nombreImagen = 'Contrato'.'_'.$cliente[0]->Apellido_paterno.'_'.$cliente[0]->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen4;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/contratos/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+    if ($guardarImagen !== false) {
+        DB::table('contratos')
+        ->where('Id_contrato', '=', $lastcontrato)
+        ->update(['Foto_contrato' => $nombreImagen]);
+    }}
+
+//actualizo el estatus de la tabla de lugares reservados que es donde esta la reservacion
+    $affected = DB::table('lugares_reservados')
+    ->where('Id_reservacion', '=', $Id_reservacion)
+    ->update(['Id_estado_ocupacion' => 4]);
+
+//actualizo el estatus del lugar que se usara
+    $affecteded = DB::table('local')
+    ->where('Id_local', '=', $Id_local)
+    ->update(['Id_estado_ocupacion' => 4]);
+
+
+}else{
+if($request->get('tipo_contrato') == "Flexible"){
+    
+//array que guarda la foto del reglamento
+$this->validate($request, array(
+    'img3' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img3');
+  
+    if($image != ''){
+        $nombreImagen = 'Reglamento'.'_'.$cliente[0]->Apellido_paterno.'_'.$cliente[0]->Numero_celular.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen3;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso         
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/reglamentos_avisos/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+    if ($guardarImagen !== false) {
+        DB::table('reservacion')
+        ->where('Id_reservacion', '=', $Id_reservacion)
+        ->update(['Foto_reglamento' => $nombreImagen]);
+    }}
+
+//array que guarda la foto del aviso de privacidad
+$this->validate($request, array(
+    'img2' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img2');
+  
+    if($image != ''){
+        $nombreImagen = 'aviso_privacidad'.'_'.$cliente[0]->Apellido_paterno.'_'.$cliente[0]->Numero_celular.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen2;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso         
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/reglamentos_avisos/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+    if ($guardarImagen !== false) {
+        DB::table('reservacion')
+        ->where('Id_reservacion', '=', $Id_reservacion)
+        ->update(['Foto_aviso_privacidad' => $nombreImagen]);
+    }}
+
+    $reserva = DB::table('reservacion')
+    ->select( 'Start_date', 'End_date')
+    ->where('Id_reservacion', '=', $Id_reservacion)
+    ->get();
+
+//contrato
+    $contrato = new Contrato();
+    $contrato -> Id_reservacion = $Id_reservacion;
+    $contrato -> Fecha_inicio = $reserva[0]->Start_date;
+    $contrato -> Fecha_termino = $reserva[0]->End_date;
+    $contrato -> Tipo_contrato = $request->get('tipo_contrato');
+    $contrato->save();
+    $lastcontrato =DB::getPdo()->lastInsertId();
+
+   $cliente = DB::table('lugares_reservados')
+   ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_departamento','lugares_reservados.Id_locacion', 
+    'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
+    'est.Nombre_estado',
+    'reserva.Id_reservacion','reserva.Id_colaborador',
+    'reserva.Start_date','reserva.End_date', 'reserva.Title','reserva.Fecha_reservacion',
+    'reserva.Numero_personas_extras', 'reserva.Foto_comprobante_anticipo', 'reserva.Fecha_pago_anticipo',
+    'reserva.Foto_aviso_privacidad', 'reserva.Foto_reglamento','reserva.Monto_uso_cochera', 
+    'reserva.Metodo_pago_anticipo','reserva.Espacios_cochera','reserva.Monto_pagado_anticipo',
+    'reserva.Tipo_de_cobro','reserva.Nota_pago_anticipo',
+    'cliente.Id_cliente','cliente.Id_colaborador','cliente.Nombre',
+    'cliente.Apellido_paterno','cliente.Apellido_materno','cliente.Email', 
+    'cliente.Numero_celular','cliente.Ciudad','cliente.Estado',
+    'cliente.Pais', 'cliente.Ref1_nombre','cliente.Ref2_nombre',
+    'cliente.Ref1_celular','cliente.Ref2_celular','cliente.Ref1_parentesco',
+    'cliente.Ref2_parentesco','cliente.Motivo_visita', 'cliente.Lugar_motivo_visita', 
+    'cliente.Foto_cliente', 'cliente.INE_frente', 'cliente.INE_reverso',
+    'local.Id_local', 'local.Id_colaborador','local.Id_estado_ocupacion',
+    'local.Id_locacion','local.Nombre_local', 'local.Precio_renta','local.Espacio_superficie', 
+    'local.Encargado','local.Nota','local.Descripcion', 'local.Deposito_garantia_local')
+    ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
+    ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+    ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+    ->leftJoin("local", "local.Id_local", "=", "lugares_reservados.Id_local")
+    ->where('reserva.Id_reservacion', '=', $Id_reservacion)
+    ->where('local.Id_local', '=', $Id_local)
+    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    ->get();
+
+//array que guarda la foto del contrato
+    $this->validate($request, array(
+    'img4' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img4');
+  
+    if($image != ''){
+        $nombreImagen = 'Contrato'.'_'.$cliente[0]->Apellido_paterno.'_'.$cliente[0]->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen4;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/contratos/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+        if ($guardarImagen !== false) {
+            DB::table('contratos')
+            ->where('Id_contrato', '=', $lastcontrato)
+            ->update(['Foto_contrato' => $nombreImagen]);
+    }}
+
+//actualizo el estatus de la tabla de lugares reservados que es donde esta la reservacion
+    $affected = DB::table('lugares_reservados')
+    ->where('Id_reservacion', '=', $Id_reservacion)
+    ->update(['Id_estado_ocupacion' => 4]);
+
+//actualizo el estatus del lugar que se usara
+    $affecteded = DB::table('local')
+    ->where('Id_local', '=', $Id_local)
+    ->update(['Id_estado_ocupacion' => 4]);
+
+}
+}
+}
+
+     Alert::success('Exito', 'Haz concluido el registro para pasar a rentar ahora el clente podra usar el lugar. puedes cerrar esta ventana');
+     return redirect()->back();
+
+}catch(Exception $ex){
+     Alert::error('Error', 'los datos que ingresaste no son correctos, revisa que todo este en orden');
+     return redirect()->back();
+}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+}

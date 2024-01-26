@@ -115,6 +115,10 @@
                                 <td data-label="Fecha De Reservacion">{{$reservarenta->Fecha_reservacion}}</td>
                                 <td data-label="Fecha De Entrada">{{$reservarenta->Start_date}}</td>
                                 <td data-label="Fecha De Salida">{{$reservarenta->End_date}}</td>
+                                @if($reservarenta->Id_local == "")
+                                @else
+                                <td data-label="Lugar De Estancia">local: {{$reservarenta->Nombre_local}}</td>
+                                @endif
                                 @if($reservarenta->Id_habitacion == "")
                                 @else
                                 <td data-label="Lugar De Estancia">Hab: {{$reservarenta->Nombre_hab}}</td>
@@ -172,6 +176,13 @@
                                     @else
                                     <a class="btn btn-info" href="{{route('detallesreservadep', [$reservarenta->Id_reservacion, $reservarenta->Id_departamento, $reservarenta->Id_lugares_reservados ])}}"><i class="ri-information-line"></i></a>
                                     <button class="btn btn-success clickForm" href="{{route('viewrentarc1dep', [$reservarenta->Id_reservacion, $reservarenta->Id_departamento, $reservarenta->Id_lugares_reservados ])}}">Rentar</button>
+                                    <button class="btn btn-danger clickForm" href="" >Terminar</button>
+                                    @endif
+
+                                    @if($reservarenta->Id_local == "")
+                                    @else
+                                    <a class="btn btn-info" href=""><i class="ri-information-line"></i></a>
+                                    <button class="btn btn-success clickForm" href="">Rentar</button>
                                     <button class="btn btn-danger clickForm" href="" >Terminar</button>
                                     @endif
 
