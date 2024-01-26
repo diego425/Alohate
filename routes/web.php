@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LocacionController;
 use App\Http\Controllers\HabitacionController;
 use App\Http\Controllers\UsuariosController;
+use App\Http\Controllers\LimpiezaMantenimientoController;
 
 
 //ruta para el menu
@@ -378,6 +379,16 @@ Route::post('store_reservaloc/loc/{Id_local}/client/{nombreclient}', 'Reservacio
 
 
 
+
+Route::controller(LimpiezaMantenimientoController::class)->group(function (){
+    Route::get('limpieza', 'index')->name('limpieza.index');
+    Route::get('limpieza/create', 'create')->name('limpieza.create');
+    Route::post('limpieza/store', 'store')->name('limpieza.store');
+    Route::get('limpieza/{id}', 'show')->name('limpieza.show');
+    Route::get('limpieza/edit/{id}', 'edit')->name('limpieza.edit');
+    Route::post('limpieza/update/{id}', 'update')->name('limpieza.update');
+    Route::post('limpieza/destroy/{id}', 'destroy')->name('limpieza.destroy');
+});
 
 Route::controller(UsuariosController::class)->group(function (){
     Route::get('user', 'index')->name('user.index');

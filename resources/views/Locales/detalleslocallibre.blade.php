@@ -419,19 +419,19 @@
                      <button class="btn btn-primary clickForm" href="{{route('view_editar_local', $locales[0]->Id_local )}}">Editar</button>
                      <button class="btn btn-danger clickForm" href="{{route('view_desactivar_local',$locales[0]->Id_local  )}}" >Desactivar</button>
                      <button class="btn btn-success">Agendar Cita</button>
-                     <button class="btn btn-warning">Reporte De MTTO.</button>
+                     <a href="{{route('limpieza.create')}}?tipoLocacion=Local&id={{$locales[0]->Id_local}}&Id_locacion={{$locacion[0]->Id_locacion}}" class="btn btn-warning">Reporte De MTTO.</a>
                      @endif
 
                      @if($locales[0]->Nombre_estado == "Reservada")
                      <button class="btn btn-secondary clickForm" href="{{route('viewintroc2loc', [$locales[0]->Id_local, $locacion[0]->Id_locacion])}}">Rentar</button>
                      <button class="btn btn-primary clickForm" href="{{route('view_editar_local', $locales[0]->Id_local )}}">Editar</button>
-                     <button class="btn btn-warning">Reporte De MTTO.</button>
+                     <a href="{{route('limpieza.create')}}?tipoLocacion=Local&id={{$locales[0]->Id_local}}&Id_locacion={{$locacion[0]->Id_locacion}}" class="btn btn-warning">Reporte De MTTO.</a>
                      @endif
 
                      @if($locales[0]->Nombre_estado == "Cotizada")
                      <button class="btn btn-secondary clickForm" href="{{route('viewintroc2loc', [$locales[0]->Id_local, $locacion[0]->Id_locacion])}}">Rentar</button>
                      <button class="btn btn-primary clickForm" href="{{route('view_editar_local', $locales[0]->Id_local )}}">Editar</button>
-                     <button class="btn btn-warning">Reporte De MTTO.</button>
+                     <a href="{{route('limpieza.create')}}?tipoLocacion=Local&id={{$locales[0]->Id_local}}&Id_locacion={{$locacion[0]->Id_locacion}}" class="btn btn-warning">Reporte De MTTO.</a>
                      @endif
 
                      @if($locales[0]->Nombre_estado == "Desactivada")
@@ -440,7 +440,7 @@
 
                      @if($locales[0]->Nombre_estado == "Rentada")
                      <button class="btn btn-primary clickForm" href="{{route('view_editar_local', $locales[0]->Id_local )}}">Editar</button>
-                     <button class="btn btn-warning">Reporte De MTTO.</button>
+                     <a href="{{route('limpieza.create')}}?tipoLocacion=Local&id={{$locales[0]->Id_local}}&Id_locacion={{$locacion[0]->Id_locacion}}" class="btn btn-warning">Reporte De MTTO.</a>
                      @endif
                   </div>
                </p>

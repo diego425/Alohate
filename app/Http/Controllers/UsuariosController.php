@@ -21,8 +21,9 @@ class UsuariosController extends Controller
                 $users = DB::table('colaboradores')
                 ->where('colaboradores.user','LIKE',"%$request->buscar%")
                 ->orWhere('colaboradores.Nombre','LIKE',"%$request->buscar%")
+                ->orWhere('roles.nameRol','LIKE',"%$request->buscar%")
                 ->leftJoin('roles','roles.id_rol','=','colaboradores.id_rol')
-                ->paginate(10);
+                ->paginate(5);
         
                 return view('Usuarios.index',['users'=>$users]);
             } else {
@@ -144,6 +145,14 @@ class UsuariosController extends Controller
                 'Estatus_col' => $request->Estatus_col
             ]);
 
+            if (!empty($request->Fotografia)) {
+                $update = DB::table('colaboradores')
+                ->where('Id_colaborador', $id)
+                ->update([
+                    'Fotografia' => $request->Fotografia,
+                ]);
+            }
+
             if ($request->password == "password") {
             }else{
                 $contra = Crypt::encryptString($request->password);
@@ -179,24 +188,28 @@ class UsuariosController extends Controller
         $tipoLugar = $request->tipoLugar;
 
         $locales = DB::table('local')
-        ->selectRaw('("mostrar") AS mostrar,Id_local AS id,Id_locacion,Id_colaborador,(SELECT loc.Nombre_locacion FROM locacion AS loc WHERE loc.Id_locacion = local.Id_locacion LIMIT 1) AS nombreLocacion,
-        Id_colaborador, local.Nombre_local AS Nombre, ("Local") AS tipoLocacion, eo.Nombre_estado')
-        ->leftJoin('estado_ocupacion as eo','eo.Id_estado_ocupacion','=','local.Id_estado_ocupacion');
+        ->selectRaw('("mostrar") AS mostrar,Id_local AS id,Id_locacion,cola.Id_colaborador,(SELECT loc.Nombre_locacion FROM locacion AS loc WHERE loc.Id_locacion = local.Id_locacion LIMIT 1) AS nombreLocacion,
+        cola.Id_colaborador, cola.Nombre as NombreCola, cola.Apellido_pat, local.Nombre_local AS Nombre, ("Local") AS tipoLocacion, eo.Nombre_estado')
+        ->leftJoin('estado_ocupacion as eo','eo.Id_estado_ocupacion','=','local.Id_estado_ocupacion')
+        ->leftJoin('colaboradores as cola','cola.Id_colaborador','=','local.Id_colaborador');
         
         $departamentos = DB::table('departamento')
-        ->selectRaw('("mostrar") AS mostrar,Id_departamento AS id,Id_locacion,Id_colaborador,(SELECT loc.Nombre_locacion FROM locacion AS loc WHERE loc.Id_locacion = departamento.Id_locacion LIMIT 1) AS nombreLocacion,
-        Id_colaborador, departamento.Nombre_depa AS Nombre, ("Departamento") AS tipoLocacion, eo.Nombre_estado')
-        ->leftJoin('estado_ocupacion as eo','eo.Id_estado_ocupacion','=','departamento.Id_estado_ocupacion');
+        ->selectRaw('("mostrar") AS mostrar,Id_departamento AS id,Id_locacion,cola.Id_colaborador,(SELECT loc.Nombre_locacion FROM locacion AS loc WHERE loc.Id_locacion = departamento.Id_locacion LIMIT 1) AS nombreLocacion,
+        cola.Id_colaborador, cola.Nombre as NombreCola, cola.Apellido_pat, departamento.Nombre_depa AS Nombre, ("Departamento") AS tipoLocacion, eo.Nombre_estado')
+        ->leftJoin('estado_ocupacion as eo','eo.Id_estado_ocupacion','=','departamento.Id_estado_ocupacion')
+        ->leftJoin('colaboradores as cola','cola.Id_colaborador','=','departamento.Id_colaborador');
 
         $habitaciones = DB::table('habitacion')
-        ->selectRaw('("mostrar") AS mostrar,Id_habitacion AS id,Id_locacion,Id_colaborador,(SELECT loc.Nombre_locacion FROM locacion AS loc WHERE loc.Id_locacion = habitacion.Id_locacion LIMIT 1) AS nombreLocacion,
-        Id_colaborador, habitacion.Nombre_hab AS Nombre, ("Habitación") AS tipoLocacion, eo.Nombre_estado')
-        ->leftJoin('estado_ocupacion as eo','eo.Id_estado_ocupacion','=','habitacion.Id_estado_ocupacion');        
+        ->selectRaw('("mostrar") AS mostrar,Id_habitacion AS id,Id_locacion,cola.Id_colaborador,(SELECT loc.Nombre_locacion FROM locacion AS loc WHERE loc.Id_locacion = habitacion.Id_locacion LIMIT 1) AS nombreLocacion,
+        cola.Id_colaborador, cola.Nombre as NombreCola, cola.Apellido_pat, habitacion.Nombre_hab AS Nombre, ("Habitación") AS tipoLocacion, eo.Nombre_estado')
+        ->leftJoin('estado_ocupacion as eo','eo.Id_estado_ocupacion','=','habitacion.Id_estado_ocupacion')
+        ->leftJoin('colaboradores as cola','cola.Id_colaborador','=','habitacion.Id_colaborador');
 
         $locaciones = DB::table('locacion')
-        ->selectRaw('("mostrar") AS mostrar,Id_locacion AS id,Id_locacion,Id_colaborador,("General") AS nombreLocacion,
-        Id_colaborador, Nombre_locacion AS Nombre, ("Entera") AS tipoLocacion, eo.Nombre_estado')
+        ->selectRaw('("mostrar") AS mostrar,Id_locacion AS id,Id_locacion,cola.Id_colaborador,("General") AS nombreLocacion,
+        cola.Id_colaborador, cola.Nombre as NombreCola, cola.Apellido_pat, Nombre_locacion AS Nombre, ("Entera") AS tipoLocacion, eo.Nombre_estado')
         ->leftJoin('estado_ocupacion as eo','eo.Id_estado_ocupacion','=','locacion.Id_estado_ocupacion')
+        ->leftJoin('colaboradores as cola','cola.Id_colaborador','=','locacion.Id_colaborador')
         ->union($locales)
         ->union($habitaciones)
         ->union($departamentos)
@@ -245,19 +258,28 @@ class UsuariosController extends Controller
             }
         }
 
+        session()->flashInput($request->input());
         return view('Usuarios.gestionLugares',["locaciones" => $locaciones, "tipos" => $tipos, "user" => $user]);
     }
 
     public function asignarLugar(Request $request) {
         if (!empty($request->id) && !empty($request->tipo) && !empty($request->Id_colaborador)) {
-            $regreso = array();
+            $user = DB::table('colaboradores')
+            ->where('Id_colaborador', $request->id)
+            ->get();
+            $user = json_decode(json_encode($user));
+            $user = $user[0];
 
+            $regreso = array();
             if ($request->check == "true") {
                 if ($request->tipo === "Entera") {
                     $affected = DB::table('locacion')
                     ->where('Id_locacion', $request->id)
                     ->update(['Id_colaborador' => (int)$request->Id_colaborador]);
                     if ($affected) {
+                        UsuariosController::historial_log(Cookie::get('Id_colaborador'),
+                        "Asigno todos los sub-lugares de $request->lugar a $user->Nombre $user->Apellido_pat");
+
                         array_push($regreso, array(
                             "mensaje" => "Se relaciono en todos los sub-lugares"
                         ));
@@ -294,6 +316,8 @@ class UsuariosController extends Controller
                     ->where('id_local', $request->id)
                     ->update(['Id_colaborador' => (int)$request->Id_colaborador]);
                     if ($affected) {
+                        UsuariosController::historial_log(Cookie::get('Id_colaborador'),
+                        "Se asigno el local $request->lugar de $request->locacion a $user->Nombre $user->Apellido_pat");
                         array_push($regreso, array(
                             "mensaje" => "Se relaciono el local"
                         ));
@@ -303,6 +327,8 @@ class UsuariosController extends Controller
                     ->where('Id_departamento', $request->id)
                     ->update(['Id_colaborador' => (int)$request->Id_colaborador]);
                     if ($affected2) {
+                        UsuariosController::historial_log(Cookie::get('Id_colaborador'),
+                        "Se asigno el departamento $request->lugar de $request->locacion a $user->Nombre $user->Apellido_pat");
                         array_push($regreso, array(
                             "mensaje" => "Se relaciono el departamento"
                         ));
@@ -312,8 +338,10 @@ class UsuariosController extends Controller
                     ->where('Id_habitacion', $request->id)
                     ->update(['Id_colaborador' => (int)$request->Id_colaborador]);
                     if ($affected3) {
+                        UsuariosController::historial_log(Cookie::get('Id_colaborador'),
+                        "Se asigno la habitacion $request->lugar de $request->locacion a $user->Nombre $user->Apellido_pat");
                         array_push($regreso, array(
-                            "mensaje" => "Se relaciono el habitacion"
+                            "mensaje" => "Se relaciono la habitacion"
                         ));
                     }
                 }
@@ -321,14 +349,18 @@ class UsuariosController extends Controller
                 if ($request->tipo === "Entera") {
                     $affected = DB::table('locacion')
                     ->where('Id_locacion', $request->id)
+                    ->where('Id_colaborador', (int)$request->Id_colaborador)
                     ->update(['Id_colaborador' => null]);
                     if ($affected) {
+                        UsuariosController::historial_log(Cookie::get('Id_colaborador'),
+                        "Quito todos los sub-lugares de $request->lugar a $user->Nombre $user->Apellido_pat");
                         array_push($regreso, array(
                             "mensaje" => "Se quito en todos los sub-lugares"
                         ));
 
                         $affected1 = DB::table('local')
                         ->where('Id_locacion', $request->id)
+                        ->where('Id_colaborador', (int)$request->Id_colaborador)
                         ->update(['Id_colaborador' => null]);
                         if ($affected1) {
                             array_push($regreso, array(
@@ -338,6 +370,7 @@ class UsuariosController extends Controller
                         
                         $affected2 = DB::table('departamento')
                         ->where('Id_locacion', $request->id)
+                        ->where('Id_colaborador', (int)$request->Id_colaborador)
                         ->update(['Id_colaborador' => null]);
                         if ($affected2) {
                             array_push($regreso, array(
@@ -347,6 +380,7 @@ class UsuariosController extends Controller
                         
                         $affected3 = DB::table('habitacion')
                         ->where('Id_locacion', $request->id)
+                        ->where('Id_colaborador', (int)$request->Id_colaborador)
                         ->update(['Id_colaborador' => null]);
                         if ($affected3) {
                             array_push($regreso, array(
@@ -359,6 +393,8 @@ class UsuariosController extends Controller
                     ->where('id_local', $request->id)
                     ->update(['Id_colaborador' => null]);
                     if ($affected) {
+                        UsuariosController::historial_log(Cookie::get('Id_colaborador'),
+                        "Se quito el local $request->lugar de $request->locacion a $user->Nombre $user->Apellido_pat");
                         array_push($regreso, array(
                             "mensaje" => "Se quito el local"
                         ));
@@ -368,6 +404,8 @@ class UsuariosController extends Controller
                     ->where('Id_departamento', $request->id)
                     ->update(['Id_colaborador' => null]);
                     if ($affected2) {
+                        UsuariosController::historial_log(Cookie::get('Id_colaborador'),
+                        "Se quito el departamento $request->lugar de $request->locacion a $user->Nombre $user->Apellido_pat");
                         array_push($regreso, array(
                             "mensaje" => "Se relaciono el departamento"
                         ));
@@ -377,6 +415,8 @@ class UsuariosController extends Controller
                     ->where('Id_habitacion', $request->id)
                     ->update(['Id_colaborador' => null]);
                     if ($affected3) {
+                        UsuariosController::historial_log(Cookie::get('Id_colaborador'),
+                        "Se quito la habitacion $request->lugar de $request->locacion a $user->Nombre $user->Apellido_pat");
                         array_push($regreso, array(
                             "mensaje" => "Se relaciono el habitacion"
                         ));
@@ -387,5 +427,15 @@ class UsuariosController extends Controller
             return $regreso;
         }
         // print_r($request->all());
+    }
+
+    public static function historial_log(string $Id_colaborador = null, string $Descripcion_actividad = null) {
+        if (!empty($Id_colaborador) && !empty($Descripcion_actividad)) {
+            DB::table('historial_log')->insert([
+                'Id_colaborador' => $Id_colaborador,
+                'Fecha_hora_actividad' => date("Y-m-d h:i:s"),
+                'Descripcion_actividad' => strtoupper($Descripcion_actividad)
+            ]);
+        }
     }
 }

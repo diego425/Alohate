@@ -81,9 +81,9 @@
                 </ul>
              </li>
 
-             <li><a href="#" class="lol__link">Reportes de Limp y MTTO</a></li>
+             <li><a href="{{route('limpieza.index')}}" class="lol__link">Reportes de Limp y MTTO</a></li>
              @if(!empty(Cookie::get('puesto')))
-               @if(Cookie::get('puesto') == "ADMIN")               
+               @if(Cookie::get('puesto') == "ADMIN" || Cookie::get('puesto') == "OPERADOR")               
                   <li><a href="{{route('user.index')}}" class="lol__link">Gestion de colaboradores</a></li>
                @endif
              @endif

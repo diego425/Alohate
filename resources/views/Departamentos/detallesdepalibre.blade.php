@@ -465,7 +465,7 @@
                      @if($departamentos[0]->Nombre_estado == "En Mantenimiento/Limpieza")
                      <button class="btn btn-primary clickForm" href="{{route('view_editar_depa', $departamentos[0]->Id_departamento )}}">Editar</button>
                      <button class="btn btn-danger clickForm" href="{{route('view_desactivar_depa', $departamentos[0]->Id_departamento )}}" >Desactivar</button>
-                     <button class="btn btn-warning">Reporte De MTTO.</button>
+                     <a href="{{route('limpieza.create')}}?tipoLocacion=Departamento&id={{$departamentos[0]->Id_departamento}}&Id_locacion={{$departamentos[0]->Id_locacion}}" class="btn btn-warning">Reporte De MTTO.</a>
                      @endif
 
                      @if($departamentos[0]->Nombre_estado == "Desocupada")
@@ -474,31 +474,31 @@
                      <button class="btn btn-primary clickForm" href="{{route('view_editar_depa', $departamentos[0]->Id_departamento )}}">Editar</button>
                      <button class="btn btn-danger clickForm" href="{{route('view_desactivar_depa', $departamentos[0]->Id_departamento )}}" >Desactivar</button>
                      <button class="btn btn-success">Agendar Cita</button>
-                     <button class="btn btn-warning">Reporte De MTTO.</button>
+                     <a href="{{route('limpieza.create')}}?tipoLocacion=Departamento&id={{$departamentos[0]->Id_departamento}}&Id_locacion={{$departamentos[0]->Id_locacion}}" class="btn btn-warning">Reporte De MTTO.</a>
                      @endif
 
                      @if($departamentos[0]->Nombre_estado == "Reservada")
                      <button class="btn btn-secondary">Rentar</button>
                      <button class="btn btn-primary clickForm" href="{{route('viewreservadepoc', [$locacion[0]->Id_locacion, $departamentos[0]->Id_departamento ])}}">Reservar</button>
                      <button class="btn btn-primary clickForm" href="{{route('view_editar_depa', $departamentos[0]->Id_departamento )}}">Editar</button>
-                     <button class="btn btn-warning">Reporte De MTTO.</button>
+                     <a href="{{route('limpieza.create')}}?tipoLocacion=Departamento&id={{$departamentos[0]->Id_departamento}}&Id_locacion={{$departamentos[0]->Id_locacion}}" class="btn btn-warning">Reporte De MTTO.</a>
                      @endif
 
                      @if($departamentos[0]->Nombre_estado == "Pago por confirmar")
                      <button class="btn btn-secondary">Rentar</button>
                      <button class="btn btn-primary clickForm" href="{{route('viewreservadepoc', [$locacion[0]->Id_locacion, $departamentos[0]->Id_departamento ])}}">Reservar</button>
                      <button class="btn btn-primary clickForm" href="{{route('view_editar_depa', $departamentos[0]->Id_departamento )}}">Editar</button>
-                     <button class="btn btn-warning">Reporte De MTTO.</button>
+                     <a href="{{route('limpieza.create')}}?tipoLocacion=Departamento&id={{$departamentos[0]->Id_departamento}}&Id_locacion={{$departamentos[0]->Id_locacion}}" class="btn btn-warning">Reporte De MTTO.</a>
                      @endif
 
                      @if($departamentos[0]->Nombre_estado == "Desactivada")
                      <button class="btn btn-primary clickForm" href="{{route('view_editar_depa', $departamentos[0]->Id_departamento )}}">Editar</button>
-                     <button class="btn btn-warning">Reporte De MTTO.</button>
+                     <a href="{{route('limpieza.create')}}?tipoLocacion=Departamento&id={{$departamentos[0]->Id_departamento}}&Id_locacion={{$departamentos[0]->Id_locacion}}" class="btn btn-warning">Reporte De MTTO.</a>
                      @endif
 
                      @if($departamentos[0]->Nombre_estado == "Rentada")
                      <button class="btn btn-primary clickForm" href="{{route('view_editar_depa', $departamentos[0]->Id_departamento )}}">Editar</button>
-                     <button class="btn btn-warning">Reporte De MTTO.</button>
+                     <a href="{{route('limpieza.create')}}?tipoLocacion=Departamento&id={{$departamentos[0]->Id_departamento}}&Id_locacion={{$departamentos[0]->Id_locacion}}" class="btn btn-warning">Reporte De MTTO.</a>
                      @endif
                   </div>
                </p>

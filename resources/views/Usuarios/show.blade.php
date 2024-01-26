@@ -75,9 +75,11 @@
                     </div>
                 </div>
             </div>
+            @if (!empty($user->Fotografia))
             <div class="col-md-2 divImage">
-                <img src="https://www.debate.com.mx/__export/1663724202745/sites/debate/img/2022/09/20/margarito_esparzx_foto_internet.webp_2120446623.webp" class="img-fluid card-img-top rounded-start rounded-end center-image" alt="...">
+                <img src="{{$user->Fotografia}}" class="img-fluid card-img-top rounded-start rounded-end center-image" alt="...">
             </div>
+            @endif
         </div>
     </div>
 </div>
