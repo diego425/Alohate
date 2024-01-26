@@ -357,7 +357,6 @@ Route::post('borrarimglocal/{Id_foto_lugar}','LocalController@DestroyImgLocal')-
 
 
 //rutas de renta para un local
-
 //ruta para la busqueda automatica de los clientes 
 Route::post('view_rentar_loc_c2/loc/{Id_local}/myurl', 'ReservacionRentasController@ShowClientesEditDep');
 //ruta para el form de el segundo cliente para pasar a rentar 

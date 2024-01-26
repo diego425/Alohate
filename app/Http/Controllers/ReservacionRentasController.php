@@ -7203,7 +7203,7 @@ try{
             $reservacion->Total_de_personas = 1;
             $reservacion->Monto_uso_cochera = $request->get('num_cochera');
             $reservacion->Espacios_cochera = $request->get('uso_cochera');
-            $reservacion->Tipo_de_cobro = $request->get('tipo_renta');
+            $reservacion->Tipo_de_cobro = "Mes";
             $reservacion->save();
             $lastreservacion =DB::getPdo()->lastInsertId();
 
@@ -7377,6 +7377,72 @@ try{
     ->where('local.Id_local', '=', $Id_local)
     ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
+
+
+    $detallereserva = DB::table('lugares_reservados')
+    ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_departamento','lugares_reservados.Id_locacion', 
+    'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
+    'est.Nombre_estado',
+    'reserva.Id_reservacion','reserva.Id_colaborador',
+    'reserva.Start_date','reserva.End_date', 'reserva.Title','reserva.Fecha_reservacion',
+    'reserva.Numero_personas_extras', 'reserva.Foto_comprobante_anticipo', 'reserva.Fecha_pago_anticipo',
+    'reserva.Foto_aviso_privacidad', 'reserva.Foto_reglamento','reserva.Monto_uso_cochera', 
+    'reserva.Metodo_pago_anticipo','reserva.Espacios_cochera','reserva.Monto_pagado_anticipo',
+    'reserva.Tipo_de_cobro','reserva.Nota_pago_anticipo',
+    'cliente.Id_cliente','cliente.Id_colaborador','cliente.Nombre',
+    'cliente.Apellido_paterno','cliente.Apellido_materno','cliente.Email', 
+    'cliente.Numero_celular','cliente.Ciudad','cliente.Estado',
+    'cliente.Pais', 'cliente.Ref1_nombre','cliente.Ref2_nombre',
+    'cliente.Ref1_celular','cliente.Ref2_celular','cliente.Ref1_parentesco',
+    'cliente.Ref2_parentesco','cliente.Motivo_visita', 'cliente.Lugar_motivo_visita', 
+    'cliente.Foto_cliente', 'cliente.INE_frente', 'cliente.INE_reverso',
+    'local.Id_local', 'local.Id_colaborador','local.Id_estado_ocupacion',
+    'local.Id_locacion','local.Nombre_local', 'local.Precio_renta','local.Espacio_superficie', 
+    'local.Encargado','local.Nota','local.Descripcion', 'local.Deposito_garantia_local')
+    ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
+    ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+    ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+    ->leftJoin("local", "local.Id_local", "=", "lugares_reservados.Id_local")
+    ->where('reserva.Id_reservacion', '=', $Id_reservacion)
+    ->where('local.Id_local', '=', $Id_local)
+    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    ->get();
+
+//funcion para calcular dias entre 2 fechas
+    $fecha1 =   $detallereserva[0]->Start_date;
+    $fecha2 =   $detallereserva[0]->End_date;
+//aqui saco los segundos de las fechas
+    $segfecha1 = strtotime($fecha1);
+    $segfecha2 = strtotime($fecha2);
+//segundos de diferencia entre las 2 fechas
+    $segtranscurridos = $segfecha2 - $segfecha1;
+//minutos transcurridos entre las 2 fechas
+    $mintranscurridos = $segtranscurridos/60;
+//horas transcurridas entre las 2 fechas
+    $horastranscurridas = $mintranscurridos/60;
+//dias transcurridos entre las 2 fechas
+    $diastranscurridos = $horastranscurridas/24;
+//redondeando los dias para que esten completos
+    $diasredondeados = floor($diastranscurridos);
+
+    $calculomes = $diasredondeados/28;
+    $redondeomes = floor($calculomes);
+//variable que me saca el costo de los dias de estancia
+    $monto_por_dias = $redondeomes * $detallereserva[0]->Precio_renta;
+//variable que me hace la suma total y me resta el monto de anticipo       
+    $suma_monto = $monto_por_dias + $detallereserva[0]->Deposito_garantia_local + $detallereserva[0]->Monto_uso_cochera;
+            
+//insertado de datos para la tabla de cobro de renta 
+    $cobro = new Cobro_renta();
+    $cobro -> Id_reservacion  = $Id_reservacion;
+    $cobro -> Id_lugares_reservados = $Id_lugares_reservados;
+    $cobro -> Cobro_persona_extra = 0;
+    $cobro -> Periodo_total = $diastranscurridos;
+    $cobro -> Estatus_cobro = 7;
+    $cobro -> Deposito_garantia = $detallereserva[0]->Deposito_garantia_local;
+    $cobro -> Monto_total = $suma_monto;
+    $cobro->save();
+
 
 //condicionales if que ayudan a saber que tipo de contrato se esta guardando y que datos se deben de guardar segun el contrato 
 //"-1" significa que no se usara contrato 
