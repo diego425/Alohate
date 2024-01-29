@@ -1,5 +1,5 @@
 @extends('layouts.menu_layout')
-@section('title', 'REPORTES DE LIMPIEZA Y MTTO')
+@section('title', 'COBROS DE RENTA')
 @section('css')
 <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap4.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js">
@@ -124,42 +124,28 @@
                 Reportes
             </caption>
             <tbody class="table-group-divider">
-                @foreach ($reportes as $reporte)
+                @foreach ($cobros as $cobro)
                 <tr class="">
-                    <td data-label="Id" scope="row">{{$reporte->Id_reporte_ml}}</td>
-                    <td data-label="Tipo">{{$reporte->Tipo_reporte}}</td>
-                    <td data-label="Locacion">{{$reporte->Nombre_locacion}}</td>
-                    @if (!empty($reporte->lugarEspecifico[0]["Nombre"]))
-                        <td data-label="Lugar especifico">{{$reporte->tipoLocacion.": ".$reporte->lugarEspecifico[0]["Nombre"]}}</td>
-                    @else
-                        <td></td>
-                    @endif
-                    <td data-label="Descripcion">{{$reporte->Descripcion_Reporte}}</td>
-                    <td data-label="Fecha">{{$reporte->Fecha_del_reporte}}</td>
-                    <td data-label="Estatus">{{$reporte->Estatus}}</td>
+                    <td data-label="Id" scope="row">{{$cobro->Id_cobro_renta }}</td>
+                    <td data-label="Tipo"></td>
+                    <td data-label="Locacion"></td>
+                    <td data-label="Descripcion"></td>
+                    <td data-label="Fecha"></td>
+                    <td data-label="Estatus"></td>
                     <td class="flex" data-label="Detalle">
-                        <form action="{{route('limpieza.show',$reporte->Id_reporte_ml)}}" method="get">
+                        <form action="{{route('limpieza.show',$cobro->Id_cobro_renta)}}" method="get">
                             <button class="btn btn-outline-light" type="submit" title="Mostrar detalle">
                                 <i class='bx bxs-show bx-burst' style='color:#1764e6'></i>
                             </button>
                         </form>
                     </td>
                     <td class="flex" data-label="Editar">
-                        <form action="{{route('limpieza.edit',$reporte->Id_reporte_ml)}}" method="get">
+                        <form action="{{route('limpieza.edit',$cobro->Id_cobro_renta)}}" method="get">
                             <button class="btn btn-outline-warning" type="submit" title="Editar">
                                 <i class='bx bx-edit-alt'></i>
                             </button>
                         </form>
                     </td>
-                    @if($reporte->Estatus != "Terminado")
-                    <td class="flex" data-label="Realizar tarea">
-                        <form action="{{route('limpieza.realizar',$reporte->Id_reporte_ml)}}" method="get">
-                            <button class="btn btn-outline-success" type="submit" title="Realizar tarea">
-                                <i class='bx bx-spreadsheet'></i>
-                            </button>
-                        </form>
-                    </td>
-                    @endif
                 </tr>
                 @endforeach
             </tbody>
@@ -167,7 +153,7 @@
             </tfoot>
         </table>
         <div class="d-flex flex-row-reverse">
-            {{ $reportes->appends(Request::all())->render() }}
+            {{ $cobros->appends(Request::all())->render() }}
         </div>
     </div>
     <!-- Modal -->
@@ -207,19 +193,12 @@
                                     <label for="Id_locacion" class="form-label">Locacion</label>
                                     <select class="form-select" id="Id_locacion" name="Id_locacion">
                                         <option selected disabled value="">Elija...</option>
-                                        @foreach ($locaciones as $locacion)
-                                            <option value="{{$locacion->Id_locacion}}">{{$locacion->Nombre_locacion}}</option>
-                                        @endforeach
                                     </select>
                                     <div class="invalid-feedback">
                                         Seleccione un lugar.
                                     </div>
                                 </div>
-                                {{-- <div class="col-sm-1 mt-4 mb-3" style="margin-left: 1em;">
-                                    <button type="submit" class="btn btn-danger">
-                                        <i class='bx bx-search-alt'></i>
-                                    </button>
-                                </div> --}}
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -234,7 +213,5 @@
 @endsection
 @section('js')
     <script>
-        const datos = @json($reportes);
-        console.log(datos);
     </script>
 @endsection

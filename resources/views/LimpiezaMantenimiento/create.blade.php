@@ -96,15 +96,6 @@
                 font-size: 0.8em;
             }
         }
-
-        @media only screen and (min-height: 400px) {
-            .dataTables_scrollBody {
-                position: relative;
-                overflow: auto;
-                max-height: 20em;
-                width: 100%;
-            }
-        }
     </style>
 @endsection
 @section('MenuPrincipal')
