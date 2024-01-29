@@ -50,16 +50,6 @@
                     <input type="date" class="form-control"  name="f_salida" id="f_salida">
                 </div>
                 <div class="input-group">
-                    <label for="tipo_renta">¿Como Se Cobrara La Renta?</label>
-                    <select name="tipo_renta" id="tipo_renta">
-                        <option value="-1" disabled selected>Selecciona una opcion</option>
-                        <option value="Noche">Noche</option>
-                        <option value="Semana">Semana</option>
-                        <option value="Catorcena">Catorcena</option>
-                        <option value="Mes">Mes</option>
-                    </select>
-                </div>
-                <div class="input-group">
                     <br>
                     <p><label>Numero De Cocheras Disponibles: </label></p>
                     <p><label style="color: darkgreen">Espacios Libres: {{$result_resta}}</label></p>

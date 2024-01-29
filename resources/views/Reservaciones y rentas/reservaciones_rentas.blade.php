@@ -182,7 +182,6 @@
                                     @if($reservarenta->Id_local == "")
                                     @else
                                     <a class="btn btn-info" href=""><i class="ri-information-line"></i></a>
-                                    <button class="btn btn-success clickForm" href="">Rentar</button>
                                     <button class="btn btn-danger clickForm" href="" >Terminar</button>
                                     @endif
 
