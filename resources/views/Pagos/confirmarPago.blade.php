@@ -11,19 +11,12 @@
     <style>
         img {
             width: 10%;
-            cursor: zoom-in;
-        }
-
-        h6 {
-            text-align: center;
-            margin-top: 1em;
         }
 
         @media screen and (max-width: 600px) {
             img {
-                width: 10%;
+                width: 50%;
                 margin-left: 25%;
-                cursor: zoom-in;
             }
 
             table {
@@ -60,6 +53,10 @@
 
             .form-switch .form-check-input {
                 margin-left: 50%;
+            }
+
+            h6 {
+                font-size: 1em;
             }
 
             .numerosTabla {
@@ -109,34 +106,18 @@
                 </a>
             </div>
             <br>
-            <h6 class="card-title center bold">Detalles del cobro</h6>
-            <div class="user-detail-card justify" data-mh="card-one">
-                <p><span>Tiempo predefinido de estancia :</span> {{ $cobros[0]->Periodo_total }}</p>
-                <p><span>Personas extras :</span> {{ $cobros[0]->Cobro_persona_extra }}</p>
-                <p><span>Resta de monto de anticipo :</span> {{ $cobros[0]->Monto_pagado_anticipo }}</p>
-                <p><span>Deposito de garantia :</span> {{ $cobros[0]->Periodo_total }}</p>
-                <p><span>Estado :</span> {{ $cobros[0]->Estado }}</p>
-                <hr>
-                <p><span>Monto total a cobrar :</span> {{ $cobros[0]->Monto_total }}</p>
-                <p><span>Total pagado :</span> {{ $cobros[0]->Saldo }}</p>
-            </div>
-
-            <h6 class="card-title center bold">Pagos asociados</h6>
             <div class="card-body row">
                 <div class="table-responsive">
                     <table class="table table-striped table-hover align-middle">
                         <thead>
                             <tr>
-                                <th>Id</th>
-                                <th>Fecha</th>
-                                <th>Comprobante</th>
-                                <th>Monto</th>
-                                <th>Estado</th>
+                                <th scope="row">Id</th>
+                                <th scope="col">Fecha</th>
+                                <th scope="col">Comprobante</th>
+                                <th scope="col">Monto</th>
+                                <th scope="col" colspan="2">Accion</th>
                             </tr>
                         </thead>
-                        <caption>
-                            Pagos asociados
-                        </caption>
                         <tbody>
                             @foreach ($pagos as $key => $pago)
                                 @if ($pago->Estatus_pago == 'Pendiente')
@@ -161,7 +142,31 @@
                                     @endif
                                 </td>
                                 <td data-label="Monto" class="table-danger">{{ $pago->Monto_pago }}</td>
-                                <td data-label="Estado" class="table-info">{{ $pago->Estatus_pago }}</td>
+                                @if ($pago->Estatus_pago == 'Pendiente')
+                                    <td class="flex" data-label="Confirmar">
+                                        <form
+                                            action="{{ route('pagos.updatepago', [$pago->Id_pago_renta, $pago->Id_cobro_renta, 'Confirmar']) }}"
+                                            method="post" class="formulario">
+                                            @csrf
+                                            <button class="btn btn-outline-success" type="submit">
+                                                <i class='bx bx-check-double'></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                    <td class="flex" data-label="Cancelar">
+                                        <form
+                                            action="{{ route('pagos.updatepago', [$pago->Id_pago_renta, $pago->Id_cobro_renta, 'Cancelar']) }}"
+                                            method="post" class="formulario">
+                                            @csrf
+                                            <button class="btn btn-outline-danger" type="submit">
+                                                <i class='bx bx-block'></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                @else
+                                    <td></td>
+                                    <td></td>
+                                @endif
                                 </tr>
                             @endforeach
                         </tbody>
@@ -179,5 +184,24 @@
                 new Viewer(document.getElementById('gallery{{ $key }}'));
             @endif
         @endforeach
+
+        $(".formulario").submit(function (e) { 
+            e.preventDefault();
+            Swal.fire({
+                title: "¿Está seguro de continuar?",
+                text: "No podra revertir los cambios.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Si, continua"
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    // and when you done:
+                    e.currentTarget.submit();
+                } else {
+                    Swal.fire("Cambios no guardados.", "", "info");
+                }
+            });
+        });
     </script>
 @endsection
