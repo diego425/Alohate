@@ -8,6 +8,10 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 <style>
     @media screen and (max-width: 600px) {
+        .agregar{
+            width: 10%;
+        }
+
         table {
             border: 0;
         }
@@ -88,12 +92,16 @@
                     <input type="search" name="buscar" class="form-control" placeholder="Buscar..." aria-label="Search">
                 </form>
             </div>
-            <div class="col-sm-9">
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <a class="btn btn-primary me-md-2" href="{{route('limpieza.create')}}">
-                        <i class='bx bx-add-to-queue'></i>
-                    </a>
-                </div>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button type="button" class="btn btn-small btn-primary small btnFiltro me-md-2" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal">
+                    <i class='bx bx-filter-alt'></i>
+                    Filtros
+                </button>
+                <a class="btn btn-primary me-md-2" href="{{route('limpieza.create')}}">
+                    <i class='bx bx-add-to-queue'></i>
+                    Agregar
+                </a>
             </div>
         </div>
     </div>
@@ -103,7 +111,10 @@
             <thead class="table-light">
                 <tr>
                     <th>Id</th>
+                    <th>Tipo</th>
+                    <th>Locación</th>
                     <th>Lugar</th>
+                    <th>Descripcion</th>
                     <th>Fecha</th>
                     <th>Estatus</th>
                     <th colspan="3">Accion</th>
@@ -116,6 +127,13 @@
                 @foreach ($reportes as $reporte)
                 <tr class="">
                     <td data-label="Id" scope="row">{{$reporte->Id_reporte_ml}}</td>
+                    <td data-label="Tipo">{{$reporte->Tipo_reporte}}</td>
+                    <td data-label="Locacion">{{$reporte->Nombre_locacion}}</td>
+                    @if (!empty($reporte->lugarEspecifico[0]["Nombre"]))
+                        <td data-label="Lugar especifico">{{$reporte->tipoLocacion.": ".$reporte->lugarEspecifico[0]["Nombre"]}}</td>
+                    @else
+                        <td></td>
+                    @endif
                     <td data-label="Descripcion">{{$reporte->Descripcion_Reporte}}</td>
                     <td data-label="Fecha">{{$reporte->Fecha_del_reporte}}</td>
                     <td data-label="Estatus">{{$reporte->Estatus}}</td>
@@ -152,7 +170,71 @@
             {{ $reportes->appends(Request::all())->render() }}
         </div>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Busqueda</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="search">
+                        <form class="row col-lg-auto mb-sm-0 me-sm-3" action="#" method="get" role="search" id="formulario">
+                            <div class="col-sm-3">
+                                <label for="Tipo_reporte" class="form-label">Tipo de reporte</label>
+                                <select class="form-select" id="Tipo_reporte" name="Tipo_reporte">
+                                    <option selected disabled value="">Elija...</option>
+                                    <option value="Limpieza">Limpieza</option>
+                                    <option value="Mantenimiento">Mantenimiento</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-3">
+                                <label for="Fecha_del_reporte" class="form-label">Fecha</label>
+                                <input type="date" class="form-control" name="Fecha_del_reporte" id="Fecha_del_reporte">
+                            </div>
+                            <div class="col-sm-3">
+                                <label for="Estatus" class="form-label">Estatus</label>
+                                <select class="form-select" id="Estatus" name="Estatus">
+                                    <option selected disabled value="">Elija...</option>
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="Iniciado">Iniciado</option>
+                                    <option value="Terminado">Terminado</option>
+                                </select>
+                            </div>
+                            <div class="input-group mb-3 col">
+                                <div class="col-sm-3">
+                                    <label for="Id_locacion" class="form-label">Locacion</label>
+                                    <select class="form-select" id="Id_locacion" name="Id_locacion">
+                                        <option selected disabled value="">Elija...</option>
+                                        @foreach ($locaciones as $locacion)
+                                            <option value="{{$locacion->Id_locacion}}">{{$locacion->Nombre_locacion}}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback">
+                                        Seleccione un lugar.
+                                    </div>
+                                </div>
+                                {{-- <div class="col-sm-1 mt-4 mb-3" style="margin-left: 1em;">
+                                    <button type="submit" class="btn btn-danger">
+                                        <i class='bx bx-search-alt'></i>
+                                    </button>
+                                </div> --}}
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal" form="formulario">Buscar</button>
+                    <a type="button" class="btn btn-primary" href="{{route('limpieza.index')}}">Reset</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 @endsection
 @section('js')
+    <script>
+        const datos = @json($reportes);
+        console.log(datos);
+    </script>
 @endsection

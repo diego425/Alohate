@@ -77,15 +77,6 @@
                 font-size: small;
             }
         }
-
-        @media only screen and (min-height: 400px) {
-            .dataTables_scrollBody {
-                position: relative;
-                overflow: auto;
-                max-height: 20em;
-                width: 100%;
-            }
-        }
     </style>
 @endsection
 @section('MenuPrincipal')
@@ -96,12 +87,33 @@
                     <i class='bx bx-arrow-back'></i>
                 </a>
             </div>
+            <br><br>
+            <div class="card-title">
+                <table class="table table-primary">
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Estado</th>
+                            <th>Lugar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{$reporte->Tipo_reporte}}</td>
+                            <td>{{$reporte->Estatus}}</td>
+                            <td>{{$reporte->tipoLocacion.": ".$lugar[0]->Nombre}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <div class="card-body">
                 @if ($reporte->Estatus == 'Pendiente')
                     <h6 class="bold">Fotografias antes de hacer el trabajo</h6>
                 @else
                     <h6 class="bold">Fotografias del trabajo terminado</h6>
                 @endif
+
+
                 <form class="row g-3 needs-validation" action="{{ route('limpieza.guardarTarea') }}" method="POST"
                     novalidate>
                     @csrf
@@ -199,6 +211,9 @@
     <script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.print.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        const data = @json($lugar);
+        console.log(data);
+
         (() => {
             'use strict'
             // Fetch all the forms we want to apply custom Bootstrap validation styles to

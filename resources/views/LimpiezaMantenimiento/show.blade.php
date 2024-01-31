@@ -104,15 +104,6 @@
             }
         }
 
-        @media only screen and (min-height: 400px) {
-            .dataTables_scrollBody {
-                position: relative;
-                overflow: auto;
-                max-height: 20em;
-                width: 100%;
-            }
-        }
-
         .checkSeleccionar {
             cursor: pointer;
         }
@@ -180,6 +171,13 @@
                                 @else
                                     <h6 class="card-title center bold">Fotografias del trabajo terminado</h6>
                                 @endif
+                                <div class="carousel-indicators">
+                                    @for ($i2 = 1; $i2 < 4; $i2++)
+                                        @if (!empty($fotos[$i]["foto$i2"]))
+                                            <button type="button" data-bs-target="#carouselExampleCaptions{{$i}}" data-bs-slide-to="{{$i2-1}}" class="{{$i2 == 1 ? 'active':''}}" aria-label="Foto {{$i2}}"></button>
+                                        @endif
+                                    @endfor
+                                </div>
                                 <div class="carousel-inner gallery-container" id="gallery{{$i}}">
                                     @for ($i2 = 1; $i2 < 4; $i2++)
                                         @if (!empty($fotos[$i]["foto$i2"]))

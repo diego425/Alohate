@@ -18,6 +18,8 @@ use App\Http\Controllers\LocacionController;
 use App\Http\Controllers\HabitacionController;
 use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\LimpiezaMantenimientoController;
+use App\Http\Controllers\PagosController;
+use App\Http\Controllers\DatatableController;
 
 
 //ruta para el menu
@@ -408,6 +410,22 @@ Route::controller(UsuariosController::class)->group(function (){
     Route::post('user/destroy/{id}', 'destroy')->name('user.destroy');
     Route::get('user/gestionLugares/{id}', 'gestionLugares')->name('user.gestionLugares');
     Route::post('user/asignarLugar', 'asignarLugar')->name('user.asignarLugar');
+});
+
+Route::controller(PagosController::class)->group(function (){
+    Route::get('pagos', 'index')->name('pagos.index');
+    Route::get('pagos/create/{id}', 'create')->name('pagos.create');
+    Route::post('pagos/store/{id}', 'store')->name('pagos.store');
+    Route::get('pagos/{id}', 'show')->name('pagos.show');
+    Route::get('pagos/edit/{id}', 'edit')->name('pagos.edit');
+    Route::post('pagos/update/{id}', 'update')->name('pagos.update');
+    Route::post('pagos/destroy/{id}', 'destroy')->name('pagos.destroy');
+    Route::get('pagos/confirmarPago/{id}', 'confirmarPago')->name('pagos.confirmarPago');
+    Route::post('pagos/update/pago/{idPago}/{idCobro}/{referencia}', 'updatepago')->name('pagos.updatepago');
+});
+
+Route::controller(DatatableController::class)->group(function (){
+    Route::get('datatable/cobros', 'cobros')->name('datatable.cobros');
 });
 
 

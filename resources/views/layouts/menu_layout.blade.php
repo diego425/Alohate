@@ -59,7 +59,6 @@
              <li><a href="{{route('reservaciones_renta')}}" class="lol__link">Reservaciones y Rentas</a></li>
              <li><a href="#" class="lol__link">Cobros y Adeudos de Renta</a></li>
              <li><a href="{{route('clientes')}}" class="lol__link">Clientes</a></li>
-
              <!--=============== DROPDOWN 2 ===============-->
              <li class="dropdown__item">
                 <div class="lol__link">
