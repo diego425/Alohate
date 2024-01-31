@@ -230,7 +230,6 @@
                                           <div class="gris">
                                                 @if($habitacion->Nombre_estado == "Desocupada")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                                <a href="" class="btn btn-warning">Rentar</a>
                                                 <button class="btn btn-primary clickForm" href="{{route('viewreservahaboc', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion])}}">Reservar</button>
                                                 @endif
 
@@ -242,13 +241,11 @@
                                                 @if($habitacion->Nombre_estado == "Reservada")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                                 <a href="" class="btn btn-danger">Terminar</a>
-                                                <a href="" class="btn btn-warning">Rentar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Pago por confirmar")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                                 <a href="" class="btn btn-danger">Terminar</a>
-                                                <a href="" class="btn btn-warning">Rentar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Desactivada")
@@ -415,7 +412,6 @@
                                           <div class="gris">
                                                 @if($habitacion->Nombre_estado == "Desocupada")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                                <a href="" class="btn btn-warning">Rentar</a>
                                                 <button class="btn btn-primary clickForm" href="{{route('viewreservahaboc', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion])}}">Reservar</button>
                                                 @endif
 
@@ -427,13 +423,11 @@
                                                 @if($habitacion->Nombre_estado == "Reservada")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                                 <a href="" class="btn btn-danger">Terminar</a>
-                                                <a href="" class="btn btn-warning">Rentar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Pago por confirmar")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                                 <a href="" class="btn btn-danger">Terminar</a>
-                                                <a href="" class="btn btn-warning">Rentar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Desactivada")
@@ -597,7 +591,6 @@
                                           <div class="gris">
                                                 @if($habitacion->Nombre_estado == "Desocupada")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                                <a href="" class="btn btn-warning">Rentar</a>
                                                 <button class="btn btn-primary clickForm" href="{{route('viewreservahaboc', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion])}}">Reservar</button>
                                                 @endif
 
@@ -609,13 +602,11 @@
                                                 @if($habitacion->Nombre_estado == "Reservada")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                                 <a href="" class="btn btn-danger">Terminar</a>
-                                                <a href="" class="btn btn-warning">Rentar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Pago por confirmar")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                                 <a href="" class="btn btn-danger">Terminar</a>
-                                                <a href="" class="btn btn-warning">Rentar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Desactivada")
@@ -781,7 +772,6 @@
                                           <div class="gris">
                                                 @if($habitacion->Nombre_estado == "Desocupada")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                                <a href="" class="btn btn-warning">Rentar</a>
                                                 <button class="btn btn-primary clickForm" href="{{route('viewreservahaboc', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion])}}">Reservar</button>
                                                 @endif
 
@@ -793,13 +783,11 @@
                                                 @if($habitacion->Nombre_estado == "Reservada")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                                 <a href="" class="btn btn-danger">Terminar</a>
-                                                <a href="" class="btn btn-warning">Rentar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Pago por confirmar")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                                 <a href="" class="btn btn-danger">Terminar</a>
-                                                <a href="" class="btn btn-warning">Rentar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Desactivada")
@@ -965,7 +953,6 @@
                                           <div class="gris">
                                                 @if($habitacion->Nombre_estado == "Desocupada")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                                <a href="" class="btn btn-warning">Rentar</a>
                                                 <button class="btn btn-primary clickForm" href="{{route('viewreservahaboc', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion])}}">Reservar</button>
                                                 @endif
 
@@ -977,13 +964,11 @@
                                                 @if($habitacion->Nombre_estado == "Reservada")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                                 <a href="" class="btn btn-danger">Terminar</a>
-                                                <a href="" class="btn btn-warning">Rentar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Pago por confirmar")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                                 <a href="" class="btn btn-danger">Terminar</a>
-                                                <a href="" class="btn btn-warning">Rentar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Desactivada")
@@ -1148,7 +1133,6 @@
                                           <div class="gris">
                                                 @if($habitacion->Nombre_estado == "Desocupada")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                                <a href="" class="btn btn-warning">Rentar</a>
                                                 <button class="btn btn-primary clickForm" href="{{route('viewreservahaboc', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion])}}">Reservar</button>
                                                 @endif
 
@@ -1160,13 +1144,11 @@
                                                 @if($habitacion->Nombre_estado == "Reservada")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                                 <a href="" class="btn btn-danger">Terminar</a>
-                                                <a href="" class="btn btn-warning">Rentar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Pago por confirmar")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                                 <a href="" class="btn btn-danger">Terminar</a>
-                                                <a href="" class="btn btn-warning">Rentar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Desactivada")
@@ -1334,7 +1316,6 @@
 
                                                 @if($habitacion->Nombre_estado == "Desocupada")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                                <a href="" class="btn btn-warning">Rentar</a>
                                                 <button class="btn btn-primary clickForm" href="{{route('viewreservahaboc', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion])}}">Reservar</button>
                                                 @endif
 
@@ -1346,13 +1327,11 @@
                                                 @if($habitacion->Nombre_estado == "Pago por confirmar")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                                 <a href="" class="btn btn-danger">Terminar</a>
-                                                <a href="" class="btn btn-warning">Rentar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Reservada")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                                 <a href="" class="btn btn-danger">Terminar</a>
-                                                <a href="" class="btn btn-warning">Rentar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Desactivada")

@@ -464,8 +464,7 @@
                      <button class="btn btn-danger clickForm" href="{{route('view_desactivar_hab', $habitaciones[0]->Id_habitacion)}}" >Desactivar</button>
                      @endif
                      @if($habitaciones[0]->Nombre_estado == "Desocupada")
-                     <button class="btn btn-primary clickForm" href="{{route('viewreservahaboc', [$locacion[0]->Id_locacion, $habitaciones[0]->Id_habitacion])}}">Reservar</button>
-                     <button class="btn btn-secondary">Rentar</button>
+                     <button class="btn btn-secondary clickForm" href="{{route('viewreservahaboc', [$locacion[0]->Id_locacion, $habitaciones[0]->Id_habitacion])}}">Reservar</button>
                      <button class="btn btn-primary clickForm" href="{{route('view_editar_hab', $habitaciones[0]->Id_habitacion)}}">Editar</button>
                      <button class="btn btn-danger clickForm" href="{{route('view_desactivar_hab', $habitaciones[0]->Id_habitacion)}}" >Desactivar</button>
                      <button class="btn btn-success">Agendar Cita</button>
@@ -473,15 +472,13 @@
                      @endif
 
                      @if($habitaciones[0]->Nombre_estado == "Reservada")
-                     <button class="btn btn-primary clickForm" href="{{route('viewreservahaboc', [$locacion[0]->Id_locacion, $habitaciones[0]->Id_habitacion])}}">Reservar</button>
-                     <button class="btn btn-secondary">Rentar</button>
+                     <button class="btn btn-secondary clickForm" href="{{route('viewreservahaboc', [$locacion[0]->Id_locacion, $habitaciones[0]->Id_habitacion])}}">Reservar</button>
                      <button class="btn btn-primary clickForm" href="{{route('view_editar_hab', $habitaciones[0]->Id_habitacion)}}">Editar</button>
                      <a href="{{route('limpieza.create')}}?tipoLocacion=Habitación&id={{$habitaciones[0]->Id_habitacion}}&Id_locacion={{$locacion[0]->Id_locacion}}" class="btn btn-warning">Reporte De MTTO.</a>
                      @endif
 
                      @if($habitaciones[0]->Nombre_estado == "Pago por confirmar")
-                     <button class="btn btn-primary clickForm" href="{{route('viewreservahaboc', [$locacion[0]->Id_locacion, $habitaciones[0]->Id_habitacion])}}">Reservar</button>
-                     <button class="btn btn-secondary">Rentar</button>
+                     <button class="btn btn-secondary clickForm" href="{{route('viewreservahaboc', [$locacion[0]->Id_locacion, $habitaciones[0]->Id_habitacion])}}">Reservar</button>
                      <button class="btn btn-primary clickForm" href="{{route('view_editar_hab', $habitaciones[0]->Id_habitacion)}}">Editar</button>
                      <a href="{{route('limpieza.create')}}?tipoLocacion=Habitación&id={{$habitaciones[0]->Id_habitacion}}&Id_locacion={{$locacion[0]->Id_locacion}}" class="btn btn-warning">Reporte De MTTO.</a>
                      @endif

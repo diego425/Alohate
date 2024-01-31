@@ -123,7 +123,7 @@ class HabitacionController extends Controller
 //funcion que muestra los detalles de una habitacion libre
 public function DetallesHabLibre($Id_locacion, $Id_habitacion ){
 
-      $locacion=DB::table('locacion')
+   $locacion=DB::table('locacion')
       ->select('locacion.Id_locacion', 'Nombre_locacion', 'est.Nombre_estado' ,'Tipo_renta', 'Calle',
       'Numero_ext', 'Colonia', 'Ubi_google_maps', 'Numero_total_de_pisos', 
       'Numero_total_habitaciones', 'Numero_total_depas', 'Numero_total_locales',
@@ -155,100 +155,845 @@ public function DetallesHabLibre($Id_locacion, $Id_habitacion ){
       ->where('habitacion.Id_habitacion', '=', $Id_habitacion)
       ->get();
 
+switch($habitaciones[0]->Nombre_estado){
+   case 'Desocupada':
 
-      $lugar_cliente_reservado = DB::table('lugares_reservados')
-      ->select('lugares_reservados.Id_lugares_reservados', 'lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion',
-      'lugares_reservados.Id_locacion','lugares_reservados.Id_local', 'lugares_reservados.Id_departamento','lugares_reservados.Id_cliente',
-      'cliente.Nombre','cliente.Apellido_paterno','cliente.Apellido_materno', 'cliente.Email',
-      'cliente.Numero_celular','cliente.Ciudad','cliente.Estado','cliente.Pais',
-      'cliente.Ref1_nombre','cliente.Ref2_nombre', 'cliente.Ref1_celular','cliente.Ref2_celular',
-      'cliente.Ref1_parentesco','cliente.Ref2_parentesco','cliente.Motivo_visita',
-      'cliente.Lugar_motivo_visita','cliente.Foto_cliente','cliente.INE_frente','cliente.INE_reverso'
-      )
-      ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
-      ->leftJoin("habitacion", "habitacion.Id_habitacion", "=", "lugares_reservados.Id_habitacion")
-      ->selectRaw("(SELECT COUNT(*) AS lugar1 FROM `lugares_reservados` 
-      LEFT JOIN habitacion ON habitacion.Id_habitacion = lugares_reservados.Id_habitacion
-      WHERE habitacion.Id_habitacion =  ".$Id_habitacion.") as totalclientes")
-      ->where('habitacion.Id_habitacion', '=', $Id_habitacion)
-      ->get();
-
-      $servicios = Servicios_estancia::get();
+         $lugar_cliente_reservado = DB::table('lugares_reservados')
+         ->select('lugares_reservados.Id_lugares_reservados', 'lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion',
+         'lugares_reservados.Id_locacion','lugares_reservados.Id_local', 'lugares_reservados.Id_departamento','lugares_reservados.Id_cliente',
+         'lugares_reservados.Id_estado_ocupacion', 'reserva.Start_date','reserva.Total_de_personas',
+         'cliente.Nombre','cliente.Apellido_paterno','cliente.Apellido_materno', 'cliente.Email',
+         'cliente.Numero_celular','cliente.Ciudad','cliente.Estado','cliente.Pais',
+         'cliente.Ref1_nombre','cliente.Ref2_nombre', 'cliente.Ref1_celular','cliente.Ref2_celular',
+         'cliente.Ref1_parentesco','cliente.Ref2_parentesco','cliente.Motivo_visita',
+         'cliente.Lugar_motivo_visita','cliente.Foto_cliente','cliente.INE_frente','cliente.INE_reverso')
+         ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+         ->leftJoin("habitacion", "habitacion.Id_habitacion", "=", "lugares_reservados.Id_habitacion")
+         ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+         // ->selectRaw("(SELECT COUNT(*) AS lugar1 FROM `lugares_reservados` 
+         // LEFT JOIN habitacion ON habitacion.Id_habitacion = lugares_reservados.Id_habitacion
+         // WHERE habitacion.Id_habitacion =  ".$Id_habitacion.") as totalclientes")
+         ->where('habitacion.Id_habitacion', '=', $Id_habitacion)
+         ->whereRaw('"'.date("Y-m-d").'" Between reserva.Start_date and reserva.End_date')
+         ->get();
    
-      $files = DB::table('fotos_lugares')
+         $servicios = Servicios_estancia::get();
+      
+         $files = DB::table('fotos_lugares')
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+      
+         $relacion_servicio =  DB::table('relacion_servicios') 
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+      
+         $servicio_bano= DB::table('servicio_bano') 
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+      
+         $servicio_cama= DB::table('servicio_cama')
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+         
+         $reglafiles = DB::table('lugares_reservados')
+         ->select('lugares_reservados.Id_lugares_reservados', 'lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion',
+         'lugares_reservados.Id_locacion','lugares_reservados.Id_local', 'lugares_reservados.Id_departamento','lugares_reservados.Id_cliente',
+         'lugares_reservados.Id_estado_ocupacion', 'reserva.Start_date','reserva.Total_de_personas','reserva.Foto_reglamento','reserva.Foto_aviso_privacidad',
+         'cliente.Nombre','cliente.Apellido_paterno','cliente.Apellido_materno', 'cliente.Email',
+         'cliente.Numero_celular','cliente.Ciudad','cliente.Estado','cliente.Pais',
+         'cliente.Ref1_nombre','cliente.Ref2_nombre', 'cliente.Ref1_celular','cliente.Ref2_celular',
+         'cliente.Ref1_parentesco','cliente.Ref2_parentesco','cliente.Motivo_visita',
+         'cliente.Lugar_motivo_visita','cliente.Foto_cliente','cliente.INE_frente','cliente.INE_reverso')
+         ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+         ->leftJoin("habitacion", "habitacion.Id_habitacion", "=", "lugares_reservados.Id_habitacion")
+         ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+         // ->selectRaw("(SELECT COUNT(*) AS lugar1 FROM `lugares_reservados` 
+         // LEFT JOIN habitacion ON habitacion.Id_habitacion = lugares_reservados.Id_habitacion
+         // WHERE habitacion.Id_habitacion =  ".$Id_habitacion.") as totalclientes")
+         ->where('habitacion.Id_habitacion', '=', $Id_habitacion)
+         ->whereRaw('"'.date("Y-m-d").'" Between reserva.Start_date and reserva.End_date')
+         ->get();
+   
+   
+   
+   
+   /*esta consulta me trae los datos de la tabla de los lugares reservados despues con un leftjoin hago la relacion 
+   para que solo me traiga las reservaciones que sean de la casa la cual estoy seleccionando desde el sistema */
+      $lugar_reservacion= DB::table('lugares_reservados')
+      ->select('lugares_reservados.Id_lugares_reservados', 'lugares_reservados.Id_reservacion', 'Id_habitacion', 'Id_locacion',
+               'Id_local', 'Id_departamento', 'Id_cliente', 'reserva.Start_date', 'reserva.End_date', 'reserva.Title' )
+      ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
       ->where('Id_habitacion', '=', $Id_habitacion)
       ->get();
    
-      $relacion_servicio =  DB::table('relacion_servicios') 
-      ->where('Id_habitacion', '=', $Id_habitacion)
-      ->get();
+   //llaado de datos para el calendario
+   //aqui hago una variable de tipo array sola
+      $reservacion = [];
+   //hago un foreach con la variable que me hace la consulta a la bd
+      foreach($lugar_reservacion as $reserv){
+   //ejemplo para cambiar el titulo
+         $json = json_decode(
+            $reserv->Title
+         );
+         $titulo = $json[0]->Nombre." ".$json[0]->Numero_celular;
    
-      $servicio_bano= DB::table('servicio_bano') 
-      ->where('Id_habitacion', '=', $Id_habitacion)
-      ->get();
+   //llamo a la variable que tiene el array solo para llenarlo de datos el formato lo saque del calendario
+         $reservacion[] = [
+            'title' => $titulo,
+            'start' => $reserv->Start_date,
+            'end' => $reserv->End_date,
+         ];
+      }
+   //despues ponemos en formato json los datos para que los entienda el calendario y esa variable se la enviamos a la vista con el metodo compact
+      response()->json($lugar_reservacion);
    
-      $servicio_cama= DB::table('servicio_cama')
-      ->where('Id_habitacion', '=', $Id_habitacion)
-      ->get();
-
-
-
-
-/*esta consulta me trae los datos de la tabla de los lugares reservados despues con un leftjoin hago la relacion 
-para que solo me traiga las reservaciones que sean de la casa la cual estoy seleccionando desde el sistema */
-   $lugar_reservacion= DB::table('lugares_reservados')
-   ->select('lugares_reservados.Id_lugares_reservados', 'lugares_reservados.Id_reservacion', 'Id_habitacion', 'Id_locacion',
-            'Id_local', 'Id_departamento', 'Id_cliente', 'reserva.Start_date', 'reserva.End_date', 'reserva.Title' )
-   ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
-   ->where('Id_habitacion', '=', $Id_habitacion)
-   ->get();
-
-//llaado de datos para el calendario
-//aqui hago una variable de tipo array sola
-   $reservacion = [];
-//hago un foreach con la variable que me hace la consulta a la bd
-   foreach($lugar_reservacion as $reserv){
-//ejemplo para cambiar el titulo
-      $json = json_decode(
-         $reserv->Title
-      );
-      $titulo = $json[0]->Nombre." ".$json[0]->Numero_celular;
-
-//llamo a la variable que tiene el array solo para llenarlo de datos el formato lo saque del calendario
-      $reservacion[] = [
-         'title' => $titulo,
-         'start' => $reserv->Start_date,
-         'end' => $reserv->End_date,
-      ];
-   }
-//despues ponemos en formato json los datos para que los entienda el calendario y esa variable se la enviamos a la vista con el metodo compact
-   response()->json($lugar_reservacion);
-
-
-
-   if($habitaciones[0]->Nombre_estado  == "Desocupada"){
-      return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
-   }else{
-      if($habitaciones[0]->Nombre_estado == "En Mantenimiento/Limpieza"){
+   
+   
+      if($habitaciones[0]->Nombre_estado  == "Desocupada"){
          return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
       }else{
-         if($habitaciones[0]->Nombre_estado == "Desactivada"){
+         if($habitaciones[0]->Nombre_estado == "En Mantenimiento/Limpieza"){
             return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
          }else{
-            if($habitaciones[0]->Nombre_estado == "Rentada"){
-               return view('Habitaciones.detalleshabocupada', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+            if($habitaciones[0]->Nombre_estado == "Desactivada"){
+               return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
             }else{
-               if($habitaciones[0]->Nombre_estado == "Reservada"){
-                  return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+               if($habitaciones[0]->Nombre_estado == "Rentada"){
+                  return view('Habitaciones.detalleshabocupada', compact('monto_por_p_extras', 'detallereserva', 'diasredondeados', 'monto_por_dias', 'suma_monto','locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado', 'reglafiles'));
                }else{
-                  if($habitaciones[0]->Nombre_estado == "Pago por confirmar"){
+                  if($habitaciones[0]->Nombre_estado == "Reservada"){
                      return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+                  }else{
+                     if($habitaciones[0]->Nombre_estado == "Pago por confirmar"){
+                        return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+                  }
                }
             }
+   
          }
-
       }
    }
+   
+   break;
+   case 'En Mantenimiento/Limpieza':
+         
+         $lugar_cliente_reservado = DB::table('lugares_reservados')
+         ->select('lugares_reservados.Id_lugares_reservados', 'lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion',
+         'lugares_reservados.Id_locacion','lugares_reservados.Id_local', 'lugares_reservados.Id_departamento','lugares_reservados.Id_cliente',
+         'lugares_reservados.Id_estado_ocupacion', 'reserva.Start_date','reserva.Total_de_personas',
+         'cliente.Nombre','cliente.Apellido_paterno','cliente.Apellido_materno', 'cliente.Email',
+         'cliente.Numero_celular','cliente.Ciudad','cliente.Estado','cliente.Pais',
+         'cliente.Ref1_nombre','cliente.Ref2_nombre', 'cliente.Ref1_celular','cliente.Ref2_celular',
+         'cliente.Ref1_parentesco','cliente.Ref2_parentesco','cliente.Motivo_visita',
+         'cliente.Lugar_motivo_visita','cliente.Foto_cliente','cliente.INE_frente','cliente.INE_reverso')
+         ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+         ->leftJoin("habitacion", "habitacion.Id_habitacion", "=", "lugares_reservados.Id_habitacion")
+         ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+         // ->selectRaw("(SELECT COUNT(*) AS lugar1 FROM `lugares_reservados` 
+         // LEFT JOIN habitacion ON habitacion.Id_habitacion = lugares_reservados.Id_habitacion
+         // WHERE habitacion.Id_habitacion =  ".$Id_habitacion.") as totalclientes")
+         ->where('habitacion.Id_habitacion', '=', $Id_habitacion)
+         ->whereRaw('"'.date("Y-m-d").'" Between reserva.Start_date and reserva.End_date')
+         ->get();
+   
+         $servicios = Servicios_estancia::get();
+      
+         $files = DB::table('fotos_lugares')
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+      
+         $relacion_servicio =  DB::table('relacion_servicios') 
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+      
+         $servicio_bano= DB::table('servicio_bano') 
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+      
+         $servicio_cama= DB::table('servicio_cama')
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+         
+         $reglafiles = DB::table('lugares_reservados')
+         ->select('lugares_reservados.Id_lugares_reservados', 'lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion',
+         'lugares_reservados.Id_locacion','lugares_reservados.Id_local', 'lugares_reservados.Id_departamento','lugares_reservados.Id_cliente',
+         'lugares_reservados.Id_estado_ocupacion', 'reserva.Start_date','reserva.Total_de_personas','reserva.Foto_reglamento','reserva.Foto_aviso_privacidad',
+         'cliente.Nombre','cliente.Apellido_paterno','cliente.Apellido_materno', 'cliente.Email',
+         'cliente.Numero_celular','cliente.Ciudad','cliente.Estado','cliente.Pais',
+         'cliente.Ref1_nombre','cliente.Ref2_nombre', 'cliente.Ref1_celular','cliente.Ref2_celular',
+         'cliente.Ref1_parentesco','cliente.Ref2_parentesco','cliente.Motivo_visita',
+         'cliente.Lugar_motivo_visita','cliente.Foto_cliente','cliente.INE_frente','cliente.INE_reverso')
+         ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+         ->leftJoin("habitacion", "habitacion.Id_habitacion", "=", "lugares_reservados.Id_habitacion")
+         ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+         // ->selectRaw("(SELECT COUNT(*) AS lugar1 FROM `lugares_reservados` 
+         // LEFT JOIN habitacion ON habitacion.Id_habitacion = lugares_reservados.Id_habitacion
+         // WHERE habitacion.Id_habitacion =  ".$Id_habitacion.") as totalclientes")
+         ->where('habitacion.Id_habitacion', '=', $Id_habitacion)
+         ->whereRaw('"'.date("Y-m-d").'" Between reserva.Start_date and reserva.End_date')
+         ->get();
+   
+   
+   
+   
+   /*esta consulta me trae los datos de la tabla de los lugares reservados despues con un leftjoin hago la relacion 
+   para que solo me traiga las reservaciones que sean de la casa la cual estoy seleccionando desde el sistema */
+      $lugar_reservacion= DB::table('lugares_reservados')
+      ->select('lugares_reservados.Id_lugares_reservados', 'lugares_reservados.Id_reservacion', 'Id_habitacion', 'Id_locacion',
+               'Id_local', 'Id_departamento', 'Id_cliente', 'reserva.Start_date', 'reserva.End_date', 'reserva.Title' )
+      ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+      ->where('Id_habitacion', '=', $Id_habitacion)
+      ->get();
+   
+   //llaado de datos para el calendario
+   //aqui hago una variable de tipo array sola
+      $reservacion = [];
+   //hago un foreach con la variable que me hace la consulta a la bd
+      foreach($lugar_reservacion as $reserv){
+   //ejemplo para cambiar el titulo
+         $json = json_decode(
+            $reserv->Title
+         );
+         $titulo = $json[0]->Nombre." ".$json[0]->Numero_celular;
+   
+   //llamo a la variable que tiene el array solo para llenarlo de datos el formato lo saque del calendario
+         $reservacion[] = [
+            'title' => $titulo,
+            'start' => $reserv->Start_date,
+            'end' => $reserv->End_date,
+         ];
+      }
+   //despues ponemos en formato json los datos para que los entienda el calendario y esa variable se la enviamos a la vista con el metodo compact
+      response()->json($lugar_reservacion);
+   
+   
+   
+      if($habitaciones[0]->Nombre_estado  == "Desocupada"){
+         return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+      }else{
+         if($habitaciones[0]->Nombre_estado == "En Mantenimiento/Limpieza"){
+            return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+         }else{
+            if($habitaciones[0]->Nombre_estado == "Desactivada"){
+               return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+            }else{
+               if($habitaciones[0]->Nombre_estado == "Rentada"){
+                  return view('Habitaciones.detalleshabocupada', compact('monto_por_p_extras', 'detallereserva', 'diasredondeados', 'monto_por_dias', 'suma_monto','locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado', 'reglafiles'));
+               }else{
+                  if($habitaciones[0]->Nombre_estado == "Reservada"){
+                     return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+                  }else{
+                     if($habitaciones[0]->Nombre_estado == "Pago por confirmar"){
+                        return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+                  }
+               }
+            }
+   
+         }
+      }
+   }
+   
+   break;
+   case 'Desactivada':
+         
+         $lugar_cliente_reservado = DB::table('lugares_reservados')
+         ->select('lugares_reservados.Id_lugares_reservados', 'lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion',
+         'lugares_reservados.Id_locacion','lugares_reservados.Id_local', 'lugares_reservados.Id_departamento','lugares_reservados.Id_cliente',
+         'lugares_reservados.Id_estado_ocupacion', 'reserva.Start_date','reserva.Total_de_personas',
+         'cliente.Nombre','cliente.Apellido_paterno','cliente.Apellido_materno', 'cliente.Email',
+         'cliente.Numero_celular','cliente.Ciudad','cliente.Estado','cliente.Pais',
+         'cliente.Ref1_nombre','cliente.Ref2_nombre', 'cliente.Ref1_celular','cliente.Ref2_celular',
+         'cliente.Ref1_parentesco','cliente.Ref2_parentesco','cliente.Motivo_visita',
+         'cliente.Lugar_motivo_visita','cliente.Foto_cliente','cliente.INE_frente','cliente.INE_reverso')
+         ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+         ->leftJoin("habitacion", "habitacion.Id_habitacion", "=", "lugares_reservados.Id_habitacion")
+         ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+         // ->selectRaw("(SELECT COUNT(*) AS lugar1 FROM `lugares_reservados` 
+         // LEFT JOIN habitacion ON habitacion.Id_habitacion = lugares_reservados.Id_habitacion
+         // WHERE habitacion.Id_habitacion =  ".$Id_habitacion.") as totalclientes")
+         ->where('habitacion.Id_habitacion', '=', $Id_habitacion)
+         ->whereRaw('"'.date("Y-m-d").'" Between reserva.Start_date and reserva.End_date')
+         ->get();
+   
+         $servicios = Servicios_estancia::get();
+      
+         $files = DB::table('fotos_lugares')
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+      
+         $relacion_servicio =  DB::table('relacion_servicios') 
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+      
+         $servicio_bano= DB::table('servicio_bano') 
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+      
+         $servicio_cama= DB::table('servicio_cama')
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+         
+         $reglafiles = DB::table('lugares_reservados')
+         ->select('lugares_reservados.Id_lugares_reservados', 'lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion',
+         'lugares_reservados.Id_locacion','lugares_reservados.Id_local', 'lugares_reservados.Id_departamento','lugares_reservados.Id_cliente',
+         'lugares_reservados.Id_estado_ocupacion', 'reserva.Start_date','reserva.Total_de_personas','reserva.Foto_reglamento','reserva.Foto_aviso_privacidad',
+         'cliente.Nombre','cliente.Apellido_paterno','cliente.Apellido_materno', 'cliente.Email',
+         'cliente.Numero_celular','cliente.Ciudad','cliente.Estado','cliente.Pais',
+         'cliente.Ref1_nombre','cliente.Ref2_nombre', 'cliente.Ref1_celular','cliente.Ref2_celular',
+         'cliente.Ref1_parentesco','cliente.Ref2_parentesco','cliente.Motivo_visita',
+         'cliente.Lugar_motivo_visita','cliente.Foto_cliente','cliente.INE_frente','cliente.INE_reverso')
+         ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+         ->leftJoin("habitacion", "habitacion.Id_habitacion", "=", "lugares_reservados.Id_habitacion")
+         ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+         // ->selectRaw("(SELECT COUNT(*) AS lugar1 FROM `lugares_reservados` 
+         // LEFT JOIN habitacion ON habitacion.Id_habitacion = lugares_reservados.Id_habitacion
+         // WHERE habitacion.Id_habitacion =  ".$Id_habitacion.") as totalclientes")
+         ->where('habitacion.Id_habitacion', '=', $Id_habitacion)
+         ->whereRaw('"'.date("Y-m-d").'" Between reserva.Start_date and reserva.End_date')
+         ->get();
+   
+   
+   
+   
+   /*esta consulta me trae los datos de la tabla de los lugares reservados despues con un leftjoin hago la relacion 
+   para que solo me traiga las reservaciones que sean de la casa la cual estoy seleccionando desde el sistema */
+      $lugar_reservacion= DB::table('lugares_reservados')
+      ->select('lugares_reservados.Id_lugares_reservados', 'lugares_reservados.Id_reservacion', 'Id_habitacion', 'Id_locacion',
+               'Id_local', 'Id_departamento', 'Id_cliente', 'reserva.Start_date', 'reserva.End_date', 'reserva.Title' )
+      ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+      ->where('Id_habitacion', '=', $Id_habitacion)
+      ->get();
+   
+   //llaado de datos para el calendario
+   //aqui hago una variable de tipo array sola
+      $reservacion = [];
+   //hago un foreach con la variable que me hace la consulta a la bd
+      foreach($lugar_reservacion as $reserv){
+   //ejemplo para cambiar el titulo
+         $json = json_decode(
+            $reserv->Title
+         );
+         $titulo = $json[0]->Nombre." ".$json[0]->Numero_celular;
+   
+   //llamo a la variable que tiene el array solo para llenarlo de datos el formato lo saque del calendario
+         $reservacion[] = [
+            'title' => $titulo,
+            'start' => $reserv->Start_date,
+            'end' => $reserv->End_date,
+         ];
+      }
+   //despues ponemos en formato json los datos para que los entienda el calendario y esa variable se la enviamos a la vista con el metodo compact
+      response()->json($lugar_reservacion);
+   
+   
+   
+      if($habitaciones[0]->Nombre_estado  == "Desocupada"){
+         return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+      }else{
+         if($habitaciones[0]->Nombre_estado == "En Mantenimiento/Limpieza"){
+            return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+         }else{
+            if($habitaciones[0]->Nombre_estado == "Desactivada"){
+               return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+            }else{
+               if($habitaciones[0]->Nombre_estado == "Rentada"){
+                  return view('Habitaciones.detalleshabocupada', compact('monto_por_p_extras', 'detallereserva', 'diasredondeados', 'monto_por_dias', 'suma_monto','locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado', 'reglafiles'));
+               }else{
+                  if($habitaciones[0]->Nombre_estado == "Reservada"){
+                     return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+                  }else{
+                     if($habitaciones[0]->Nombre_estado == "Pago por confirmar"){
+                        return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+                  }
+               }
+            }
+   
+         }
+      }
+   }
+   
+   break;
+   case 'Reservada':
+         
+         $lugar_cliente_reservado = DB::table('lugares_reservados')
+         ->select('lugares_reservados.Id_lugares_reservados', 'lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion',
+         'lugares_reservados.Id_locacion','lugares_reservados.Id_local', 'lugares_reservados.Id_departamento','lugares_reservados.Id_cliente',
+         'lugares_reservados.Id_estado_ocupacion', 'reserva.Start_date','reserva.Total_de_personas',
+         'cliente.Nombre','cliente.Apellido_paterno','cliente.Apellido_materno', 'cliente.Email',
+         'cliente.Numero_celular','cliente.Ciudad','cliente.Estado','cliente.Pais',
+         'cliente.Ref1_nombre','cliente.Ref2_nombre', 'cliente.Ref1_celular','cliente.Ref2_celular',
+         'cliente.Ref1_parentesco','cliente.Ref2_parentesco','cliente.Motivo_visita',
+         'cliente.Lugar_motivo_visita','cliente.Foto_cliente','cliente.INE_frente','cliente.INE_reverso')
+         ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+         ->leftJoin("habitacion", "habitacion.Id_habitacion", "=", "lugares_reservados.Id_habitacion")
+         ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+         // ->selectRaw("(SELECT COUNT(*) AS lugar1 FROM `lugares_reservados` 
+         // LEFT JOIN habitacion ON habitacion.Id_habitacion = lugares_reservados.Id_habitacion
+         // WHERE habitacion.Id_habitacion =  ".$Id_habitacion.") as totalclientes")
+         ->where('habitacion.Id_habitacion', '=', $Id_habitacion)
+         ->whereRaw('"'.date("Y-m-d").'" Between reserva.Start_date and reserva.End_date')
+         ->get();
+   
+         $servicios = Servicios_estancia::get();
+      
+         $files = DB::table('fotos_lugares')
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+      
+         $relacion_servicio =  DB::table('relacion_servicios') 
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+      
+         $servicio_bano= DB::table('servicio_bano') 
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+      
+         $servicio_cama= DB::table('servicio_cama')
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+         
+         $reglafiles = DB::table('lugares_reservados')
+         ->select('lugares_reservados.Id_lugares_reservados', 'lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion',
+         'lugares_reservados.Id_locacion','lugares_reservados.Id_local', 'lugares_reservados.Id_departamento','lugares_reservados.Id_cliente',
+         'lugares_reservados.Id_estado_ocupacion', 'reserva.Start_date','reserva.Total_de_personas','reserva.Foto_reglamento','reserva.Foto_aviso_privacidad',
+         'cliente.Nombre','cliente.Apellido_paterno','cliente.Apellido_materno', 'cliente.Email',
+         'cliente.Numero_celular','cliente.Ciudad','cliente.Estado','cliente.Pais',
+         'cliente.Ref1_nombre','cliente.Ref2_nombre', 'cliente.Ref1_celular','cliente.Ref2_celular',
+         'cliente.Ref1_parentesco','cliente.Ref2_parentesco','cliente.Motivo_visita',
+         'cliente.Lugar_motivo_visita','cliente.Foto_cliente','cliente.INE_frente','cliente.INE_reverso')
+         ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+         ->leftJoin("habitacion", "habitacion.Id_habitacion", "=", "lugares_reservados.Id_habitacion")
+         ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+         // ->selectRaw("(SELECT COUNT(*) AS lugar1 FROM `lugares_reservados` 
+         // LEFT JOIN habitacion ON habitacion.Id_habitacion = lugares_reservados.Id_habitacion
+         // WHERE habitacion.Id_habitacion =  ".$Id_habitacion.") as totalclientes")
+         ->where('habitacion.Id_habitacion', '=', $Id_habitacion)
+         ->whereRaw('"'.date("Y-m-d").'" Between reserva.Start_date and reserva.End_date')
+         ->get();
+   
+   
+   
+   
+   /*esta consulta me trae los datos de la tabla de los lugares reservados despues con un leftjoin hago la relacion 
+   para que solo me traiga las reservaciones que sean de la casa la cual estoy seleccionando desde el sistema */
+      $lugar_reservacion= DB::table('lugares_reservados')
+      ->select('lugares_reservados.Id_lugares_reservados', 'lugares_reservados.Id_reservacion', 'Id_habitacion', 'Id_locacion',
+               'Id_local', 'Id_departamento', 'Id_cliente', 'reserva.Start_date', 'reserva.End_date', 'reserva.Title' )
+      ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+      ->where('Id_habitacion', '=', $Id_habitacion)
+      ->get();
+   
+   //llaado de datos para el calendario
+   //aqui hago una variable de tipo array sola
+      $reservacion = [];
+   //hago un foreach con la variable que me hace la consulta a la bd
+      foreach($lugar_reservacion as $reserv){
+   //ejemplo para cambiar el titulo
+         $json = json_decode(
+            $reserv->Title
+         );
+         $titulo = $json[0]->Nombre." ".$json[0]->Numero_celular;
+   
+   //llamo a la variable que tiene el array solo para llenarlo de datos el formato lo saque del calendario
+         $reservacion[] = [
+            'title' => $titulo,
+            'start' => $reserv->Start_date,
+            'end' => $reserv->End_date,
+         ];
+      }
+   //despues ponemos en formato json los datos para que los entienda el calendario y esa variable se la enviamos a la vista con el metodo compact
+      response()->json($lugar_reservacion);
+   
+   
+   
+      if($habitaciones[0]->Nombre_estado  == "Desocupada"){
+         return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+      }else{
+         if($habitaciones[0]->Nombre_estado == "En Mantenimiento/Limpieza"){
+            return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+         }else{
+            if($habitaciones[0]->Nombre_estado == "Desactivada"){
+               return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+            }else{
+               if($habitaciones[0]->Nombre_estado == "Rentada"){
+                  return view('Habitaciones.detalleshabocupada', compact('monto_por_p_extras', 'detallereserva', 'diasredondeados', 'monto_por_dias', 'suma_monto','locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado', 'reglafiles'));
+               }else{
+                  if($habitaciones[0]->Nombre_estado == "Reservada"){
+                     return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+                  }else{
+                     if($habitaciones[0]->Nombre_estado == "Pago por confirmar"){
+                        return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+                  }
+               }
+            }
+   
+         }
+      }
+   }
+   
+   break;
+   case 'Pago por confirmar':
+         
+         $lugar_cliente_reservado = DB::table('lugares_reservados')
+         ->select('lugares_reservados.Id_lugares_reservados', 'lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion',
+         'lugares_reservados.Id_locacion','lugares_reservados.Id_local', 'lugares_reservados.Id_departamento','lugares_reservados.Id_cliente',
+         'lugares_reservados.Id_estado_ocupacion', 'reserva.Start_date','reserva.Total_de_personas',
+         'cliente.Nombre','cliente.Apellido_paterno','cliente.Apellido_materno', 'cliente.Email',
+         'cliente.Numero_celular','cliente.Ciudad','cliente.Estado','cliente.Pais',
+         'cliente.Ref1_nombre','cliente.Ref2_nombre', 'cliente.Ref1_celular','cliente.Ref2_celular',
+         'cliente.Ref1_parentesco','cliente.Ref2_parentesco','cliente.Motivo_visita',
+         'cliente.Lugar_motivo_visita','cliente.Foto_cliente','cliente.INE_frente','cliente.INE_reverso')
+         ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+         ->leftJoin("habitacion", "habitacion.Id_habitacion", "=", "lugares_reservados.Id_habitacion")
+         ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+         // ->selectRaw("(SELECT COUNT(*) AS lugar1 FROM `lugares_reservados` 
+         // LEFT JOIN habitacion ON habitacion.Id_habitacion = lugares_reservados.Id_habitacion
+         // WHERE habitacion.Id_habitacion =  ".$Id_habitacion.") as totalclientes")
+         ->where('habitacion.Id_habitacion', '=', $Id_habitacion)
+         ->whereRaw('"'.date("Y-m-d").'" Between reserva.Start_date and reserva.End_date')
+         ->get();
+   
+         $servicios = Servicios_estancia::get();
+      
+         $files = DB::table('fotos_lugares')
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+      
+         $relacion_servicio =  DB::table('relacion_servicios') 
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+      
+         $servicio_bano= DB::table('servicio_bano') 
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+      
+         $servicio_cama= DB::table('servicio_cama')
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+         
+         $reglafiles = DB::table('lugares_reservados')
+         ->select('lugares_reservados.Id_lugares_reservados', 'lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion',
+         'lugares_reservados.Id_locacion','lugares_reservados.Id_local', 'lugares_reservados.Id_departamento','lugares_reservados.Id_cliente',
+         'lugares_reservados.Id_estado_ocupacion', 'reserva.Start_date','reserva.Total_de_personas','reserva.Foto_reglamento','reserva.Foto_aviso_privacidad',
+         'cliente.Nombre','cliente.Apellido_paterno','cliente.Apellido_materno', 'cliente.Email',
+         'cliente.Numero_celular','cliente.Ciudad','cliente.Estado','cliente.Pais',
+         'cliente.Ref1_nombre','cliente.Ref2_nombre', 'cliente.Ref1_celular','cliente.Ref2_celular',
+         'cliente.Ref1_parentesco','cliente.Ref2_parentesco','cliente.Motivo_visita',
+         'cliente.Lugar_motivo_visita','cliente.Foto_cliente','cliente.INE_frente','cliente.INE_reverso')
+         ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+         ->leftJoin("habitacion", "habitacion.Id_habitacion", "=", "lugares_reservados.Id_habitacion")
+         ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+         // ->selectRaw("(SELECT COUNT(*) AS lugar1 FROM `lugares_reservados` 
+         // LEFT JOIN habitacion ON habitacion.Id_habitacion = lugares_reservados.Id_habitacion
+         // WHERE habitacion.Id_habitacion =  ".$Id_habitacion.") as totalclientes")
+         ->where('habitacion.Id_habitacion', '=', $Id_habitacion)
+         ->whereRaw('"'.date("Y-m-d").'" Between reserva.Start_date and reserva.End_date')
+         ->get();
+   
+   
+   
+   
+   /*esta consulta me trae los datos de la tabla de los lugares reservados despues con un leftjoin hago la relacion 
+   para que solo me traiga las reservaciones que sean de la casa la cual estoy seleccionando desde el sistema */
+      $lugar_reservacion= DB::table('lugares_reservados')
+      ->select('lugares_reservados.Id_lugares_reservados', 'lugares_reservados.Id_reservacion', 'Id_habitacion', 'Id_locacion',
+               'Id_local', 'Id_departamento', 'Id_cliente', 'reserva.Start_date', 'reserva.End_date', 'reserva.Title' )
+      ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+      ->where('Id_habitacion', '=', $Id_habitacion)
+      ->get();
+   
+   //llaado de datos para el calendario
+   //aqui hago una variable de tipo array sola
+      $reservacion = [];
+   //hago un foreach con la variable que me hace la consulta a la bd
+      foreach($lugar_reservacion as $reserv){
+   //ejemplo para cambiar el titulo
+         $json = json_decode(
+            $reserv->Title
+         );
+         $titulo = $json[0]->Nombre." ".$json[0]->Numero_celular;
+   
+   //llamo a la variable que tiene el array solo para llenarlo de datos el formato lo saque del calendario
+         $reservacion[] = [
+            'title' => $titulo,
+            'start' => $reserv->Start_date,
+            'end' => $reserv->End_date,
+         ];
+      }
+   //despues ponemos en formato json los datos para que los entienda el calendario y esa variable se la enviamos a la vista con el metodo compact
+      response()->json($lugar_reservacion);
+   
+   
+   
+      if($habitaciones[0]->Nombre_estado  == "Desocupada"){
+         return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+      }else{
+         if($habitaciones[0]->Nombre_estado == "En Mantenimiento/Limpieza"){
+            return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+         }else{
+            if($habitaciones[0]->Nombre_estado == "Desactivada"){
+               return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+            }else{
+               if($habitaciones[0]->Nombre_estado == "Rentada"){
+                  return view('Habitaciones.detalleshabocupada', compact('monto_por_p_extras', 'detallereserva', 'diasredondeados', 'monto_por_dias', 'suma_monto','locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado', 'reglafiles'));
+               }else{
+                  if($habitaciones[0]->Nombre_estado == "Reservada"){
+                     return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+                  }else{
+                     if($habitaciones[0]->Nombre_estado == "Pago por confirmar"){
+                        return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+                  }
+               }
+            }
+   
+         }
+      }
+   }
+   
+   break;
+   case 'Rentada':
+               
+      $consulta_reserva = DB::table('lugares_reservados')
+      ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion',
+          'lugares_reservados.Id_cliente','est.Nombre_estado',
+          'hab.Id_habitacion','hab.Id_locacion','hab.Id_estado_ocupacion', 
+          'hab.Id_colaborador','hab.Nombre_hab', 'hab.Capacidad_personas',  'hab.Deposito_garantia_hab', 
+          'hab.Precio_noche', 'hab.Precio_semana','hab.Precio_catorcedias', 'hab.Precio_mes', 
+          'hab.Encargado','hab.Espacio_superficie', 'hab.Nota','hab.Descripcion',
+          'hab.Cobro_p_ext_mes_h','hab.Cobro_p_ext_catorcena_h','hab.Cobro_p_ext_noche_h',
+          'hab.Cobro_anticipo_mes_h','hab.Cobro_anticipo_catorcena_h','hab.Camas_juntas',
+          'loc.Nombre_locacion')
+          ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
+          ->leftJoin("habitacion as hab", "hab.Id_habitacion", "=", "lugares_reservados.Id_habitacion")
+          ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
+          ->where('hab.Id_habitacion', '=', $Id_habitacion)
+          ->get();
+   
+      $Id_reservacion = $consulta_reserva[0]->Id_reservacion;
+
+      $detallereserva = DB::table('lugares_reservados')
+      ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion','lugares_reservados.Id_locacion', 
+          'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
+          'est.Nombre_estado',
+          'reserva.Id_reservacion','reserva.Id_colaborador',
+          'reserva.Start_date','reserva.End_date', 'reserva.Title','reserva.Fecha_reservacion',
+          'reserva.Numero_personas_extras', 'reserva.Foto_comprobante_anticipo', 'reserva.Fecha_pago_anticipo',
+          'reserva.Foto_aviso_privacidad', 'reserva.Foto_reglamento','reserva.Monto_uso_cochera', 
+          'reserva.Metodo_pago_anticipo','reserva.Espacios_cochera','reserva.Monto_pagado_anticipo',
+          'reserva.Tipo_de_cobro','reserva.Nota_pago_anticipo',
+          'cliente.Nombre','cliente.Apellido_paterno','cliente.Apellido_materno','cliente.Email',
+          'cliente.Numero_celular',
+          'hab.Id_habitacion','hab.Id_locacion','hab.Id_estado_ocupacion', 
+          'hab.Id_colaborador','hab.Nombre_hab', 'hab.Capacidad_personas',  'hab.Deposito_garantia_hab', 
+          'hab.Precio_noche', 'hab.Precio_semana','hab.Precio_catorcedias', 'hab.Precio_mes', 
+          'hab.Encargado','hab.Espacio_superficie', 'hab.Nota','hab.Descripcion',
+          'hab.Cobro_p_ext_mes_h','hab.Cobro_p_ext_catorcena_h','hab.Cobro_p_ext_noche_h',
+          'hab.Cobro_anticipo_mes_h','hab.Cobro_anticipo_catorcena_h','hab.Camas_juntas',
+          'loc.Nombre_locacion')
+          ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
+          ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+          ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+          ->leftJoin("habitacion as hab", "hab.Id_habitacion", "=", "lugares_reservados.Id_habitacion")
+          ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
+         //  ->where('reserva.Id_reservacion', '=', $Id_reservacion)
+         ->whereRaw('"'.date("Y-m-d").'" Between reserva.Start_date and reserva.End_date')
+          ->where('hab.Id_habitacion', '=', $Id_habitacion)
+          ->get();
+   
+   //funcion para calcular dias entre 2 fechas
+      $fecha1 =   $detallereserva[0]->Start_date;
+      $fecha2 =   $detallereserva[0]->End_date;
+   //aqui saco los segundos de las fechas
+      $segfecha1 = strtotime($fecha1);
+      $segfecha2 = strtotime($fecha2);
+   //segundos de diferencia entre las 2 fechas
+      $segtranscurridos = $segfecha2 - $segfecha1;
+   //minutos transcurridos entre las 2 fechas
+      $mintranscurridos = $segtranscurridos/60;
+   //horas transcurridas entre las 2 fechas
+      $horastranscurridas = $mintranscurridos/60;
+   //dias transcurridos entre las 2 fechas
+      $diastranscurridos = $horastranscurridas/24;
+   //redondeando los dias para que esten completos
+      $diasredondeados = floor($diastranscurridos);
+   
+   switch ($detallereserva[0]->Tipo_de_cobro) {
+      case 'Noche':
+   //variable que trae los dias
+          $diasredondeados;
+   //variable que me saca el costo de los dias de estancia
+          $monto_por_dias = $diasredondeados * $detallereserva[0]->Precio_noche;
+   //variable que me trae el costo por personas extra ya no se cobraran las personas extras por noche
+   $monto_por_p_extras = 0;
+   //variable que me hace la suma total            
+          $suma_monto = $monto_por_dias  + $detallereserva[0]->Deposito_garantia_hab + $detallereserva[0]->Monto_uso_cochera;
+   
+     // return view('Reservaciones y rentas.Detalles_reservas_rentas.detallesreservahab', compact('detallereserva', 'diasredondeados', 'monto_por_dias', 'suma_monto'));
+   //return "son $diasredondeados noches";
+      break;
+          
+      case 'Semana':
+          $calculosemana = $diasredondeados/7;
+          $redondeosema = floor($calculosemana);
+   //variable que me saca el costo de los dias de estancia
+          $monto_por_dias = $redondeosema * $detallereserva[0]->Precio_semana;
+   //variable que me trae el costo por personas extra
+          $monto_por_p_extras = $detallereserva[0]->Cobro_p_ext_catorcena_h * $detallereserva[0]->Numero_personas_extras;
+   //variable que me hace la suma total y me resta el monto de anticipo       
+          $suma_monto = $monto_por_dias + $monto_por_p_extras + $detallereserva[0]->Deposito_garantia_hab + $detallereserva[0]->Monto_uso_cochera - $detallereserva[0]->Cobro_anticipo_catorcena_h;
+   
+      //return view('Reservaciones y rentas.Detalles_reservas_rentas.detallesreservahab', compact('detallereserva', 'diasredondeados', 'monto_por_p_extras', 'monto_por_dias', 'suma_monto'));
+   //return "son $redondeosema semanas";
+      break;
+           
+      case 'Catorcena':
+          $calculocatorcena = $diasredondeados/14;
+          $redondeocatorcena = floor($calculocatorcena);
+   //variable que me saca el costo de los dias de estancia
+          $monto_por_dias = $redondeocatorcena * $detallereserva[0]->Precio_catorcedias;
+   //variable que me trae el costo por personas extra
+          $monto_por_p_extras = $detallereserva[0]->Cobro_p_ext_catorcena_h * $detallereserva[0]->Numero_personas_extras;
+   //variable que me hace la suma total y me resta el monto de anticipo       
+          $suma_monto = $monto_por_dias + $monto_por_p_extras + $detallereserva[0]->Deposito_garantia_hab + $detallereserva[0]->Monto_uso_cochera - $detallereserva[0]->Cobro_anticipo_catorcena_h;
+              
+      //return view('Reservaciones y rentas.Detalles_reservas_rentas.detallesreservahab', compact('detallereserva', 'diasredondeados', 'monto_por_p_extras', 'monto_por_dias', 'suma_monto'));
+   //return "son $redondeocatorcena catorcenas";
+      break;
+   
+      case 'Mes':
+   
+          $calculomes = $diasredondeados/28;
+          $redondeomes = floor($calculomes);
+   //variable que me saca el costo de los dias de estancia
+          $monto_por_dias = $redondeomes * $detallereserva[0]->Precio_mes;
+   //variable que me trae el costo por personas extra
+          $monto_por_p_extras = $detallereserva[0]->Cobro_p_ext_mes_h * $detallereserva[0]->Numero_personas_extras;
+   //variable que me hace la suma total y me resta el monto de anticipo       
+          $suma_monto = $monto_por_dias + $monto_por_p_extras + $detallereserva[0]->Deposito_garantia_hab + $detallereserva[0]->Monto_uso_cochera - $detallereserva[0]->Cobro_anticipo_mes_h;
+              
+      //return view('Reservaciones y rentas.Detalles_reservas_rentas.detallesreservahab', compact('detallereserva', 'diasredondeados', 'monto_por_p_extras', 'monto_por_dias', 'suma_monto'));
+   //return "es $redondeomes mes";
+      break;
+      }
+      
+         $lugar_cliente_reservado = DB::table('lugares_reservados')
+         ->select('lugares_reservados.Id_lugares_reservados', 'lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion',
+         'lugares_reservados.Id_locacion','lugares_reservados.Id_local', 'lugares_reservados.Id_departamento','lugares_reservados.Id_cliente',
+         'lugares_reservados.Id_estado_ocupacion', 'reserva.Start_date','reserva.Total_de_personas',
+         'cliente.Nombre','cliente.Apellido_paterno','cliente.Apellido_materno', 'cliente.Email',
+         'cliente.Numero_celular','cliente.Ciudad','cliente.Estado','cliente.Pais',
+         'cliente.Ref1_nombre','cliente.Ref2_nombre', 'cliente.Ref1_celular','cliente.Ref2_celular',
+         'cliente.Ref1_parentesco','cliente.Ref2_parentesco','cliente.Motivo_visita',
+         'cliente.Lugar_motivo_visita','cliente.Foto_cliente','cliente.INE_frente','cliente.INE_reverso')
+         ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+         ->leftJoin("habitacion", "habitacion.Id_habitacion", "=", "lugares_reservados.Id_habitacion")
+         ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+         // ->selectRaw("(SELECT COUNT(*) AS lugar1 FROM `lugares_reservados` 
+         // LEFT JOIN habitacion ON habitacion.Id_habitacion = lugares_reservados.Id_habitacion
+         // WHERE habitacion.Id_habitacion =  ".$Id_habitacion.") as totalclientes")
+         ->where('habitacion.Id_habitacion', '=', $Id_habitacion)
+         ->whereRaw('"'.date("Y-m-d").'" Between reserva.Start_date and reserva.End_date')
+         ->get();
+   
+         $servicios = Servicios_estancia::get();
+      
+         $files = DB::table('fotos_lugares')
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+      
+         $relacion_servicio =  DB::table('relacion_servicios') 
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+      
+         $servicio_bano= DB::table('servicio_bano') 
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+      
+         $servicio_cama= DB::table('servicio_cama')
+         ->where('Id_habitacion', '=', $Id_habitacion)
+         ->get();
+         
+         $reglafiles = DB::table('lugares_reservados')
+         ->select('lugares_reservados.Id_lugares_reservados', 'lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion',
+         'lugares_reservados.Id_locacion','lugares_reservados.Id_local', 'lugares_reservados.Id_departamento','lugares_reservados.Id_cliente',
+         'lugares_reservados.Id_estado_ocupacion', 'reserva.Start_date','reserva.Total_de_personas','reserva.Foto_reglamento','reserva.Foto_aviso_privacidad',
+         'cliente.Nombre','cliente.Apellido_paterno','cliente.Apellido_materno', 'cliente.Email',
+         'cliente.Numero_celular','cliente.Ciudad','cliente.Estado','cliente.Pais',
+         'cliente.Ref1_nombre','cliente.Ref2_nombre', 'cliente.Ref1_celular','cliente.Ref2_celular',
+         'cliente.Ref1_parentesco','cliente.Ref2_parentesco','cliente.Motivo_visita',
+         'cliente.Lugar_motivo_visita','cliente.Foto_cliente','cliente.INE_frente','cliente.INE_reverso')
+         ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+         ->leftJoin("habitacion", "habitacion.Id_habitacion", "=", "lugares_reservados.Id_habitacion")
+         ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+         // ->selectRaw("(SELECT COUNT(*) AS lugar1 FROM `lugares_reservados` 
+         // LEFT JOIN habitacion ON habitacion.Id_habitacion = lugares_reservados.Id_habitacion
+         // WHERE habitacion.Id_habitacion =  ".$Id_habitacion.") as totalclientes")
+         ->where('habitacion.Id_habitacion', '=', $Id_habitacion)
+         ->whereRaw('"'.date("Y-m-d").'" Between reserva.Start_date and reserva.End_date')
+         ->get();
+   
+
+   
+   
+   /*esta consulta me trae los datos de la tabla de los lugares reservados despues con un leftjoin hago la relacion 
+   para que solo me traiga las reservaciones que sean de la casa la cual estoy seleccionando desde el sistema */
+      $lugar_reservacion= DB::table('lugares_reservados')
+      ->select('lugares_reservados.Id_lugares_reservados', 'lugares_reservados.Id_reservacion', 'Id_habitacion', 'Id_locacion',
+               'Id_local', 'Id_departamento', 'Id_cliente', 'reserva.Start_date', 'reserva.End_date', 'reserva.Title' )
+      ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+      ->where('Id_habitacion', '=', $Id_habitacion)
+      ->get();
+   
+   //llaado de datos para el calendario
+   //aqui hago una variable de tipo array sola
+      $reservacion = [];
+   //hago un foreach con la variable que me hace la consulta a la bd
+      foreach($lugar_reservacion as $reserv){
+   //ejemplo para cambiar el titulo
+         $json = json_decode(
+            $reserv->Title
+         );
+         $titulo = $json[0]->Nombre." ".$json[0]->Numero_celular;
+   
+   //llamo a la variable que tiene el array solo para llenarlo de datos el formato lo saque del calendario
+         $reservacion[] = [
+            'title' => $titulo,
+            'start' => $reserv->Start_date,
+            'end' => $reserv->End_date,
+         ];
+      }
+   //despues ponemos en formato json los datos para que los entienda el calendario y esa variable se la enviamos a la vista con el metodo compact
+      response()->json($lugar_reservacion);
+   
+   
+   
+      if($habitaciones[0]->Nombre_estado  == "Desocupada"){
+         return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+      }else{
+         if($habitaciones[0]->Nombre_estado == "En Mantenimiento/Limpieza"){
+            return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+         }else{
+            if($habitaciones[0]->Nombre_estado == "Desactivada"){
+               return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+            }else{
+               if($habitaciones[0]->Nombre_estado == "Rentada"){
+                  return view('Habitaciones.detalleshabocupada', compact('monto_por_p_extras', 'detallereserva', 'diasredondeados', 'monto_por_dias', 'suma_monto','locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado', 'reglafiles'));
+               }else{
+                  if($habitaciones[0]->Nombre_estado == "Reservada"){
+                     return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+                  }else{
+                     if($habitaciones[0]->Nombre_estado == "Pago por confirmar"){
+                        return view('Habitaciones.detalleshablibre', compact('locacion', 'habitaciones','servicios','servicio_cama','servicio_bano','relacion_servicio', 'files', 'reservacion','lugar_cliente_reservado'));
+                  }
+               }
+            }
+   
+         }
+      }
+   }
+   
+   break;
+   
 }
 
 }

@@ -213,6 +213,41 @@ public function ShowClientesHab(Request $request){
 
 }
 
+//funcion que actualiza la fecha de salida de un huesped
+public function UpdateFechaSalida(Request $request ,$Id_reservacion, $Id_habitacion){
+try{
+//consulta que me revisa las fechas ya agendadas en la bd para que no se repitan las fechas
+$fecha_bd = DB::table('reservacion')
+->select('hab.Id_habitacion', 'Start_date', 'End_date' )
+->leftJoin("lugares_reservados as lugar_res", "lugar_res.Id_reservacion", "=", "reservacion.Id_reservacion")
+->leftJoin("habitacion as hab", "hab.Id_habitacion", "=", "lugar_res.Id_habitacion")
+// ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
+// ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+->whereRaw('"'.date_format(date_create($request->get('up_fecha_salida')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
+->whereRaw('"'.date_format(date_create($request->get('up_fecha_salida')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
+->where('hab.Id_habitacion', '=', $Id_habitacion)
+->get();
+
+if(count($fecha_bd) == 0){   
+
+    $updatefecha = DB::table('reservacion')
+    ->where('Id_reservacion', '=', $Id_reservacion)
+    ->update(['End_date' => $request->get('up_fecha_salida')]);
+
+    Alert::success('Exito', 'Se ha actualizado la fecha de salida con exito');
+    return redirect()->back();
+
+}else{
+        Alert::warning('Advertencia', 'La fecha seleccionada ya esta ocupada, por favor selecciona otra');
+        return redirect()->back();
+    }
+}catch(Exception $ex){
+        Alert::error('Error', 'La reservacion no se pudo registrar revisa que todo este en orden');
+        return redirect()->back();
+
+}
+}
+
 //funcion que muestra el formulario para añadir una reservacion con cliente nuevo en una hab
 public function ViewReservaHabNC($Id_locacion, $Id_habitacion){
 
@@ -248,8 +283,10 @@ try{
     ->select('hab.Id_habitacion', 'Start_date', 'End_date' )
     ->leftJoin("lugares_reservados as lugar_res", "lugar_res.Id_reservacion", "=", "reservacion.Id_reservacion")
     ->leftJoin("habitacion as hab", "hab.Id_habitacion", "=", "lugar_res.Id_habitacion")
-    ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
-    ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+    // ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
+    // ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+    ->whereRaw('"'.date_format(date_create($request->get('f_entrada')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
+    ->whereRaw('"'.date_format(date_create($request->get('f_salida')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
     ->where('hab.Id_habitacion', '=', $Id_habitacion)
     ->get();
 //consulta que me trae la capacidad de personas del lugar y la uso para el if para que no sobrepase el numero de personas
@@ -390,8 +427,10 @@ try{
     ->select('hab.Id_habitacion', 'Start_date', 'End_date' )
     ->leftJoin("lugares_reservados as lugar_res", "lugar_res.Id_reservacion", "=", "reservacion.Id_reservacion")
     ->leftJoin("habitacion as hab", "hab.Id_habitacion", "=", "lugar_res.Id_habitacion")
-    ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
-    ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+    // ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
+    // ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+    ->whereRaw('"'.date_format(date_create($request->get('f_entrada')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
+    ->whereRaw('"'.date_format(date_create($request->get('f_salida')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
     ->where('hab.Id_habitacion', '=', $Id_habitacion)
     ->get();
 //consulta que me trae la capacidad de personas del lugar y la uso para el if para que no sobrepase el numero de personas
@@ -549,8 +588,10 @@ try{
     ->select('hab.Id_habitacion', 'Start_date', 'End_date' )
     ->leftJoin("lugares_reservados as lugar_res", "lugar_res.Id_reservacion", "=", "reservacion.Id_reservacion")
     ->leftJoin("habitacion as hab", "hab.Id_habitacion", "=", "lugar_res.Id_habitacion")
-    ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
-    ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+    // ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
+    // ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+    ->whereRaw('"'.date_format(date_create($request->get('f_entrada')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
+    ->whereRaw('"'.date_format(date_create($request->get('f_salida')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
     ->where('hab.Id_habitacion', '=', $Id_habitacion)
     ->get();
 //consulta que me trae la capacidad de personas del lugar y la uso para el if para que no sobrepase el numero de personas
@@ -752,8 +793,10 @@ try{
     ->select('hab.Id_habitacion', 'Start_date', 'End_date' )
     ->leftJoin("lugares_reservados as lugar_res", "lugar_res.Id_reservacion", "=", "reservacion.Id_reservacion")
     ->leftJoin("habitacion as hab", "hab.Id_habitacion", "=", "lugar_res.Id_habitacion")
-    ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
-    ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+    // ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
+    // ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+    ->whereRaw('"'.date_format(date_create($request->get('f_entrada')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
+    ->whereRaw('"'.date_format(date_create($request->get('f_salida')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
     ->where('hab.Id_habitacion', '=', $Id_habitacion)
     ->get();
 //consulta que me trae la capacidad de personas del lugar y la uso para el if para que no sobrepase el numero de personas
@@ -2379,6 +2422,41 @@ public function ShowClientesDep(Request $request){
     
 }
 
+//funcion que actualiza la fecha de salida de un huesped
+public function UpdateFechaSalidaD(Request $request ,$Id_reservacion, $Id_departamento){
+try{
+//consulta que me revisa las fechas ya agendadas en la bd para que no se repitan las fechas
+$fecha_bd = DB::table('reservacion')
+->select('dep.Id_departamento', 'Start_date', 'End_date' )
+->leftJoin("lugares_reservados as lugar_res", "lugar_res.Id_reservacion", "=", "reservacion.Id_reservacion")
+->leftJoin("departamento as dep", "dep.Id_departamento", "=", "lugar_res.Id_departamento")
+// ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
+// ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+->whereRaw('"'.date_format(date_create($request->get('up_fecha_salida')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
+->whereRaw('"'.date_format(date_create($request->get('up_fecha_salida')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
+->where('dep.Id_departamento', '=', $Id_departamento)
+->get();
+
+if(count($fecha_bd) == 0){   
+
+    $updatefecha = DB::table('reservacion')
+    ->where('Id_reservacion', '=', $Id_reservacion)
+    ->update(['End_date' => $request->get('up_fecha_salida')]);
+
+    Alert::success('Exito', 'Se ha actualizado la fecha de salida con exito');
+    return redirect()->back();
+
+}else{
+        Alert::warning('Advertencia', 'La fecha seleccionada ya esta ocupada, por favor selecciona otra');
+        return redirect()->back();
+    }
+}catch(Exception $ex){
+        Alert::error('Error', 'La reservacion no se pudo registrar revisa que todo este en orden');
+        return redirect()->back();
+
+}
+}
+
 //funcion que muestra el formulario para añadir una reservacion con cliente existente desde un depa
 public function ViewReservaDepOC($Id_locacion, $Id_departamento){
     
@@ -2416,8 +2494,10 @@ public function StoreReservaDepOC(Request $request, $Id_locacion ,$Id_departamen
         ->select('depa.Id_departamento', 'Start_date', 'End_date' )
         ->leftJoin("lugares_reservados as lugar_res", "lugar_res.Id_reservacion", "=", "reservacion.Id_reservacion")
         ->leftJoin("departamento as depa", "depa.Id_departamento", "=", "lugar_res.Id_departamento")
-        ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
-        ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+        // ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
+        // ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+        ->whereRaw('"'.date_format(date_create($request->get('f_entrada')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
+        ->whereRaw('"'.date_format(date_create($request->get('f_salida')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
         ->where('depa.Id_departamento', '=', $Id_departamento)
         ->get();
 
@@ -2555,8 +2635,10 @@ try{
     ->select('depa.Id_departamento', 'Start_date', 'End_date' )
     ->leftJoin("lugares_reservados as lugar_res", "lugar_res.Id_reservacion", "=", "reservacion.Id_reservacion")
     ->leftJoin("departamento as depa", "depa.Id_departamento", "=", "lugar_res.Id_departamento")
-    ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
-    ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+    // ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
+    // ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+    ->whereRaw('"'.date_format(date_create($request->get('f_entrada')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
+    ->whereRaw('"'.date_format(date_create($request->get('f_salida')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
     ->where('depa.Id_departamento', '=', $Id_departamento)
     ->get();
     
@@ -2838,8 +2920,10 @@ try{
     ->select('dep.Id_departamento', 'Start_date', 'End_date' )
     ->leftJoin("lugares_reservados as lugar_res", "lugar_res.Id_reservacion", "=", "reservacion.Id_reservacion")
     ->leftJoin("departamento as dep", "dep.Id_departamento", "=", "lugar_res.Id_departamento")
-    ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
-    ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+    // ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
+    // ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+    ->whereRaw('"'.date_format(date_create($request->get('f_entrada')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
+    ->whereRaw('"'.date_format(date_create($request->get('f_salida')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
     ->where('dep.Id_departamento', '=', $Id_departamento)
     ->get();
 //consulta que me trae la capacidad de personas del lugar y la uso para el if para que no sobrepase el numero de personas
@@ -3037,8 +3121,10 @@ try{
         ->select('dep.Id_departamento', 'Start_date', 'End_date' )
         ->leftJoin("lugares_reservados as lugar_res", "lugar_res.Id_reservacion", "=", "reservacion.Id_reservacion")
         ->leftJoin("departamento as dep", "dep.Id_departamento", "=", "lugar_res.Id_departamento")
-        ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
-        ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+        // ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
+        // ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+        ->whereRaw('"'.date_format(date_create($request->get('f_entrada')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
+        ->whereRaw('"'.date_format(date_create($request->get('f_salida')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
         ->where('dep.Id_departamento', '=', $Id_departamento)
         ->get();
 //consulta que me trae la capacidad de personas del lugar y la uso para el if para que no sobrepase el numero de personas
@@ -4711,8 +4797,10 @@ try{
         ->select('locacion.Id_locacion', 'Start_date', 'End_date' )
         ->leftJoin("lugares_reservados as lugar_res", "lugar_res.Id_reservacion", "=", "reservacion.Id_reservacion")
         ->leftJoin("locacion", "locacion.Id_locacion", "=", "lugar_res.Id_locacion")
-        ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
-        ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+        // ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
+        // ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+        ->whereRaw('"'.date_format(date_create($request->get('f_entrada')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
+        ->whereRaw('"'.date_format(date_create($request->get('f_salida')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
         ->where('locacion.Id_locacion', '=', $Id_locacion)
         ->get();
 
@@ -4831,8 +4919,10 @@ try{
     ->select('locacion.Id_locacion', 'Start_date', 'End_date' )
     ->leftJoin("lugares_reservados as lugar_res", "lugar_res.Id_reservacion", "=", "reservacion.Id_reservacion")
     ->leftJoin("locacion", "locacion.Id_locacion", "=", "lugar_res.Id_locacion")
-    ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
-    ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+    // ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
+    // ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+    ->whereRaw('"'.date_format(date_create($request->get('f_entrada')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
+    ->whereRaw('"'.date_format(date_create($request->get('f_salida')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
     ->where('locacion.Id_locacion', '=', $Id_locacion)
     ->get();
     
@@ -5102,8 +5192,10 @@ try{
     ->select('loc.Id_locacion', 'Start_date', 'End_date' )
     ->leftJoin("lugares_reservados as lugar_res", "lugar_res.Id_reservacion", "=", "reservacion.Id_reservacion")
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "lugar_res.Id_locacion")
-    ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
-    ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+    // ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
+    // ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+    ->whereRaw('"'.date_format(date_create($request->get('f_entrada')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
+    ->whereRaw('"'.date_format(date_create($request->get('f_salida')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
     ->where('loc.Id_locacion', '=', $Id_locacion)
     ->get();
 //consulta que me trae la capacidad de personas del lugar y la uso para el if para que no sobrepase el numero de personas
@@ -5237,8 +5329,10 @@ try{
     ->select('loc.Id_locacion', 'Start_date', 'End_date' )
     ->leftJoin("lugares_reservados as lugar_res", "lugar_res.Id_reservacion", "=", "reservacion.Id_reservacion")
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "lugar_res.Id_locacion")
-    ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
-    ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+    // ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
+    // ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+    ->whereRaw('"'.date_format(date_create($request->get('f_entrada')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
+    ->whereRaw('"'.date_format(date_create($request->get('f_salida')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
     ->where('loc.Id_locacion', '=', $Id_locacion)
     ->get();
 //consulta que me trae la capacidad de personas del lugar y la uso para el if para que no sobrepase el numero de personas
@@ -7175,8 +7269,10 @@ try{
         ->select('local.Id_local', 'Start_date', 'End_date' )
         ->leftJoin("lugares_reservados as lugar_res", "lugar_res.Id_reservacion", "=", "reservacion.Id_reservacion")
         ->leftJoin("local", "local.Id_local", "=", "lugar_res.Id_local")
-        ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
-        ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+        // ->whereRaw("date(Start_date)= '".date_format(date_create($request->get('f_entrada')),"Y-m-d")."'")
+        // ->whereRaw("date(End_date)= '".date_format(date_create($request->get('f_salida')),"Y-m-d")."'")
+        ->whereRaw('"'.date_format(date_create($request->get('f_entrada')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
+        ->whereRaw('"'.date_format(date_create($request->get('f_salida')),"Y-m-d").'" Between reservacion.Start_date and reservacion.End_date')
         ->where('local.Id_local', '=', $Id_local)
         ->get();
 

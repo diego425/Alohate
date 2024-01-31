@@ -92,7 +92,7 @@
         }
   /*carrusel*/
           .imagen{
-          max-width: 78%;
+          max-width: 60%;
           align-items: center;
           border-radius: 5px;
           margin: 10px;
@@ -638,7 +638,7 @@
         }
   /*carrusel*/
         .imagen{
-        max-width: 65%;
+        max-width: 60%;
         align-items: center;
         border-radius: 5px;
         margin: 10px;
@@ -1077,7 +1077,7 @@
   /* seccion de la tabla int*/
   .interno_hijo_C{
     background-color: rgb(255, 255, 255);
-    width: 90%;
+    width: 60%;
     border: 1px solid #c0c0c0;
     border-radius: 5px;
     display: flex;

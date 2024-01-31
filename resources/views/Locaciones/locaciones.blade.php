@@ -167,7 +167,7 @@
                   <div class="container_tabla">
                   <table class="table table-striped table-hover">
                   <thead>
-                        <tr>
+                        <tr>  @if($locacion->Tipo_renta == "Secciones")
                               @if($locacion->Numero_total_habitaciones <= 0)
 
                               @else($locacion->Numero_total_habitaciones > 0)
@@ -183,7 +183,9 @@
                               @else($locacion->Numero_total_locales > 0)
                               <th>Locales</th>
                               @endif
+                              @else($locacion->Tipo_renta == "Entera")
 
+                              @endif
                               <th>TIPO DE RENTA</th>
                               <th>UBICACION</th>
                               <th>NUMERO DE PISOS</th>
@@ -194,6 +196,7 @@
                   </thead>
                   <tbody>
                         <tr>
+                              @if($locacion->Tipo_renta == "Secciones")
                               @if($locacion->Numero_total_habitaciones <= 0)
 
                               @else($locacion->totalhabslibres > 0)
@@ -226,6 +229,9 @@
                                     <div class="texto">Total: {{$locacion->Numero_total_locales}}</div> 
                                     <a href="{{route('locales', $locacion->Id_locacion)}}">Ver Locales</a>
                               </td>
+                              @endif
+                              @else($locacion->Tipo_renta == "Entera")
+
                               @endif
                               
                               <td data-label="TIPO DE RENTA">{{$locacion->Tipo_renta}}</td>

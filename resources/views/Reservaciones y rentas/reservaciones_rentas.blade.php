@@ -77,7 +77,7 @@
 </div>
 
 
-<!--=============== DATOS DE LAS LOCACIONES  ===============-->
+<!--=============== DATOS DE LAS RESERVACIONES Y RENTAS  ===============-->
 <div class="seccion_padre_b">
     <div class="seccion_hijo_t"> 
           <div class="interno_padre_l">
