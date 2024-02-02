@@ -441,8 +441,7 @@
                <p><h5>Botones De Accion</h5>
                   <div class="gris">
                      @if($locacion[0]->Tipo_renta == "Entera")
-                     <button class="btn btn-primary clickForm" href="{{route('viewreservacasaoc', $locacion[0]->Id_locacion)}}">Reservar</button>
-                     <button class="btn btn-secondary">Rentar</button>
+                     <button class="btn btn-secondary clickForm" href="{{route('viewreservacasaoc', $locacion[0]->Id_locacion)}}">Reservar</button>
                      <button class="btn btn-primary clickForm" href="{{route('view_editar_loc', $locacion[0]->Id_locacion)}}">Editar</button>
                      <button class="btn btn-danger clickForm" href="{{route('view_desactivar_loc', $locacion[0]->Id_locacion)}}" >Desactivar</button>
                      <button class="btn btn-success">Agendar Cita</button>

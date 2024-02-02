@@ -68,7 +68,7 @@
              @endif
              @if(!empty(Cookie::get('puesto')))
                @if(Cookie::get('puesto') == "ADMIN" || Cookie::get('puesto') == "OPERADOR")
-               <li><a href="#" class="lol__link">Clientes</a></li>
+                  <li><a href"{{route('clientes')}}" class="lol__link">Clientes</a></li>
                @endif
              @endif
 

@@ -186,6 +186,7 @@ Route::put('desactivar_hab/{habitaciones}', 'HabitacionController@DesactivarHab'
 
 
 
+
 //ruta que muestra los registros de las reservaciones de todos los lugares
 Route::get('view_reservaciones_rentas', 'ReservacionRentasController@ViewReservacionRentas')->name('reservaciones_renta');
 
@@ -217,6 +218,10 @@ Route::put('update_reservahabnc/{reservacion}/{lugar_reservado}/{Id_locacion}/{I
 //eliminar
 //ruta para la busqueda automatica de los clientes para eliminar una reservacion
 Route::get('view_delete_reserva_hab', 'ReservacionRentasController@ViewDeleteReservaHab')->name('viewdeletereservahab');;
+
+//ruta que actualiza la fecha de salida de un huesped
+Route::put('updatesalida/reserva/{Id_reservacion}/hab/{Id_habitacion}', 'ReservacionRentasController@UpdateFechaSalida')->name('updatesalida');
+// UpdateFechaSalidaD
 
 //rutas de renta para una hab
 //ruta para la busqueda automatica de los clientes
@@ -377,7 +382,9 @@ Route::post('store_reservaloc/loc/{Id_local}/client/{nombreclient}', 'Reservacio
 
 
 
-
+//rutas para clientes
+//ruta boton que muestra la seccion de los clientes
+Route::get('view_clientes', 'ClienteController@ViewClientes')->name('clientes');
 
 
 

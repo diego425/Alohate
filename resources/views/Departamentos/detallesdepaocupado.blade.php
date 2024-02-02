@@ -41,7 +41,8 @@
 
 @extends('layouts.menu_layout')
 @section('MenuPrincipal')
-
+<!-- libreria para usar las alertas-->
+@include('sweetalert::alert')
 <!--=============== ENCABEZADO ===============-->
 
 <header class="encabezado">
@@ -445,7 +446,7 @@
    sino, se muestra el otro contenido para solo mostrar 1 huesped
 ===============-->
 
-@if($lugar_cliente_reservado[0]->totalclientes <= "1")
+@if($lugar_cliente_reservado[0]->Total_de_personas <= "1")
 
 
 <!--=============== DATOS DEL CLIENTE  ===============-->
@@ -593,7 +594,7 @@
   </div>
   
 
-@else($lugar_cliente_reservado[0]->totalclientes >= "2")
+@else($lugar_cliente_reservado[0]->Total_de_personas >= "2")
 <div class="interno_padre_C">
     <div class="interno_hijo_C">
           <div class="interno_C">
@@ -608,7 +609,6 @@
        <div class="detalle_clientes" id="detalle_clientes">
            <div class="container_tabla_C">
                <table class="table table-striped table-hover">
-                @foreach($lugar_cliente_reservado as $lugar_cliente)
                       <thead>
                             <tr>
                                   <th>NOMBRE</th>
@@ -619,11 +619,10 @@
                                   <th>PAIS PROC.</th>
                                   <th>MOTIVO DE VISITA</th>
                                   <th>INSTITUCION O EMPRESA</th>
-                                  <th>FOTOS DE LA INE</th>
-                                  <th>FOTO DEL CLIENTE</th>
                             </tr>
                       </thead>
                       <tbody>
+                        @foreach($lugar_cliente_reservado as $lugar_cliente)
                             <tr>
                                   <td data-label="NOMBRE">{{$lugar_cliente->Nombre}} {{$lugar_cliente->Apellido_paterno}} {{$lugar_cliente->Apellido_materno}}</td>
                                   <td data-label="NUM. CELULAR">{{$lugar_cliente->Numero_celular}}</td>
@@ -633,12 +632,10 @@
                                   <td data-label="PAIS PROC.">{{$lugar_cliente->Pais}}</td>
                                   <td data-label="MOTIVO DE VISITA">{{$lugar_cliente->Motivo_visita}}</td>
                                   <td data-label="INSTITUCION O EMPRESA">{{$lugar_cliente->Lugar_motivo_visita}}</td>
-                                  <td data-label="FOTOS DE LA INE">...</td>
-                                  <td data-label="FOTO DEL CLIENTE">...</td>
                             </tr>
                            
+                        @endforeach     
                       </tbody>
-                 @endforeach     
                </table>
           </div>
           </div>
@@ -715,27 +712,6 @@
 @endif
 
 
-<!--=============== DOCUMENTOS DE ESTANCIA===============-->
-<div class="seccion_padre_b">
-    <div class="seccion_hijo_t"> 
-             <div class="centrar_texto">
-                <div>
-                  <p><h5>Documentos De Estancia</h5></p>
-                  <i id="despliegue_doc_est" class="fa-solid fa-chevron-down" onclick="presentar_doc_est()"></i>
-                  <i id="ocultar_doc_est" class="fa-solid fa-chevron-up" onclick="esconder_doc_est()"></i>
-                  </p>
-               </div>
-               <div class="detalle_doc_est" id="detalle_doc_est">  
-                <p>
-                   <div class="gris">
-                      <h6>...</h6>
-                   </div>
-                </p>
-             </div>
-            </div>
-    </div>
- </div>
- 
 <!--=============== FOTOS DEL REGLAMENTO===============-->
 <div class="seccion_padre_b">
     <div class="seccion_hijo_t"> 
@@ -750,7 +726,14 @@
             <div class="detalle_reglamento" id="detalle_reglamento">  
                <p>
                    <div class="gris">
-                      <h6>...</h6>
+<!--=============== FOTO REGLAMENTO===============-->
+                      <div class="seccion_padre_b">
+                        <div class="seccion_interno_2">
+                            <div id="contenedor" class="rounded mx-auto d-block">
+                                <img class="imagen" src="{{asset('uploads/reglamentos_avisos/').'/'.$reglafiles[0]->Foto_reglamento  }}" >
+                            </div>
+                        </div>
+                    </div>
                    </div>
                 </p>
              
@@ -758,7 +741,14 @@
                 <p><h5>Fotos Del Aviso De Privacidad</h5></p>
                 <p>
                    <div class="gris">
-                      <h6>...</h6>
+<!--===============FOTO AVISO DE PRIV===============-->
+                      <div class="seccion_padre_b">
+                        <div class="seccion_interno_2">
+                            <div id="contenedor" class="rounded mx-auto d-block">
+                                <img class="imagen" src="{{asset('uploads/reglamentos_avisos/').'/'.$reglafiles[0]->Foto_aviso_privacidad  }}" >
+                            </div>
+                        </div>
+                    </div>
                    </div>
                 </p>
              </div>
@@ -778,30 +768,76 @@
                </div>
              </div>
          <div class="detalle_alojamiento" id="detalle_alojamiento">  
-             <div class="centrar_texto">
-                <p><h5>Fecha De Entrada</h5></p>
-                <p>
-                   <div class="gris">
-                      <h6>...</h6>
-                   </div>
-                </p>
-             </div>
-             <div class="centrar_texto">
-                <p><h5>Fecha De Salida</h5></p>
-                <p>
-                   <div class="gris">
-                      <h6>...</h6>
-                   </div>
-                </p>
-             </div>
-             <div class="centrar_texto">
-                <p><h5>Numero De Personas</h5></p>
-                <p>
-                   <div class="gris">
-                      <h6>...</h6>
-                   </div>
-                </p>
-             </div>
+<!--=============== TABLA DATOS DE ALOJAMIENTO ===============-->    
+          <div class="interno_l">
+           <div class="container_tabla">
+               <table class="table table-striped table-hover">
+                      <thead>
+                            <tr>
+                               <th>Fecha De Reserva</th>
+                               <th>Fecha De Entrada</th>
+                               <th>Fecha De Salida</th>
+                               <th>Personas Extras</th>
+                               <th>Nombre Del Lugar</th>
+                               <th>Estatus</th>
+                               <th>Tipo De Cobro</th>
+                               <th>No. De Cocheras Que Usara</th>
+                            </tr>
+                      </thead>
+                      <tbody>
+                            <tr>
+                               <td data-label="Fecha De Reservacion">{{$detallereserva[0]->Fecha_reservacion}}</td>
+                               <td data-label="Fecha De Entrada">{{$detallereserva[0]->Start_date}}</td>
+                               <td data-label="Fecha De Salida">{{$detallereserva[0]->End_date}}</td> 
+                               <td data-label="Personas Extras">
+                                  @if($detallereserva[0]->Numero_personas_extras == NULL)
+                                     <h6>0</h6>
+                                  @else
+                                  <i class="fa-solid fa-person"></i> {{$detallereserva[0]->Numero_personas_extras}}
+                                  @endif
+                               </td> 
+                               <td data-label="Nombre Del Lugar">Dep: {{$detallereserva[0]->Nombre_depa}}</td>
+                               <td data-label="Estatus">
+                                     @if($detallereserva[0]->Nombre_estado == "Ocupada")
+                                     <h6 style="color:  rgb(179, 60, 60)">{{$detallereserva[0]->Nombre_estado}}</h6>
+                                     @endif
+ 
+                                     @if($detallereserva[0]->Nombre_estado == "Desocupada")
+                                     <h6 style="color: mediumseagreen">{{$detallereserva[0]->Nombre_estado}}</h6>
+                                     @endif
+ 
+                                     @if($detallereserva[0]->Nombre_estado == "Reservada")
+                                     <h6 style="color: rgb(0, 140, 210)">{{$detallereserva[0]->Nombre_estado}}</h6>
+                                     @endif
+ 
+                                     @if($detallereserva[0]->Nombre_estado == "Desactivada")
+                                     <h6 style="color: rgb(207, 33, 204)">{{$detallereserva[0]->Nombre_estado}}</h6>
+                                     @endif
+ 
+                                     @if($detallereserva[0]->Nombre_estado == "Rentada")
+                                     <h6 style="color: rgb(33, 36, 207)">{{$detallereserva[0]->Nombre_estado}}</h6>
+                                     @endif
+ 
+                                     @if($detallereserva[0]->Nombre_estado == "Pago por confirmar")
+                                     <h6 style="color: rgb(142, 122, 7)">{{$detallereserva[0]->Nombre_estado}}</h6>
+                                     @endif</td>
+ 
+                               <td data-label="Tipo De Cobro">Por: {{$detallereserva[0]->Tipo_de_cobro}}</td>
+                               <td data-label="No. De Cocheras Que Usara"><i class="fa-solid fa-car-side"></i>
+                                  @if($detallereserva[0]->Espacios_cochera == "")
+                                  0
+                                  @else
+                                  {{$detallereserva[0]->Espacios_cochera}}
+                                  @endif
+                               </td>
+ 
+                            </tr>
+                      </tbody>
+               </table>
+           </div>
+          </div>
+
+ 
           </div>
     </div>
  </div>
@@ -819,26 +855,75 @@
                </div>
              </div>
          <div class="detalle_cobro" id="detalle_cobro">
-           <div class="container_tabla">
-               <table class="table table-striped table-hover">
-                      <thead>
-                            <tr>
-                                  <th>Tiempo Estancia</th>
-                                  <th>Personas Extras</th>
-                                  <th>Deposito De G.</th>
-                                  <th>Cobro Total</th>
-                            </tr>
-                      </thead>
-                      <tbody>
-                            <tr>
-                                  <td data-label="Tiempo Estancia">en proceso</td>
-                                  <td data-label="Personas Extras">en proceso</td>
-                                  <td data-label="Deposito De G.">en proceso</td>   
-                                  <td data-label="Cobro Total">en proceso</td>   
-                            </tr>
-                      </tbody>
-               </table>
-           </div>
+            <div class="interno_l">
+                <div class="container_tabla">
+                  <div class="centrar_texto">
+                      <p><h5>Detalles Y Costo Total</h5></p>
+                   </div>
+                    <table class="table table-striped table-hover">
+                           <thead>
+                                 <tr>
+                                      <th>Total De Noches: {{$diasredondeados}} </th>
+                                      <th>Personas Extras: {{$detallereserva[0]->Numero_personas_extras}}</th>
+                                      <th>Monto De Garantia</th>
+                                      <th>Monto Por Uso De Cocheras</th>
+                                      <th style="color: red">Total A Pagar</th>
+                                      @if($detallereserva[0]->Tipo_de_cobro == "Noche")  
+                                      @endif
+                                      @if($detallereserva[0]->Tipo_de_cobro == "Semana")
+                                      <th style="color: rgb(38, 0, 255)">Monto De Anticipo</th>  
+                                      @endif
+                                      @if($detallereserva[0]->Tipo_de_cobro == "Catorcena")
+                                      <th style="color: rgb(38, 0, 255)">Monto De Anticipo</th>
+                                      @endif
+                                      @if($detallereserva[0]->Tipo_de_cobro == "Mes")
+                                      <th style="color: rgb(38, 0, 255)">Monto De Anticipo</th> 
+                                      @endif
+                                 </tr>
+                           </thead>
+                           <tbody>
+                             
+                                 <tr>
+                                      <td data-label="Total De Noches: {{$diasredondeados}}">${{$monto_por_dias}}</td>
+                                      <td data-label="Personas Extras: {{$detallereserva[0]->Numero_personas_extras}}">
+                                         @if($detallereserva[0]->Tipo_de_cobro == "Noche")  
+                                         $0
+                                         @endif
+                                         @if($detallereserva[0]->Tipo_de_cobro == "Semana")
+                                         ${{$monto_por_p_extras}}
+                                         @endif
+                                         @if($detallereserva[0]->Tipo_de_cobro == "Catorcena")
+                                         ${{$monto_por_p_extras}}
+                                         @endif
+                                         @if($detallereserva[0]->Tipo_de_cobro == "Mes")
+                                         ${{$monto_por_p_extras}}
+                                         @endif
+                                      </td>
+                                      <td data-label="Monto De Garantia">${{$detallereserva[0]->Deposito_garantia_dep}}</td>
+                                      <td data-label="Monto Por Uso De Cocheras">
+                                         @if($detallereserva[0]->Espacios_cochera == "")
+                                         $0
+                                         @else
+                                         ${{$detallereserva[0]->Monto_uso_cochera}}
+                                         @endif
+                                      </td>
+                                      <td data-label="Total A Pagar">${{$suma_monto}}</td> 
+                                      @if($detallereserva[0]->Tipo_de_cobro == "Noche")  
+                                      @endif
+                                      @if($detallereserva[0]->Tipo_de_cobro == "Semana")
+                                      <td data-label="Monto De Anticipo">${{$detallereserva[0]->Cobro_anticipo_catorcena_d}}</td>   
+                                      @endif
+                                      @if($detallereserva[0]->Tipo_de_cobro == "Catorcena")
+                                      <td data-label="Monto De Anticipo">${{$detallereserva[0]->Cobro_anticipo_catorcena_d}}</td>   
+                                      @endif
+                                      @if($detallereserva[0]->Tipo_de_cobro == "Mes")
+                                      <td data-label="Monto De Anticipo">${{$detallereserva[0]->Cobro_anticipo_mes_d}}</td>   
+                                      @endif
+                                 </tr>
+                           </tbody>
+                    </table>
+                </div>
+               </div>
          </div>
        </div>
     </div>
@@ -857,15 +942,15 @@
                   </div>
                  <br>
                   <div id="ext_t">
-                        <form action="">
-                              <p><h6>Nueva Fecha De Salida</h6>
-                              <input type="date" name="fecha_salida" id="fecha_salida" class="form-control">
-                              </p>
-
-                              <p><h6>Total A Pagar</h6></p>
-                              <h6>...</h6>
+                        <form action="{{route('updatesalidadep',[$detallereserva[0]->Id_reservacion, $habitaciones[0]->Id_habitacion])}}" class="form" method="POST" enctype="multipart/form-data">
+                            @method('PUT')
+                            @csrf
+                              <p><h6>Nueva Fecha De Salida</h6></p>
+                              <div class="centrar">
+                                <input type="date" name="up_fecha_salida" id="up_fecha_salida" class="form-control" style="width: 250px; height:45px;">
+                              </div>
                            <br>
-                              <button type="submit" class="btn btn-success"> Guardar y Generar Nuevo Contrato</button>
+                              <button type="submit" class="btn btn-success">Guardar</button>
                         </form>
                   </div>
 

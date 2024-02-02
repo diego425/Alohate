@@ -233,20 +233,17 @@
                   
                                           @if($departamento->Nombre_estado == "Desocupada")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
                                           <button class="btn btn-primary clickForm" href="{{route('viewreservadepoc', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}">Reservar</button>
                                           @endif
                   
                                           @if($departamento->Nombre_estado == "Reservada")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <a href="" class="btn btn-danger">Terminar</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
                                           @endif
 
                                           @if($departamento->Nombre_estado == "Pago por confirmar")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <a href="" class="btn btn-danger">Terminar</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
                                           @endif
                   
                                           @if($departamento->Nombre_estado == "Desactivada")
@@ -416,20 +413,17 @@
                   
                                           @if($departamento->Nombre_estado == "Desocupada")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
                                           <button class="btn btn-primary clickForm" href="{{route('viewreservadepoc', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}">Reservar</button>
                                           @endif
                   
                                           @if($departamento->Nombre_estado == "Reservada")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <a href="" class="btn btn-danger">Terminar</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
                                           @endif
 
                                           @if($departamento->Nombre_estado == "Pago por confirmar")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <a href="" class="btn btn-danger">Terminar</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
                                           @endif
                   
                                           @if($departamento->Nombre_estado == "Desactivada")
@@ -600,20 +594,17 @@
                   
                                           @if($departamento->Nombre_estado == "Desocupada")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
                                           <button class="btn btn-primary clickForm" href="{{route('viewreservadepoc', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}">Reservar</button>
                                           @endif
                   
                                           @if($departamento->Nombre_estado == "Reservada")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <a href="" class="btn btn-danger">Terminar</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
                                           @endif
 
                                           @if($departamento->Nombre_estado == "Pago por confirmar")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <a href="" class="btn btn-danger">Terminar</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
                                           @endif
                   
                                           @if($departamento->Nombre_estado == "Desactivada")
@@ -782,20 +773,17 @@
                   
                                           @if($departamento->Nombre_estado == "Desocupada")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
                                           <button class="btn btn-primary clickForm" href="{{route('viewreservadepoc', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}">Reservar</button>
                                           @endif
                   
                                           @if($departamento->Nombre_estado == "Reservada")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <a href="" class="btn btn-danger">Terminar</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
                                           @endif
 
                                           @if($departamento->Nombre_estado == "Pago por confirmar")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <a href="" class="btn btn-danger">Terminar</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
                                           @endif
                   
                                           @if($departamento->Nombre_estado == "Desactivada")
@@ -965,20 +953,17 @@
                   
                                           @if($departamento->Nombre_estado == "Desocupada")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
                                           <button class="btn btn-primary clickForm" href="{{route('viewreservadepoc', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}">Reservar</button>
                                           @endif
                   
                                           @if($departamento->Nombre_estado == "Reservada")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <a href="" class="btn btn-danger">Terminar</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
                                           @endif
 
                                           @if($departamento->Nombre_estado == "Pago por confirmar")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <a href="" class="btn btn-danger">Terminar</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
                                           @endif
                   
                                           @if($departamento->Nombre_estado == "Desactivada")
@@ -1147,20 +1132,17 @@
                   
                                           @if($departamento->Nombre_estado == "Desocupada")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
                                           <button class="btn btn-primary clickForm" href="{{route('viewreservadepoc', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}">Reservar</button>
                                           @endif
 
                                           @if($departamento->Nombre_estado == "Pago por confirmar")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <a href="" class="btn btn-danger">Terminar</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
                                           @endif
                   
                                           @if($departamento->Nombre_estado == "Reservada")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <a href="" class="btn btn-danger">Terminar</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
                                           @endif
                   
                                           @if($departamento->Nombre_estado == "Desactivada")
@@ -1331,20 +1313,17 @@
                   
                                           @if($departamento->Nombre_estado == "Desocupada")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
                                           <button class="btn btn-primary clickForm" href="{{route('viewreservadepoc', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}">Reservar</button>
                                           @endif
 
                                           @if($departamento->Nombre_estado == "Pago por confirmar")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <a href="" class="btn btn-danger">Terminar</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
                                           @endif
                   
                                           @if($departamento->Nombre_estado == "Reservada")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <a href="" class="btn btn-danger">Terminar</a>
-                                          <a href="" class="btn btn-warning">Rentar</a>
                                           @endif
                   
                                           @if($departamento->Nombre_estado == "Desactivada")
