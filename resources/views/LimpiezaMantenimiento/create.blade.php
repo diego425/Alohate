@@ -101,6 +101,12 @@
 @section('MenuPrincipal')
     <div class="container">
         <div class="card">
+            <div class="d-grid gap-2 d-md-block">
+                <a class="btn btn-danger" style="position: fixed;" type="button" href="{{ route('limpieza.index') }}">
+                    <i class='bx bx-arrow-back'></i>
+                </a>
+            </div>
+            <br>
             <div class="card-title">
                 <h6>¿Tu reporte es de limpieza o mantenimiento?</h6>
             </div>

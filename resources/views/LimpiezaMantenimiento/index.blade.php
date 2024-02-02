@@ -224,8 +224,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal" form="formulario">Buscar</button>
-                    <a type="button" class="btn btn-primary" href="{{route('limpieza.index')}}">Reset</a>
+                    <a type="button" class="btn btn-primary" href="{{route('limpieza.index')}}">
+                    <i class='bx bx-refresh'></i> Reset</a>
+                    <button type="submit" class="btn btn-success" data-bs-dismiss="modal" form="formulario">
+                    <i class='bx bx-search'></i> Buscar</button>
                 </div>
             </div>
         </div>

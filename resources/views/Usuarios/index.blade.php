@@ -79,7 +79,11 @@
                 </caption>
                 <tbody class="table-group-divider">
                     @foreach ($users as $user)
-                        <tr class="">
+                        @if ($user->Id_colaborador == Cookie::get('Id_colaborador'))
+                            <tr class="table-danger" title="Este es tu usuario">
+                        @else
+                            <tr class="">
+                        @endif
                             <td data-label="User" scope="row">{{$user->user}}</td>
                             <td data-label="Nombre">{{$user->Nombre." ".$user->Apellido_pat}}</td>
                             <td data-label="Email">{{$user->email}}</td>
