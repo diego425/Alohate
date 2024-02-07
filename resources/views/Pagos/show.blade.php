@@ -138,6 +138,7 @@
                                 <th>Id</th>
                                 <th>Fecha</th>
                                 <th>Comprobante</th>
+                                <th>Concepto</th>
                                 <th>Monto</th>
                                 <th>Estado</th>
                             </tr>
@@ -168,6 +169,7 @@
                                         No encontrado
                                     @endif
                                 </td>
+                                <td data-label="Monto" class="table-danger">{{ $pago->Concepto_pago_renta }}</td>
                                 <td data-label="Monto" class="table-danger">{{ $pago->Monto_pago }}</td>
                                 <td data-label="Estado" class="table-info">{{ $pago->Estatus_pago }}</td>
                                 </tr>

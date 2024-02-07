@@ -20,7 +20,7 @@ use App\Http\Controllers\UsuariosController;
 use App\Http\Controllers\LimpiezaMantenimientoController;
 use App\Http\Controllers\PagosController;
 use App\Http\Controllers\DatatableController;
-
+use App\Http\Controllers\MercadoPagoController;
 
 //ruta para el menu
 Route::get('menu', 'MenuController@VistaMenu')->name('menu');
@@ -422,10 +422,16 @@ Route::controller(PagosController::class)->group(function (){
     Route::post('pagos/destroy/{id}', 'destroy')->name('pagos.destroy');
     Route::get('pagos/confirmarPago/{id}', 'confirmarPago')->name('pagos.confirmarPago');
     Route::post('pagos/update/pago/{idPago}/{idCobro}/{referencia}', 'updatepago')->name('pagos.updatepago');
+    Route::get('pagos/client/direct/{tipoLugar}/{Id_locacion}/{Id_lugar}/654ada21ewq32d5sa4328a94fd5a6', 'pagoClienteDirecto')->name('pagos.pagoClienteDirecto');
 });
 
 Route::controller(DatatableController::class)->group(function (){
     Route::get('datatable/cobros', 'cobros')->name('datatable.cobros');
+});
+
+Route::controller(MercadoPagoController::class)->group(function (){
+    Route::post('mp/generate', 'generarLinkPago')->name('mp.generarLinkPago');
+    Route::post('mp/process_payment/{idCobro}', 'process_payment')->name('mp.process_payment');
 });
 
 
