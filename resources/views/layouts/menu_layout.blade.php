@@ -104,12 +104,8 @@
              @endif
              <li><a href="#" class="lol__link">Checador de entrada/salida</a></li>
              <li><a href="#" class="lol__link">Listas de asistencias</a></li>
-             @if(!empty(Cookie::get('puesto')))
-               @if(Cookie::get('puesto') == "ADMIN")
-                  <li><a href="#" class="lol__link">Historial LOG</a></li>
-                  <li><a href="#" class="lol__link">Reportes</a></li>
-               @endif
-             @endif
+             <li><a href="#" class="lol__link">Historial LOG</a></li>
+             <li><a href="#" class="lol__link">Reportes</a></li>
              <li>
                <form action="{{route('login.cerrarSesion')}}" method="post">
                   @csrf

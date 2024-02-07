@@ -23,6 +23,7 @@ class Cobro_renta extends Model
         'Tiempo_rebasado',
         'Deposito_garantia',
         'Monto_total',
-        'Saldo'
+        'Saldo',
+        'Id_locacion'
     );
 }

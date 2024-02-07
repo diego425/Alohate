@@ -101,10 +101,10 @@
                     <label for="tipo_renta">¿Como Se Cobrara La Renta?</label>
                     <select name="tipo_renta" id="tipo_renta">
                         <option value="-1" disabled selected>Selecciona una opcion</option>
-                        <option value="Noche">Noche</option>
-                        <option value="Semana">Semana</option>
-                        <option value="Catorcena">Catorcena</option>
-                        <option value="Mes">Mes</option>
+                        <option value="Noche">Noche ${{$locacion[0]->Precio_noche}}</option>
+                        <option value="Semana">Semana ${{$locacion[0]->Precio_semana}}</option>
+                        <option value="Catorcena">Catorcena ${{$locacion[0]->Precio_catorcedias}}</option>
+                        <option value="Mes">Mes ${{$locacion[0]->Precio_mes}}</option>
                     </select>
                 </div>
                 <div class="input-group">

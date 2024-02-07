@@ -182,20 +182,20 @@
                                        <p><h5>Acciones</h5>
                                        <div class="gris">
                                           @if($local->Nombre_estado == "En Mantenimiento/Limpieza")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           @endif
       
                                           @if($local->Nombre_estado == "Desocupada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <button class="btn btn-secondary clickForm" href="{{route('viewintroc2loc',$local->Id_local)}}">Rentar</button>
                                           @endif
       
                                           @if($local->Nombre_estado == "Desactivada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           @endif
       
                                           @if($local->Nombre_estado == "Rentada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <a href="" class="btn btn-danger">Terminar</a>
                                           @endif
                                        </div>
@@ -304,20 +304,20 @@
                                     <p><h5>Acciones</h5>
                                     <div class="gris">
                                           @if($local->Nombre_estado == "En Mantenimiento/Limpieza")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           @endif
       
                                           @if($local->Nombre_estado == "Desocupada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <button class="btn btn-secondary clickForm" href="{{route('viewintroc2loc',$local->Id_local)}}">Rentar</button>
                                           @endif
       
                                           @if($local->Nombre_estado == "Desactivada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           @endif
       
                                           @if($local->Nombre_estado == "Rentada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <a href="" class="btn btn-danger">Terminar</a>
                                           @endif
                                     </div>
@@ -426,20 +426,20 @@
                                     <p><h5>Acciones</h5>
                                     <div class="gris">
                                           @if($local->Nombre_estado == "En Mantenimiento/Limpieza")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           @endif
       
                                           @if($local->Nombre_estado == "Desocupada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <button class="btn btn-secondary clickForm" href="{{route('viewintroc2loc',$local->Id_local)}}">Rentar</button>
                                           @endif
       
                                           @if($local->Nombre_estado == "Desactivada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           @endif
       
                                           @if($local->Nombre_estado == "Rentada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <a href="" class="btn btn-danger">Terminar</a>
                                           @endif
                                     </div>
@@ -547,20 +547,20 @@
                                     <p><h5>Acciones</h5>
                                     <div class="gris">
                                           @if($local->Nombre_estado == "En Mantenimiento/Limpieza")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           @endif
       
                                           @if($local->Nombre_estado == "Desocupada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <button class="btn btn-secondary clickForm" href="{{route('viewintroc2loc',$local->Id_local)}}">Rentar</button>
                                           @endif
       
                                           @if($local->Nombre_estado == "Desactivada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           @endif
       
                                           @if($local->Nombre_estado == "Rentada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <a href="" class="btn btn-danger">Terminar</a>
                                           @endif
                                     </div>
@@ -670,20 +670,20 @@
                                     <p><h5>Acciones</h5>
                                     <div class="gris">
                                           @if($local->Nombre_estado == "En Mantenimiento/Limpieza")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           @endif
       
                                           @if($local->Nombre_estado == "Desocupada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <button class="btn btn-secondary clickForm" href="{{route('viewintroc2loc',$local->Id_local)}}">Rentar</button>
                                           @endif
       
                                           @if($local->Nombre_estado == "Desactivada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           @endif
       
                                           @if($local->Nombre_estado == "Rentada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <a href="" class="btn btn-danger">Terminar</a>
                                           @endif
                                     </div>
@@ -791,20 +791,20 @@
                                     <p><h5>Acciones</h5>
                                     <div class="gris">
                                           @if($local->Nombre_estado == "En Mantenimiento/Limpieza")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           @endif
       
                                           @if($local->Nombre_estado == "Desocupada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <button class="btn btn-secondary clickForm" href="{{route('viewintroc2loc',$local->Id_local)}}">Rentar</button>
                                           @endif
       
                                           @if($local->Nombre_estado == "Desactivada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           @endif
       
                                           @if($local->Nombre_estado == "Rentada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <a href="" class="btn btn-danger">Terminar</a>
                                           @endif
                                     </div>
@@ -912,20 +912,20 @@
                                     <p><h5>Acciones</h5>
                                     <div class="gris">
                                           @if($local->Nombre_estado == "En Mantenimiento/Limpieza")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           @endif
       
                                           @if($local->Nombre_estado == "Desocupada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <button class="btn btn-secondary clickForm" href="{{route('viewintroc2loc',$local->Id_local)}}">Rentar</button>
                                           @endif
       
                                           @if($local->Nombre_estado == "Desactivada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           @endif
       
                                           @if($local->Nombre_estado == "Rentada")
-                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info">Detalles</a>
+                                          <a href="{{route('detalleslocallibre',[$locacion[0]->Id_locacion, $local->Id_local])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
                                           <a href="" class="btn btn-danger">Terminar</a>
                                           @endif
                                     </div>

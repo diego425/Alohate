@@ -240,12 +240,10 @@
 
                                                 @if($habitacion->Nombre_estado == "Reservada")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                                <a href="" class="btn btn-danger">Terminar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Pago por confirmar")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                                <a href="" class="btn btn-danger">Terminar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Desactivada")
@@ -422,12 +420,10 @@
 
                                                 @if($habitacion->Nombre_estado == "Reservada")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                                <a href="" class="btn btn-danger">Terminar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Pago por confirmar")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                                <a href="" class="btn btn-danger">Terminar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Desactivada")
@@ -601,12 +597,10 @@
 
                                                 @if($habitacion->Nombre_estado == "Reservada")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                                <a href="" class="btn btn-danger">Terminar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Pago por confirmar")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                                <a href="" class="btn btn-danger">Terminar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Desactivada")
@@ -782,12 +776,10 @@
 
                                                 @if($habitacion->Nombre_estado == "Reservada")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                                <a href="" class="btn btn-danger">Terminar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Pago por confirmar")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                                <a href="" class="btn btn-danger">Terminar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Desactivada")
@@ -963,12 +955,10 @@
 
                                                 @if($habitacion->Nombre_estado == "Reservada")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                                <a href="" class="btn btn-danger">Terminar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Pago por confirmar")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                                <a href="" class="btn btn-danger">Terminar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Desactivada")
@@ -1143,12 +1133,10 @@
 
                                                 @if($habitacion->Nombre_estado == "Reservada")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                                <a href="" class="btn btn-danger">Terminar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Pago por confirmar")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                                <a href="" class="btn btn-danger">Terminar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Desactivada")
@@ -1326,12 +1314,10 @@
 
                                                 @if($habitacion->Nombre_estado == "Pago por confirmar")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                                <a href="" class="btn btn-danger">Terminar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Reservada")
                                                 <a href="{{route('detalleshablibre', [$locacion[0]->Id_locacion, $habitacion->Id_habitacion ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                                <a href="" class="btn btn-danger">Terminar</a>
                                                 @endif
 
                                                 @if($habitacion->Nombre_estado == "Desactivada")

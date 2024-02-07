@@ -70,7 +70,7 @@
                 <p><h5>Locacion A La Que Pertenece:
                 </h5>
                <div class="gris">
-                <h6>Locacion {{$locacion[0]->Nombre_locacion}}</h6>
+                <h6>{{$locacion[0]->Nombre_locacion}}</h6>
                </div>
              </div>
  
@@ -543,8 +543,8 @@
                      </div>
              </div>
              <div class="centrar_texto">
-                 <button class="btn btn-primary">Mensaje</button>
-                 <button class="btn btn-secondary">Llamar</button>
+                <a href="https://wa.me/{{$lugar_cliente_reservado[0]->Ref1_celular}}" target="_blank" class="btn btn-success">Enviar Whatsapp <i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                <a href="tel:{{$lugar_cliente_reservado[0]->Ref1_celular}}" class="btn btn-secondary" onclick="return(navigator.userAgent.match(/ Android | iPhone | movile /i)) != null;">Llamar</a>
              </div>
  
  <!--=============== Persona 2 ===============-->
@@ -568,8 +568,8 @@
                      </div>
              </div>
              <div class="centrar_texto">
-                 <button class="btn btn-primary"> Mensaje</button>
-                 <button class="btn btn-secondary">Llamar</button>
+                <a href="https://wa.me/{{$lugar_cliente_reservado[0]->Ref1_celular}}" target="_blank" class="btn btn-success">Enviar Whatsapp <i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                <a href="tel:{{$lugar_cliente_reservado[0]->Ref1_celular}}" class="btn btn-secondary" onclick="return(navigator.userAgent.match(/ Android | iPhone | movile /i)) != null;">Llamar</a>
              </div>
           </div>
      </div>
@@ -659,8 +659,8 @@
                     </div>
             </div>
             <div class="centrar_texto">
-                <button class="btn btn-primary">Mensaje</button>
-                <button class="btn btn-secondary">Llamar</button>
+                <a href="https://wa.me/{{$lugar_cliente_reservado[0]->Ref1_celular}}" target="_blank" class="btn btn-success">Enviar Whatsapp <i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                <a href="tel:{{$lugar_cliente_reservado[0]->Ref1_celular}}" class="btn btn-secondary" onclick="return(navigator.userAgent.match(/ Android | iPhone | movile /i)) != null;">Llamar</a>
             </div>
 
 <!--=============== Persona 2 ===============-->
@@ -684,8 +684,8 @@
                     </div>
             </div>
             <div class="centrar_texto">
-                <button class="btn btn-primary"> Mensaje</button>
-                <button class="btn btn-secondary">Llamar</button>
+                <a href="https://wa.me/{{$lugar_cliente_reservado[0]->Ref2_celular}}" target="_blank" class="btn btn-success">Enviar Whatsapp <i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                <a href="tel:{{$lugar_cliente_reservado[0]->Ref2_celular}}" class="btn btn-secondary" onclick="return(navigator.userAgent.match(/ Android | iPhone | movile /i)) != null;">Llamar</a>
             </div>
          </div>
     </div>
@@ -922,7 +922,7 @@
                 <p><h6>Si el cliente desea quedarse mas dias, puedes modificar el tiempo de estancia aqui</h6></p>
                   <div class="detalles_tiempoest">
                      <p> <h6>¿Quieres Modificar El Tiempo De Estancia?</h6> </p>
-                     <input type="checkbox" class="tiempo_estancia" id="extender_t"  onclick="javascript:activar_ext_t('PC');">
+                     <input type="checkbox" class="tiempo_estancia" id="extender_t"  onclick="javascript:activar_ext_t('PC');" style="width: 20px; height:20px;">
                   </div>
                  <br>
                   <div id="ext_t">
@@ -996,8 +996,8 @@
                <p><h5>Botones De Accion</h5></p>
                 <p>
                   <div class="gris">
-                     <button class="btn btn-success">Enviar Whatsapp <i class="fa fa-whatsapp" aria-hidden="true"></i></button>
-                     <button class="btn btn-secondary">Llamar</button>
+                     <a href="https://wa.me/{{$lugar_cliente_reservado[0]->Numero_celular}}" target="_blank" class="btn btn-success">Enviar Whatsapp <i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                     <a href="tel:{{$lugar_cliente_reservado[0]->Numero_celular}}" class="btn btn-secondary" onclick="return(navigator.userAgent.match(/ Android | iPhone | movile /i)) != null;">Llamar</a>
                      <button class="btn btn-primary">Registro De Pago</button>
                      <button class="btn btn-danger">Generar Contrato</button>
                      <button class="btn btn-info">Imprimir Contrato</button>

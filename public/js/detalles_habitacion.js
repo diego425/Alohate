@@ -189,7 +189,17 @@ function presentar_otro_s(){
     document.getElementById('detalle_otro_s').style.display = 'block';
 }
 
+function esconder_fotos(){
+    document.getElementById('ocultar_fotos').style.display = 'none';
+    document.getElementById('despliegue_fotos').style.display = 'block';
+    document.getElementById('detalle_fotos').style.display = 'none';
+}
 
+function presentar_fotos(){
+    document.getElementById('ocultar_fotos').style.display = 'block';
+    document.getElementById('despliegue_fotos').style.display = 'none';
+    document.getElementById('detalle_fotos').style.display = 'block';
+}
 
 
 

@@ -251,12 +251,34 @@ if(count($fecha_bd) == 0){
 //funcion que muestra el formulario para añadir una reservacion con cliente nuevo en una hab
 public function ViewReservaHabNC($Id_locacion, $Id_habitacion){
 
+    
     $totalcocheras = DB::table('locacion')
     ->select( 'Id_locacion', 'Total_cocheras', 'Uso_cocheras')
     ->where('Id_locacion', '=', $Id_locacion)
     ->get();
 
     $habitacion = DB::table('habitacion')
+    ->select('Id_habitacion', 
+    'Id_locacion',
+    'Id_estado_ocupacion', 
+    'Id_colaborador',
+    'Nombre_hab',
+    'Capacidad_personas', 
+    'Deposito_garantia_hab', 
+    'Precio_noche', 
+    'Precio_semana',
+    'Precio_catorcedias', 
+    'Precio_mes', 
+    'Encargado', 
+    'Espacio_superficie',
+    'Nota',
+    'Descripcion',
+    'Cobro_p_ext_mes_h',
+    'Cobro_p_ext_catorcena_h',
+    'Cobro_p_ext_noche_h',
+    'Cobro_anticipo_mes_h',
+    'Cobro_anticipo_catorcena_h',
+    'Camas_juntas')
     ->where('Id_habitacion', '=', $Id_habitacion)
     ->get();
 
@@ -400,6 +422,27 @@ public function ViewReservaHabOC($Id_locacion, $Id_habitacion){
     ->get();
 
     $habitacion = DB::table('habitacion')
+    ->select('Id_habitacion', 
+    'Id_locacion',
+    'Id_estado_ocupacion', 
+    'Id_colaborador',
+    'Nombre_hab',
+    'Capacidad_personas', 
+    'Deposito_garantia_hab', 
+    'Precio_noche', 
+    'Precio_semana',
+    'Precio_catorcedias', 
+    'Precio_mes', 
+    'Encargado', 
+    'Espacio_superficie',
+    'Nota',
+    'Descripcion',
+    'Cobro_p_ext_mes_h',
+    'Cobro_p_ext_catorcena_h',
+    'Cobro_p_ext_noche_h',
+    'Cobro_anticipo_mes_h',
+    'Cobro_anticipo_catorcena_h',
+    'Camas_juntas')
     ->where('Id_habitacion', '=', $Id_habitacion)
     ->get();
 
@@ -530,6 +573,31 @@ try{
 //funcion para la vista de editar una reservacion de una habitacion
 public function EditarReservaHab($Id_reservacion, $Id_locacion, $Id_habitacion, $Id_lugares_reservados){
 
+    $habitacion = DB::table('habitacion')
+    ->select('Id_habitacion', 
+    'Id_locacion',
+    'Id_estado_ocupacion', 
+    'Id_colaborador',
+    'Nombre_hab',
+    'Capacidad_personas', 
+    'Deposito_garantia_hab', 
+    'Precio_noche', 
+    'Precio_semana',
+    'Precio_catorcedias', 
+    'Precio_mes', 
+    'Encargado', 
+    'Espacio_superficie',
+    'Nota',
+    'Descripcion',
+    'Cobro_p_ext_mes_h',
+    'Cobro_p_ext_catorcena_h',
+    'Cobro_p_ext_noche_h',
+    'Cobro_anticipo_mes_h',
+    'Cobro_anticipo_catorcena_h',
+    'Camas_juntas')
+    ->where('Id_habitacion', '=', $Id_habitacion)
+    ->get();
+    
     $reservacion = DB::table('lugares_reservados')
     ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion','lugares_reservados.Id_locacion', 
         'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
@@ -577,7 +645,7 @@ public function EditarReservaHab($Id_reservacion, $Id_locacion, $Id_habitacion, 
 
     $result_resta = (int)$dato2[0]->Total_cocheras - (int)$dato1[0]->Uso_cocheras;
 
-    return view('Reservaciones y rentas.Agregar_Editar_Reservaciones.editarreserva_oc_hab',compact('Id_reservacion', 'Id_lugares_reservados', 'Id_locacion', 'Id_habitacion', 'totalcocheras', 'result_resta', 'reservacion'));
+    return view('Reservaciones y rentas.Agregar_Editar_Reservaciones.editarreserva_oc_hab',compact('Id_reservacion', 'Id_lugares_reservados', 'Id_locacion', 'Id_habitacion', 'totalcocheras', 'result_resta', 'reservacion', 'habitacion'));
 
 }
 
@@ -734,6 +802,31 @@ public function ShowClientesEditHab(Request $request){
 //funcion para la vista de editar una reservacion de una habitacion
 public function EditarReservaHabNC($Id_reservacion, $Id_lugares_reservados, $Id_locacion, $Id_habitacion ){
 
+    $habitacion = DB::table('habitacion')
+    ->select('Id_habitacion', 
+    'Id_locacion',
+    'Id_estado_ocupacion', 
+    'Id_colaborador',
+    'Nombre_hab',
+    'Capacidad_personas', 
+    'Deposito_garantia_hab', 
+    'Precio_noche', 
+    'Precio_semana',
+    'Precio_catorcedias', 
+    'Precio_mes', 
+    'Encargado', 
+    'Espacio_superficie',
+    'Nota',
+    'Descripcion',
+    'Cobro_p_ext_mes_h',
+    'Cobro_p_ext_catorcena_h',
+    'Cobro_p_ext_noche_h',
+    'Cobro_anticipo_mes_h',
+    'Cobro_anticipo_catorcena_h',
+    'Camas_juntas')
+    ->where('Id_habitacion', '=', $Id_habitacion)
+    ->get();
+
     $reservacion = DB::table('lugares_reservados')
     ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion','lugares_reservados.Id_locacion', 
         'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
@@ -781,7 +874,7 @@ public function EditarReservaHabNC($Id_reservacion, $Id_lugares_reservados, $Id_
 
     $result_resta = (int)$dato2[0]->Total_cocheras - (int)$dato1[0]->Uso_cocheras;
 
-    return view('Reservaciones y rentas.Agregar_Editar_Reservaciones.editarreserva_nc_hab',compact('Id_reservacion', 'Id_lugares_reservados', 'Id_locacion', 'Id_habitacion', 'totalcocheras', 'result_resta', 'reservacion'));
+    return view('Reservaciones y rentas.Agregar_Editar_Reservaciones.editarreserva_nc_hab',compact('Id_reservacion', 'Id_lugares_reservados', 'Id_locacion', 'Id_habitacion', 'totalcocheras', 'result_resta', 'reservacion', 'habitacion'));
 
 
 }
@@ -1014,28 +1107,7 @@ if($request->get('idcliente') == $cliente_reserva[0]->Id_cliente){
     $cliente->Lugar_motivo_visita = $request->lugar_v;
     $cliente->save();
 
-//array que guarda la foto del cliente
-    $this->validate($request, array(
-    'img2' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
-    ));
-    $image = $request->file('img2');
   
-    if($image != ''){
-        $nombreImagen = $cliente->Nombre.'_'.$cliente->Apellido_paterno.'_'.$cliente->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
-        $base64Img = $request->nuevaImagen2;
-        $base_to_php = explode(',',$base64Img);
-        $data = base64_decode($base_to_php[1]);
-//aviso         
-//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
-        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
-        $guardarImagen = file_put_contents($filepath, $data);
-  
-        if ($guardarImagen !== false) {
-            DB::table('cliente')
-            ->where('Id_cliente', '=', $cliente->Id_cliente)
-            ->update(['Foto_cliente' => $nombreImagen]);
-    }}
-    
 
 //array que guarda la foto de la ine de frente del cliente
     $this->validate($request, array(
@@ -1181,27 +1253,7 @@ if($request->get('idcliente') == $cliente_reserva[0]->Id_cliente){
     $cambio_cliente->Lugar_motivo_visita = $request->lugar_v;
     $cambio_cliente->save();
 
-//array que guarda la foto del cliente
-    $this->validate($request, array(
-    'img2' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
-    ));
-    $image = $request->file('img2');
-  
-    if($image != ''){
-        $nombreImagen = $cambio_cliente->Nombre.'_'.$cambio_cliente->Apellido_paterno.'_'.$cambio_cliente->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
-        $base64Img = $request->nuevaImagen2;
-        $base_to_php = explode(',',$base64Img);
-        $data = base64_decode($base_to_php[1]);
-//aviso         
-//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
-        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
-        $guardarImagen = file_put_contents($filepath, $data);
-  
-        if ($guardarImagen !== false) {
-            DB::table('cliente')
-            ->where('Id_cliente', '=', $cambio_cliente->Id_cliente)
-            ->update(['Foto_cliente' => $nombreImagen]);
-    }}
+
     
 
 //array que guarda la foto de la ine de frente del cliente
@@ -1422,27 +1474,7 @@ if($request->get('idcliente') == ""){
     ->get();
 
 
-//array que guarda la foto del cliente
-    $this->validate($request, array(
-    'img2' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
-    ));
-    $image = $request->file('img2');
 
-    if($image != ''){
-        $nombreImagen = $nombreclient[0]->Nombre.'_'.$nombreclient[0]->Apellido_paterno.'_'.$nombreclient[0]->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
-        $base64Img = $request->nuevaImagen2;
-        $base_to_php = explode(',',$base64Img);
-        $data = base64_decode($base_to_php[1]);
-//aviso         
-//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
-    $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
-    $guardarImagen = file_put_contents($filepath, $data);
-
-    if ($guardarImagen !== false) {
-        DB::table('cliente')
-        ->where('Id_cliente', '=', $nombreclient[0]->Id_cliente)
-        ->update(['Foto_cliente' => $nombreImagen]);
-}}
 
 
 //array que guarda la foto de la ine de frente del cliente
@@ -1596,27 +1628,6 @@ if($num_personas_reserva[0]->Registro_personas == $total_personas[0]->Total_de_p
     $cambio_cliente->Lugar_motivo_visita = $request->lugar_v;
     $cambio_cliente->save();
 
-//array que guarda la foto del cliente
-    $this->validate($request, array(
-    'img2' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
-    ));
-    $image = $request->file('img2');
-  
-    if($image != ''){
-        $nombreImagen = $cambio_cliente->Nombre.'_'.$cambio_cliente->Apellido_paterno.'_'.$cambio_cliente->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
-        $base64Img = $request->nuevaImagen2;
-        $base_to_php = explode(',',$base64Img);
-        $data = base64_decode($base_to_php[1]);
-//aviso         
-//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
-        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
-        $guardarImagen = file_put_contents($filepath, $data);
-  
-        if ($guardarImagen !== false) {
-            DB::table('cliente')
-            ->where('Id_cliente', '=', $cambio_cliente->Id_cliente)
-            ->update(['Foto_cliente' => $nombreImagen]);
-    }}
     
 
 //array que guarda la foto de la ine de frente del cliente
@@ -2374,6 +2385,68 @@ if($request->get('tipo_contrato') == "Flexible"){
 }
 
 
+public function ViewTerminarRentaHab($Id_reservacion, $Id_habitacion, $Id_lugares_reservados){
+
+    $renta = DB::table('lugares_reservados')
+    ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion','lugares_reservados.Id_locacion', 
+     'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
+     'est.Nombre_estado',
+     'reserva.Id_reservacion','reserva.Id_colaborador',
+     'reserva.Start_date','reserva.End_date', 'reserva.Title','reserva.Fecha_reservacion',
+     'reserva.Numero_personas_extras', 'reserva.Foto_comprobante_anticipo', 'reserva.Fecha_pago_anticipo',
+     'reserva.Foto_aviso_privacidad', 'reserva.Foto_reglamento','reserva.Monto_uso_cochera', 
+     'reserva.Metodo_pago_anticipo','reserva.Espacios_cochera','reserva.Monto_pagado_anticipo',
+     'reserva.Tipo_de_cobro','reserva.Nota_pago_anticipo',
+     'cliente.Id_cliente','cliente.Id_colaborador','cliente.Nombre',
+     'cliente.Apellido_paterno','cliente.Apellido_materno','cliente.Email', 
+     'cliente.Numero_celular','cliente.Ciudad','cliente.Estado',
+     'cliente.Pais', 'cliente.Ref1_nombre','cliente.Ref2_nombre',
+     'cliente.Ref1_celular','cliente.Ref2_celular','cliente.Ref1_parentesco',
+     'cliente.Ref2_parentesco','cliente.Motivo_visita', 'cliente.Lugar_motivo_visita', 
+     'cliente.Foto_cliente', 'cliente.INE_frente', 'cliente.INE_reverso',
+     'hab.Id_habitacion','hab.Id_locacion','hab.Id_estado_ocupacion', 
+     'hab.Id_colaborador','hab.Nombre_hab', 'hab.Capacidad_personas',  'hab.Deposito_garantia_hab', 
+     'hab.Precio_noche', 'hab.Precio_semana','hab.Precio_catorcedias', 'hab.Precio_mes', 
+     'hab.Encargado','hab.Espacio_superficie', 'hab.Nota','hab.Descripcion',
+     'hab.Cobro_p_ext_mes_h','hab.Cobro_p_ext_catorcena_h','hab.Cobro_p_ext_noche_h',
+     'hab.Cobro_anticipo_mes_h','hab.Cobro_anticipo_catorcena_h','hab.Camas_juntas',
+     'loc.Nombre_locacion')
+    ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
+    ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+    ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+    ->leftJoin("habitacion as hab", "hab.Id_habitacion", "=", "lugares_reservados.Id_habitacion")
+    ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
+    ->where('reserva.Id_reservacion', '=', $Id_reservacion)
+    ->where('hab.Id_habitacion', '=', $Id_habitacion)
+    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    ->get();
+
+    $consulta_pago_renta = DB::table('cobro_renta')
+    ->select('cobro_renta.Id_cobro_renta','cobro_renta.Id_reservacion','cobro_renta.Id_lugares_reservados',
+    'cobro_renta.Id_colaborador','cobro_renta.Cobro_persona_extra',
+    'cobro_renta.Periodo_total','cobro_renta.Estatus_cobro',
+    'cobro_renta.Tiempo_rebasado','cobro_renta.Deposito_garantia',
+    'cobro_renta.Monto_total','cobro_renta.Saldo','cobro_renta.Id_locacion')
+    ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "cobro_renta.Id_reservacion")
+    ->leftJoin("lugares_reservados", "lugares_reservados.Id_lugares_reservados", "=", "cobro_renta.Id_lugares_reservados")
+    ->where('reserva.Id_reservacion', '=', $Id_reservacion)
+    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    ->get();
+
+    if($consulta_pago_renta[0]->Saldo == $consulta_pago_renta[0]->Monto_total){
+
+        return view('Reservaciones y rentas.Terminar_renta.terminar_renta_hab', compact('renta'));
+    }else{
+        Alert::error('Alto', 'Se detecto que este cliente no ha pagado el monto total de renta. por favor pidele que pague para que pueda irse');
+        return redirect()->back();
+    }
+
+    
+
+}
+
+
+
 
 
 
@@ -2466,6 +2539,28 @@ public function ViewReservaDepOC($Id_locacion, $Id_departamento){
     ->get();
 
     $departamento = DB::table('departamento')
+    ->select(    'Id_departamento',
+    'Id_locacion',
+    'Id_estado_ocupacion', 
+    'Id_colaborador',
+    'Nombre_depa',
+    'Capacidad_personas', 
+    'Deposito_garantia_dep', 
+    'Precio_noche', 
+    'Precio_semana', 
+    'Precio_catorcedias', 
+    'Precio_mes', 
+    'Habitaciones_total', 
+    'Encargado',
+    'Espacio_superficie',
+    'Nota',
+    'Descripcion',
+    'Cobro_p_ext_mes_d',
+    'Cobro_p_ext_catorcena_d',
+    'Cobro_p_ext_noche_d',
+    'Cobro_anticipo_mes_d',
+    'Cobro_anticipo_catorcena_d',
+    'Camas_juntas')
     ->where('Id_departamento', '=', $Id_departamento)
     ->get();
 
@@ -2608,6 +2703,28 @@ public function ViewReservaDepNC($Id_locacion, $Id_departamento){
     ->get();
 
     $departamento = DB::table('departamento')
+    ->select(    'Id_departamento',
+    'Id_locacion',
+    'Id_estado_ocupacion', 
+    'Id_colaborador',
+    'Nombre_depa',
+    'Capacidad_personas', 
+    'Deposito_garantia_dep', 
+    'Precio_noche', 
+    'Precio_semana', 
+    'Precio_catorcedias', 
+    'Precio_mes', 
+    'Habitaciones_total', 
+    'Encargado',
+    'Espacio_superficie',
+    'Nota',
+    'Descripcion',
+    'Cobro_p_ext_mes_d',
+    'Cobro_p_ext_catorcena_d',
+    'Cobro_p_ext_noche_d',
+    'Cobro_anticipo_mes_d',
+    'Cobro_anticipo_catorcena_d',
+    'Camas_juntas')
     ->where('Id_departamento', '=', $Id_departamento)
     ->get();
 
@@ -2861,6 +2978,32 @@ public function DetalleReservaDep($Id_reservacion, $Id_departamento, $Id_lugares
 //funcion para la vista de editar una reservacion de un depa
 public function EditarReservaDep($Id_reservacion, $Id_locacion, $Id_departamento, $Id_lugares_reservados){
 
+    $departamento = DB::table('departamento')
+    ->select(    'Id_departamento',
+    'Id_locacion',
+    'Id_estado_ocupacion', 
+    'Id_colaborador',
+    'Nombre_depa',
+    'Capacidad_personas', 
+    'Deposito_garantia_dep', 
+    'Precio_noche', 
+    'Precio_semana', 
+    'Precio_catorcedias', 
+    'Precio_mes', 
+    'Habitaciones_total', 
+    'Encargado',
+    'Espacio_superficie',
+    'Nota',
+    'Descripcion',
+    'Cobro_p_ext_mes_d',
+    'Cobro_p_ext_catorcena_d',
+    'Cobro_p_ext_noche_d',
+    'Cobro_anticipo_mes_d',
+    'Cobro_anticipo_catorcena_d',
+    'Camas_juntas')
+    ->where('Id_departamento', '=', $Id_departamento)
+    ->get();
+    
     $reservacion = DB::table('lugares_reservados')
     ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_locacion', 
         'lugares_reservados.Id_local', 'lugares_reservados.Id_departamento', 'lugares_reservados.Id_cliente',
@@ -2908,7 +3051,7 @@ public function EditarReservaDep($Id_reservacion, $Id_locacion, $Id_departamento
 
     $result_resta = (int)$dato2[0]->Total_cocheras - (int)$dato1[0]->Uso_cocheras;
 
-    return view('Reservaciones y rentas.Agregar_Editar_Reservaciones.editarreserva_oc_depa',compact('Id_reservacion', 'Id_lugares_reservados', 'Id_locacion', 'Id_departamento', 'totalcocheras', 'result_resta', 'reservacion'));
+    return view('Reservaciones y rentas.Agregar_Editar_Reservaciones.editarreserva_oc_depa',compact('Id_reservacion', 'Id_lugares_reservados', 'Id_locacion', 'Id_departamento', 'totalcocheras', 'result_resta', 'reservacion', 'departamento'));
 
 }
 
@@ -3062,6 +3205,32 @@ public function ShowClientesEditDep(Request $request){
 //funcion para la vista de editar una reservacion de un depa
 public function EditarReservaDepNC($Id_reservacion,  $Id_lugares_reservados, $Id_locacion, $Id_departamento){
 
+    $departamento = DB::table('departamento')
+    ->select(    'Id_departamento',
+    'Id_locacion',
+    'Id_estado_ocupacion', 
+    'Id_colaborador',
+    'Nombre_depa',
+    'Capacidad_personas', 
+    'Deposito_garantia_dep', 
+    'Precio_noche', 
+    'Precio_semana', 
+    'Precio_catorcedias', 
+    'Precio_mes', 
+    'Habitaciones_total', 
+    'Encargado',
+    'Espacio_superficie',
+    'Nota',
+    'Descripcion',
+    'Cobro_p_ext_mes_d',
+    'Cobro_p_ext_catorcena_d',
+    'Cobro_p_ext_noche_d',
+    'Cobro_anticipo_mes_d',
+    'Cobro_anticipo_catorcena_d',
+    'Camas_juntas')
+    ->where('Id_departamento', '=', $Id_departamento)
+    ->get();
+
     $reservacion = DB::table('lugares_reservados')
     ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_locacion', 
         'lugares_reservados.Id_local', 'lugares_reservados.Id_departamento', 'lugares_reservados.Id_cliente',
@@ -3109,7 +3278,7 @@ public function EditarReservaDepNC($Id_reservacion,  $Id_lugares_reservados, $Id
 
     $result_resta = (int)$dato2[0]->Total_cocheras - (int)$dato1[0]->Uso_cocheras;
 
-    return view('Reservaciones y rentas.Agregar_Editar_Reservaciones.editarreserva_nc_depa',compact('Id_reservacion', 'Id_lugares_reservados', 'Id_locacion', 'Id_departamento', 'totalcocheras', 'result_resta', 'reservacion'));
+    return view('Reservaciones y rentas.Agregar_Editar_Reservaciones.editarreserva_nc_depa',compact('Id_reservacion', 'Id_lugares_reservados', 'Id_locacion', 'Id_departamento', 'totalcocheras', 'result_resta', 'reservacion', 'departamento'));
 
 }
 
@@ -3341,27 +3510,6 @@ if($request->get('idcliente') == $cliente_reserva[0]->Id_cliente){
     $cliente->Lugar_motivo_visita = $request->lugar_v;
     $cliente->save();
 
-//array que guarda la foto del cliente
-    $this->validate($request, array(
-    'img2' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
-    ));
-    $image = $request->file('img2');
-  
-    if($image != ''){
-        $nombreImagen = $cliente->Nombre.'_'.$cliente->Apellido_paterno.'_'.$cliente->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
-        $base64Img = $request->nuevaImagen2;
-        $base_to_php = explode(',',$base64Img);
-        $data = base64_decode($base_to_php[1]);
-//aviso         
-//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
-        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
-        $guardarImagen = file_put_contents($filepath, $data);
-  
-        if ($guardarImagen !== false) {
-            DB::table('cliente')
-            ->where('Id_cliente', '=', $cliente->Id_cliente)
-            ->update(['Foto_cliente' => $nombreImagen]);
-    }}
     
 
 //array que guarda la foto de la ine de frente del cliente
@@ -3509,27 +3657,7 @@ if($request->get('idcliente') == $cliente_reserva[0]->Id_cliente){
     $cambio_cliente->Lugar_motivo_visita = $request->lugar_v;
     $cambio_cliente->save();
 
-//array que guarda la foto del cliente
-    $this->validate($request, array(
-    'img2' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
-    ));
-    $image = $request->file('img2');
-  
-    if($image != ''){
-        $nombreImagen = $cambio_cliente->Nombre.'_'.$cambio_cliente->Apellido_paterno.'_'.$cambio_cliente->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
-        $base64Img = $request->nuevaImagen2;
-        $base_to_php = explode(',',$base64Img);
-        $data = base64_decode($base_to_php[1]);
-//aviso         
-//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
-        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
-        $guardarImagen = file_put_contents($filepath, $data);
-  
-        if ($guardarImagen !== false) {
-            DB::table('cliente')
-            ->where('Id_cliente', '=', $cambio_cliente->Id_cliente)
-            ->update(['Foto_cliente' => $nombreImagen]);
-    }}
+
     
 
 //array que guarda la foto de la ine de frente del cliente
@@ -3757,27 +3885,7 @@ $nombreclient = DB::table('cliente')
 ->get();
 
 
-//array que guarda la foto del cliente
-$this->validate($request, array(
-'img2' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
-));
-$image = $request->file('img2');
 
-if($image != ''){
-    $nombreImagen = $nombreclient[0]->Nombre.'_'.$nombreclient[0]->Apellido_paterno.'_'.$nombreclient[0]->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
-    $base64Img = $request->nuevaImagen2;
-    $base_to_php = explode(',',$base64Img);
-    $data = base64_decode($base_to_php[1]);
-//aviso         
-//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
-    $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
-    $guardarImagen = file_put_contents($filepath, $data);
-
-    if ($guardarImagen !== false) {
-        DB::table('cliente')
-        ->where('Id_cliente', '=', $nombreclient[0]->Id_cliente)
-        ->update(['Foto_cliente' => $nombreImagen]);
-}}
 
 
 //array que guarda la foto de la ine de frente del cliente
@@ -3932,27 +4040,7 @@ $cambio_cliente = Cliente::findOrFail($request->get('idcliente'));
     $cambio_cliente->Lugar_motivo_visita = $request->lugar_v;
     $cambio_cliente->save();
 
-//array que guarda la foto del cliente
-    $this->validate($request, array(
-    'img2' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
-    ));
-    $image = $request->file('img2');
-  
-    if($image != ''){
-        $nombreImagen = $cambio_cliente->Nombre.'_'.$cambio_cliente->Apellido_paterno.'_'.$cambio_cliente->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
-        $base64Img = $request->nuevaImagen2;
-        $base_to_php = explode(',',$base64Img);
-        $data = base64_decode($base_to_php[1]);
-//aviso         
-//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
-        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
-        $guardarImagen = file_put_contents($filepath, $data);
-  
-        if ($guardarImagen !== false) {
-            DB::table('cliente')
-            ->where('Id_cliente', '=', $cambio_cliente->Id_cliente)
-            ->update(['Foto_cliente' => $nombreImagen]);
-    }}
+
     
 
 //array que guarda la foto de la ine de frente del cliente
@@ -4768,6 +4856,16 @@ public function ShowClientesCasa(Request $request){
 //funcion que muestra el formulario para añadir una reservacion con cliente existente desde una casa
 public function ViewReservaCasaOC($Id_locacion){
     
+    $locacion = DB::table('locacion')
+    ->select('Id_locacion', 
+    'Precio_noche', 
+    'Precio_semana',
+    'Precio_catorcedias',
+    'Precio_mes', 
+    'Camas_juntas')
+    ->where('Id_locacion', '=', $Id_locacion)
+    ->get();
+
     $totalcocheras = DB::table('locacion')
     ->select( 'Id_locacion', 'Total_cocheras', 'Uso_cocheras')
     ->where('Id_locacion', '=', $Id_locacion)
@@ -4785,7 +4883,7 @@ public function ViewReservaCasaOC($Id_locacion){
 
     $result_resta = (int)$dato2[0]->Total_cocheras - (int)$dato1[0]->Uso_cocheras;
 
-    return view('Reservaciones y rentas.Agregar_Editar_Reservaciones.agregarreserva_oc_casa',compact('Id_locacion', 'totalcocheras', 'result_resta'));
+    return view('Reservaciones y rentas.Agregar_Editar_Reservaciones.agregarreserva_oc_casa',compact('Id_locacion', 'totalcocheras', 'result_resta', 'locacion'));
 
 }
 
@@ -4891,6 +4989,16 @@ try{
 //funcion que muestra el formulario para añadir una reservacion con cliente nuevo en una casa
 public function ViewReservaCasaNC($Id_locacion){
 
+    $locacion = DB::table('locacion')
+    ->select('Id_locacion', 
+    'Precio_noche', 
+    'Precio_semana',
+    'Precio_catorcedias',
+    'Precio_mes', 
+    'Camas_juntas')
+    ->where('Id_locacion', '=', $Id_locacion)
+    ->get();
+
     $totalcocheras = DB::table('locacion')
     ->select( 'Id_locacion', 'Total_cocheras', 'Uso_cocheras')
     ->where('Id_locacion', '=', $Id_locacion)
@@ -4908,7 +5016,7 @@ public function ViewReservaCasaNC($Id_locacion){
 
     $result_resta = (int)$dato2[0]->Total_cocheras - (int)$dato1[0]->Uso_cocheras;
 
-    return view('Reservaciones y rentas.Agregar_Editar_Reservaciones.agregarreserva_nc_casa',compact('Id_locacion', 'totalcocheras', 'result_resta'));
+    return view('Reservaciones y rentas.Agregar_Editar_Reservaciones.agregarreserva_nc_casa',compact('Id_locacion', 'totalcocheras', 'result_resta', 'locacion'));
 }
 
 //funcion que guarda el registro de una reservacion para un nuevo cliente en una casa
@@ -5131,6 +5239,16 @@ switch ($detallereserva[0]->Tipo_de_cobro) {
 //funcion para la vista de editar una reservacion de un depa
 public function EditarReservaCasa($Id_reservacion, $Id_locacion, $Id_lugares_reservados){
 
+    $locacion = DB::table('locacion')
+    ->select('Id_locacion', 
+    'Precio_noche', 
+    'Precio_semana',
+    'Precio_catorcedias',
+    'Precio_mes', 
+    'Camas_juntas')
+    ->where('Id_locacion', '=', $Id_locacion)
+    ->get();
+
     $reservacion = DB::table('lugares_reservados')
     ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_locacion', 
         'lugares_reservados.Id_local', 'lugares_reservados.Id_departamento', 'lugares_reservados.Id_cliente',
@@ -5181,7 +5299,7 @@ public function EditarReservaCasa($Id_reservacion, $Id_locacion, $Id_lugares_res
 
     $result_resta = (int)$dato2[0]->Total_cocheras - (int)$dato1[0]->Uso_cocheras;
 
-    return view('Reservaciones y rentas.Agregar_Editar_Reservaciones.editarreserva_oc_casa',compact('Id_reservacion', 'Id_lugares_reservados', 'Id_locacion', 'totalcocheras', 'result_resta', 'reservacion'));
+    return view('Reservaciones y rentas.Agregar_Editar_Reservaciones.editarreserva_oc_casa',compact('Id_reservacion', 'Id_lugares_reservados', 'Id_locacion', 'totalcocheras', 'result_resta', 'reservacion', 'locacion'));
 
 }
 
@@ -5269,6 +5387,16 @@ public function ShowClientesEditCasa(Request $request){
 //funcion para la vista de editar una reservacion de un depa
 public function EditarReservaCasaNC($Id_reservacion , $Id_lugares_reservados, $Id_locacion){
 
+    $locacion = DB::table('locacion')
+    ->select('Id_locacion', 
+    'Precio_noche', 
+    'Precio_semana',
+    'Precio_catorcedias',
+    'Precio_mes', 
+    'Camas_juntas')
+    ->where('Id_locacion', '=', $Id_locacion)
+    ->get();
+   
     $reservacion = DB::table('lugares_reservados')
     ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_locacion', 
         'lugares_reservados.Id_local', 'lugares_reservados.Id_departamento', 'lugares_reservados.Id_cliente',
@@ -5319,7 +5447,7 @@ public function EditarReservaCasaNC($Id_reservacion , $Id_lugares_reservados, $I
 
     $result_resta = (int)$dato2[0]->Total_cocheras - (int)$dato1[0]->Uso_cocheras;
 
-    return view('Reservaciones y rentas.Agregar_Editar_Reservaciones.editarreserva_nc_casa',compact('Id_reservacion', 'Id_lugares_reservados', 'Id_locacion', 'totalcocheras', 'result_resta', 'reservacion'));
+    return view('Reservaciones y rentas.Agregar_Editar_Reservaciones.editarreserva_nc_casa',compact('Id_reservacion', 'Id_lugares_reservados', 'Id_locacion', 'totalcocheras', 'result_resta', 'reservacion', 'locacion'));
 }
 
 public function UpdateReservaCasaNC(Request $request, Reservacion $reservacion, Lugares_reservados $lugar_reservado, $Id_locacion){
@@ -5493,27 +5621,7 @@ if($request->get('idcliente') == $cliente_reserva[0]->Id_cliente){
     $cliente->Lugar_motivo_visita = $request->lugar_v;
     $cliente->save();
 
-//array que guarda la foto del cliente
-    $this->validate($request, array(
-    'img2' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
-    ));
-    $image = $request->file('img2');
-  
-    if($image != ''){
-        $nombreImagen = $cliente->Nombre.'_'.$cliente->Apellido_paterno.'_'.$cliente->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
-        $base64Img = $request->nuevaImagen2;
-        $base_to_php = explode(',',$base64Img);
-        $data = base64_decode($base_to_php[1]);
-//aviso         
-//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
-        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
-        $guardarImagen = file_put_contents($filepath, $data);
-  
-        if ($guardarImagen !== false) {
-            DB::table('cliente')
-            ->where('Id_cliente', '=', $cliente->Id_cliente)
-            ->update(['Foto_cliente' => $nombreImagen]);
-    }}
+
     
 
 //array que guarda la foto de la ine de frente del cliente
@@ -5670,27 +5778,7 @@ if($request->get('idcliente') == $cliente_reserva[0]->Id_cliente){
     $cambio_cliente->Lugar_motivo_visita = $request->lugar_v;
     $cambio_cliente->save();
 
-//array que guarda la foto del cliente
-    $this->validate($request, array(
-    'img2' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
-    ));
-    $image = $request->file('img2');
-  
-    if($image != ''){
-        $nombreImagen = $cambio_cliente->Nombre.'_'.$cambio_cliente->Apellido_paterno.'_'.$cambio_cliente->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
-        $base64Img = $request->nuevaImagen2;
-        $base_to_php = explode(',',$base64Img);
-        $data = base64_decode($base_to_php[1]);
-//aviso         
-//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
-        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
-        $guardarImagen = file_put_contents($filepath, $data);
-  
-        if ($guardarImagen !== false) {
-            DB::table('cliente')
-            ->where('Id_cliente', '=', $cambio_cliente->Id_cliente)
-            ->update(['Foto_cliente' => $nombreImagen]);
-    }}
+
     
 
 //array que guarda la foto de la ine de frente del cliente
@@ -5934,27 +6022,6 @@ if($request->get('idcliente') == ""){
     ->get();
 
 
-//array que guarda la foto del cliente
-    $this->validate($request, array(
-    'img2' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
-    ));
-    $image = $request->file('img2');
-
-    if($image != ''){
-        $nombreImagen = $nombreclient[0]->Nombre.'_'.$nombreclient[0]->Apellido_paterno.'_'.$nombreclient[0]->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
-        $base64Img = $request->nuevaImagen2;
-        $base_to_php = explode(',',$base64Img);
-        $data = base64_decode($base_to_php[1]);
-//aviso         
-//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
-    $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
-    $guardarImagen = file_put_contents($filepath, $data);
-
-    if ($guardarImagen !== false) {
-        DB::table('cliente')
-        ->where('Id_cliente', '=', $nombreclient[0]->Id_cliente)
-        ->update(['Foto_cliente' => $nombreImagen]);
-}}
 
 
 //array que guarda la foto de la ine de frente del cliente
@@ -6118,27 +6185,6 @@ if($num_personas_reserva[0]->Registro_personas == $total_personas[0]->Total_de_p
     $cambio_cliente->Lugar_motivo_visita = $request->lugar_v;
     $cambio_cliente->save();
 
-//array que guarda la foto del cliente
-    $this->validate($request, array(
-    'img2' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
-    ));
-    $image = $request->file('img2');
-  
-    if($image != ''){
-        $nombreImagen = $cambio_cliente->Nombre.'_'.$cambio_cliente->Apellido_paterno.'_'.$cambio_cliente->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
-        $base64Img = $request->nuevaImagen2;
-        $base_to_php = explode(',',$base64Img);
-        $data = base64_decode($base_to_php[1]);
-//aviso         
-//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
-        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
-        $guardarImagen = file_put_contents($filepath, $data);
-  
-        if ($guardarImagen !== false) {
-            DB::table('cliente')
-            ->where('Id_cliente', '=', $cambio_cliente->Id_cliente)
-            ->update(['Foto_cliente' => $nombreImagen]);
-    }}
     
 
 //array que guarda la foto de la ine de frente del cliente
@@ -7028,28 +7074,6 @@ if($request->get('idcliente') == ""){
     ->get();
 
 
-//array que guarda la foto del cliente
-    $this->validate($request, array(
-    'img2' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
-    ));
-    $image = $request->file('img2');
-
-    if($image != ''){
-        $nombreImagen = $nombreclient[0]->Nombre.'_'.$nombreclient[0]->Apellido_paterno.'_'.$nombreclient[0]->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
-        $base64Img = $request->nuevaImagen2;
-        $base_to_php = explode(',',$base64Img);
-        $data = base64_decode($base_to_php[1]);
-//aviso         
-//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
-    $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
-    $guardarImagen = file_put_contents($filepath, $data);
-
-    if ($guardarImagen !== false) {
-        DB::table('cliente')
-        ->where('Id_cliente', '=', $nombreclient[0]->Id_cliente)
-        ->update(['Foto_cliente' => $nombreImagen]);
-}}
-
 
 //array que guarda la foto de la ine de frente del cliente
     $this->validate($request, array(
@@ -7128,27 +7152,7 @@ return view('Reservaciones y rentas.Rentar.Local.introalojamiento', compact('Id_
     $cambio_cliente->Lugar_motivo_visita = $request->lugar_v;
     $cambio_cliente->save();
 
-//array que guarda la foto del cliente
-    $this->validate($request, array(
-    'img2' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
-    ));
-    $image = $request->file('img2');
-  
-    if($image != ''){
-        $nombreImagen = $cambio_cliente->Nombre.'_'.$cambio_cliente->Apellido_paterno.'_'.$cambio_cliente->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
-        $base64Img = $request->nuevaImagen2;
-        $base_to_php = explode(',',$base64Img);
-        $data = base64_decode($base_to_php[1]);
-//aviso         
-//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
-        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
-        $guardarImagen = file_put_contents($filepath, $data);
-  
-        if ($guardarImagen !== false) {
-            DB::table('cliente')
-            ->where('Id_cliente', '=', $cambio_cliente->Id_cliente)
-            ->update(['Foto_cliente' => $nombreImagen]);
-    }}
+
     
 
 //array que guarda la foto de la ine de frente del cliente

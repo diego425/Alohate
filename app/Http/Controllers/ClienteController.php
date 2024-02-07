@@ -38,19 +38,325 @@ use GuzzleHttp\Client;
 
 class ClienteController extends Controller
 {
-public function ViewClientes(){
+public function ViewClientes(Request $request){
+
+    $num_cel =trim($request->get('no_cel'));
 
     $clientes = DB::table('cliente')
-    ->select('Id_cliente','Id_colaborador','Nombre',
+    ->select(
+    'Id_cliente','Id_colaborador','Nombre',
     'Apellido_paterno','Apellido_materno','Email', 
     'Numero_celular','Ciudad','Estado',
     'Pais','Ref1_nombre','Ref2_nombre',
     'Ref1_celular','Ref2_celular','Ref1_parentesco',
     'Ref2_parentesco','Motivo_visita', 'Lugar_motivo_visita', 
-    'Foto_cliente', 'INE_frente', 'INE_reverso')
+    'Foto_cliente', 'INE_frente', 'INE_reverso', 'Estatus_cliente')
+    ->where('Numero_celular','LIKE','%'.$num_cel.'%')
     ->paginate(4);
-
 
     return view('Clientes.clientes', compact('clientes'));
 }
+
+
+public function DetalleCliente($Id_cliente){
+
+    $cliente = DB::table('cliente')
+    ->select(
+    'Id_cliente','Id_colaborador','Nombre',
+    'Apellido_paterno','Apellido_materno','Email', 
+    'Numero_celular','Ciudad','Estado',
+    'Pais','Ref1_nombre','Ref2_nombre',
+    'Ref1_celular','Ref2_celular','Ref1_parentesco',
+    'Ref2_parentesco','Motivo_visita', 'Lugar_motivo_visita', 
+    'Foto_cliente', 'INE_frente', 'INE_reverso', 'Estatus_cliente')
+    ->where('Id_cliente', '=', $Id_cliente)
+    ->get();
+    
+    return view('Clientes.detalles_cliente', compact('cliente'));
+
 }
+
+public function ViewDesactCliente($Id_cliente){
+
+    $cliente = DB::table('cliente')
+    ->select(
+    'Id_cliente','Id_colaborador','Nombre',
+    'Apellido_paterno','Apellido_materno','Email', 
+    'Numero_celular','Ciudad','Estado',
+    'Pais','Ref1_nombre','Ref2_nombre',
+    'Ref1_celular','Ref2_celular','Ref1_parentesco',
+    'Ref2_parentesco','Motivo_visita', 'Lugar_motivo_visita', 
+    'Foto_cliente', 'INE_frente', 'INE_reverso', 'Estatus_cliente')
+    ->where('Id_cliente', '=', $Id_cliente)
+    ->get();
+    
+    return view('Clientes.desactivar_cliente', compact('cliente'));
+}
+
+public function DesactivarCliente($Id_cliente){
+try{
+
+    $verificarcliente = DB::table('lugares_reservados')
+    ->select('Id_lugares_reservados', 'Id_reservacion','Id_habitacion',
+    'Id_locacion','Id_local', 'Id_departamento','Id_cliente', 'Id_estado_ocupacion')
+    ->where('Id_cliente', '=', $Id_cliente)
+    ->get();
+   
+    if(count($verificarcliente) == 0){
+
+        $affected = DB::table('cliente')
+        ->where('Id_cliente', '=', $Id_cliente)
+        ->update(['Estatus_cliente' => "Bloqueado"]);
+
+        UsuariosController::historial_log(Cookie::get('Id_colaborador'),"Bloqueo a un cliente");
+        
+        Alert::success('Exito', 'Se ha bloqueado al cliente con exito');
+        return redirect()->back();
+
+        
+
+
+    }else{
+     
+        Alert::warning('Cuidado', 'Este cliente se encuentra hospedado. no puedes bloquearlo');
+        return redirect()->back();
+
+    }
+
+}catch(Exception $ex){
+    Alert::error('Error', 'No se pudo bloquear este cliente');
+    return redirect()->back();
+}
+}
+
+
+public function ActivarCliente($Id_cliente){
+try{
+    $affected = DB::table('cliente')
+    ->where('Id_cliente', '=', $Id_cliente)
+    ->update(['Estatus_cliente' => "Activado"]);
+
+    UsuariosController::historial_log(Cookie::get('Id_colaborador'),"Desbloqueo a un cliente");
+
+    Alert::success('Exito', 'Se ha activado al cliente con exito');
+    return redirect()->back();
+}catch(Exception $ex){
+    Alert::error('Error', 'No se pudo activar este cliente');
+    return redirect()->back();
+}
+}
+
+public function ViewEditCliente($Id_cliente){
+
+// $habitaciones = Habitacion::findOrFail($Id_habitacion);
+
+    $cliente = DB::table('cliente')
+    ->select(
+    'Id_cliente','Id_colaborador','Nombre',
+    'Apellido_paterno','Apellido_materno','Email', 
+    'Numero_celular','Ciudad','Estado',
+    'Pais','Ref1_nombre','Ref2_nombre',
+    'Ref1_celular','Ref2_celular','Ref1_parentesco',
+    'Ref2_parentesco','Motivo_visita', 'Lugar_motivo_visita', 
+    'Foto_cliente', 'INE_frente', 'INE_reverso', 'Estatus_cliente')
+    ->where('Id_cliente', '=', $Id_cliente)
+    ->get();
+
+    return view('Clientes.editar_cliente', compact('cliente'));
+
+}
+
+public function UpdateCliente(Request $request, Cliente $cliente){
+try{
+    //actualizacion de los datos del cliente
+    $cliente->Nombre = $request->nombre_c;
+    $cliente->Apellido_paterno = $request->apellido_pat;
+    $cliente->Apellido_materno = $request->apellido_mat;
+    $cliente->Numero_celular = $request->celular_c;
+    $cliente->Email = $request->email_c;
+    $cliente->Ciudad = $request->ciudad;
+    $cliente->Estado = $request->estado;
+    $cliente->Pais = $request->pais;
+    $cliente->Ref1_nombre = $request->nombre_p_e1;
+    $cliente->Ref2_nombre = $request->nombre_p_e2;
+    $cliente->Ref1_celular = $request->numero_p_e1;
+    $cliente->Ref2_celular = $request->numero_p_e2;
+    $cliente->Ref1_parentesco = $request->parentesco1;
+    $cliente->Ref2_parentesco = $request->parentesco2;
+    $cliente->Motivo_visita = $request->motivo_v;
+    $cliente->Lugar_motivo_visita = $request->lugar_v;
+    $cliente->save();
+
+
+//array que guarda la foto de la ine de frente del cliente
+    $this->validate($request, array(
+    'img3' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img3');
+  
+    if($image != ''){
+        $nombreImagen = 'INE'.'_'.$cliente->Apellido_paterno.'_'.$cliente->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen3;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso         
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+        if ($guardarImagen !== false) {
+            DB::table('cliente')
+            ->where('Id_cliente', '=', $cliente->Id_cliente)
+            ->update(['INE_frente' => $nombreImagen]);
+    }}
+
+
+    //array que guarda la foto de la ine de frente del cliente
+    $this->validate($request, array(
+    'img4' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+    ));
+    $image = $request->file('img4');
+  
+    if($image != ''){
+        $nombreImagen = 'INE'.'_'.$cliente->Apellido_paterno.'_'.$cliente->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
+        $base64Img = $request->nuevaImagen4;
+        $base_to_php = explode(',',$base64Img);
+        $data = base64_decode($base_to_php[1]);
+//aviso         
+//en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+        $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
+        $guardarImagen = file_put_contents($filepath, $data);
+  
+        if ($guardarImagen !== false) {
+            DB::table('cliente')
+            ->where('Id_cliente', '=', $cliente->Id_cliente)
+            ->update(['INE_reverso' => $nombreImagen]);
+
+    }}
+
+    UsuariosController::historial_log(Cookie::get('Id_colaborador'),"Edito un registro de un cliente");
+
+    Alert::success('Exito', 'Se ha actualizado al cliente con exito');
+    return redirect()->back();
+
+}catch(Exception $ex){
+    Alert::error('Error', 'No se pudo editar el cliente, verifica que todo este en orden');
+    return redirect()->back();
+}
+}
+
+
+public function ViewNuevoCliente(){
+    return view('Clientes.agregar_cliente');
+}
+
+public function ClienteStore(Request $request){
+
+    $request->validate([
+        'nombre_c' => 'required',
+        'apellido_pat' => 'required',
+        'apellido_mat' => 'required',
+        'email_c'=> 'required',
+        'celular_c'=> 'required',
+        'ciudad'=> 'required',
+        'estado'=> 'required',
+        'pais'=> 'required',
+        'nombre_p_e1'=> 'required',
+        'nombre_p_e2'=> 'required',
+        'numero_p_e1'=> 'required',
+        'numero_p_e2'=> 'required',
+        'parentesco1'=> 'required',
+        'parentesco2'=> 'required',
+        'motivo_v'=> 'required',
+        'lugar_v'=> 'required',
+    ]);
+
+    $agregarcliente = new Cliente();
+    $agregarcliente -> Nombre = $request->get('nombre_c');
+    $agregarcliente -> Apellido_paterno = $request->get('apellido_pat');
+    $agregarcliente -> Apellido_materno = $request->get('apellido_mat');
+    $agregarcliente -> Email = $request->get('email_c');
+    $agregarcliente -> Numero_celular = $request->get('celular_c');
+    $agregarcliente -> Ciudad = $request->get('ciudad');
+    $agregarcliente -> Estado = $request->get('estado');
+    $agregarcliente -> Pais = $request->get('pais');
+    $agregarcliente -> Ref1_nombre = $request->get('nombre_p_e1');
+    $agregarcliente -> Ref2_nombre = $request->get('nombre_p_e2');
+    $agregarcliente -> Ref1_celular = $request->get('numero_p_e1');
+    $agregarcliente -> Ref2_celular = $request->get('numero_p_e2');
+    $agregarcliente -> Ref1_parentesco = $request->get('parentesco1');
+    $agregarcliente -> Ref2_parentesco = $request->get('parentesco2');
+    $agregarcliente -> Motivo_visita = $request->get('motivo_v');
+    $agregarcliente -> Lugar_motivo_visita = $request->get('lugar_v');
+    $agregarcliente -> Estatus_cliente = "Activado";
+    $agregarcliente->save();
+
+    $idclient =DB::getPdo()->lastInsertId();
+
+    $cliente = DB::table('cliente')
+    ->select(
+    'Id_cliente','Id_colaborador','Nombre',
+    'Apellido_paterno','Apellido_materno','Email', 
+    'Numero_celular','Ciudad','Estado',
+    'Pais','Ref1_nombre','Ref2_nombre',
+    'Ref1_celular','Ref2_celular','Ref1_parentesco',
+    'Ref2_parentesco','Motivo_visita', 'Lugar_motivo_visita', 
+    'Foto_cliente', 'INE_frente', 'INE_reverso', 'Estatus_cliente')
+    ->where('Id_cliente', '=', $idclient)
+    ->get();
+
+    //array que guarda la foto de la ine de frente del cliente
+    $this->validate($request, array(
+        'img3' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+        ));
+        $image = $request->file('img3');
+      
+        if($image != ''){
+            $nombreImagen = 'INE'.'_'.$cliente[0]->Apellido_paterno.'_'.$cliente[0]->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
+            $base64Img = $request->nuevaImagen3;
+            $base_to_php = explode(',',$base64Img);
+            $data = base64_decode($base_to_php[1]);
+    //aviso         
+    //en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+            $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
+            $guardarImagen = file_put_contents($filepath, $data);
+      
+            if ($guardarImagen !== false) {
+                DB::table('cliente')
+                ->where('Id_cliente', '=', $cliente[0]->Id_cliente)
+                ->update(['INE_frente' => $nombreImagen]);
+        }}
+    
+    
+        //array que guarda la foto de la ine de frente del cliente
+        $this->validate($request, array(
+        'img4' => 'image|mimes:jpeg,png,jpg,gif|max:20480',
+        ));
+        $image = $request->file('img4');
+      
+        if($image != ''){
+            $nombreImagen = 'INE'.'_'.$cliente[0]->Apellido_paterno.'_'.$cliente[0]->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
+            $base64Img = $request->nuevaImagen4;
+            $base_to_php = explode(',',$base64Img);
+            $data = base64_decode($base_to_php[1]);
+    //aviso         
+    //en esta parte tendre que cambiarlo al momento de subirlo al host porque la ruta ya no seria local "intentar con uploads/locacion/"           
+            $filepath = 'C:/xampp/htdocs/alohate/public/uploads/clientes/'.$nombreImagen;
+            $guardarImagen = file_put_contents($filepath, $data);
+      
+            if ($guardarImagen !== false) {
+                DB::table('cliente')
+                ->where('Id_cliente', '=', $cliente[0]->Id_cliente)
+                ->update(['INE_reverso' => $nombreImagen]);
+    
+        }}
+
+        UsuariosController::historial_log(Cookie::get('Id_colaborador'),"Registro un nuevo cliente");
+
+        Alert::success('Exito', 'Se agrego al cliente con exito');
+        return redirect()->back();
+
+}
+
+}
+

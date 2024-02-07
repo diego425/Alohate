@@ -238,12 +238,10 @@
                   
                                           @if($departamento->Nombre_estado == "Reservada")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                          <a href="" class="btn btn-danger">Terminar</a>
                                           @endif
 
                                           @if($departamento->Nombre_estado == "Pago por confirmar")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                          <a href="" class="btn btn-danger">Terminar</a>
                                           @endif
                   
                                           @if($departamento->Nombre_estado == "Desactivada")
@@ -418,12 +416,10 @@
                   
                                           @if($departamento->Nombre_estado == "Reservada")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                          <a href="" class="btn btn-danger">Terminar</a>
                                           @endif
 
                                           @if($departamento->Nombre_estado == "Pago por confirmar")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                          <a href="" class="btn btn-danger">Terminar</a>
                                           @endif
                   
                                           @if($departamento->Nombre_estado == "Desactivada")
@@ -599,12 +595,10 @@
                   
                                           @if($departamento->Nombre_estado == "Reservada")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                          <a href="" class="btn btn-danger">Terminar</a>
                                           @endif
 
                                           @if($departamento->Nombre_estado == "Pago por confirmar")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                          <a href="" class="btn btn-danger">Terminar</a>
                                           @endif
                   
                                           @if($departamento->Nombre_estado == "Desactivada")
@@ -778,12 +772,10 @@
                   
                                           @if($departamento->Nombre_estado == "Reservada")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                          <a href="" class="btn btn-danger">Terminar</a>
                                           @endif
 
                                           @if($departamento->Nombre_estado == "Pago por confirmar")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                          <a href="" class="btn btn-danger">Terminar</a>
                                           @endif
                   
                                           @if($departamento->Nombre_estado == "Desactivada")
@@ -958,12 +950,10 @@
                   
                                           @if($departamento->Nombre_estado == "Reservada")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                          <a href="" class="btn btn-danger">Terminar</a>
                                           @endif
 
                                           @if($departamento->Nombre_estado == "Pago por confirmar")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                          <a href="" class="btn btn-danger">Terminar</a>
                                           @endif
                   
                                           @if($departamento->Nombre_estado == "Desactivada")
@@ -1137,12 +1127,10 @@
 
                                           @if($departamento->Nombre_estado == "Pago por confirmar")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                          <a href="" class="btn btn-danger">Terminar</a>
                                           @endif
                   
                                           @if($departamento->Nombre_estado == "Reservada")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                          <a href="" class="btn btn-danger">Terminar</a>
                                           @endif
                   
                                           @if($departamento->Nombre_estado == "Desactivada")
@@ -1318,12 +1306,10 @@
 
                                           @if($departamento->Nombre_estado == "Pago por confirmar")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                          <a href="" class="btn btn-danger">Terminar</a>
                                           @endif
                   
                                           @if($departamento->Nombre_estado == "Reservada")
                                           <a href="{{route('detallesdepalibre', [$locacion[0]->Id_locacion, $departamento->Id_departamento ])}}" class="btn btn-info"><i class="ri-information-line"></i></a>
-                                          <a href="" class="btn btn-danger">Terminar</a>
                                           @endif
                   
                                           @if($departamento->Nombre_estado == "Desactivada")

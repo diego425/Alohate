@@ -244,7 +244,8 @@ Route::get('view_rentar_hab/reserva/{Id_reservacion}/hab/{Id_habitacion}/lugar/{
 Route::post('store_rentar_hab/reserva/{Id_reservacion}/hab/{Id_habitacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@StoreRentarHab')->name('storerentarhab');
 
 
-
+//rutas para terminar la renta de una hab
+Route::get('view_terminar_renta_hab/reserva/{Id_reservacion}/hab/{Id_habitacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@ViewTerminarRentaHab')->name('viewterminarrentahab');
 
 
 
@@ -305,6 +306,8 @@ Route::get('view_editar_reservadepnc/reserva/{Id_reservacion}/loc/{Id_locacion}/
 //ruta que edita el registro de una reservacion de un depa
 Route::put('update_reservadepnc/{reservacion}/{lugar_reservado}/{Id_locacion}/{Id_departamento}', 'ReservacionRentasController@UpdateReservaDepNC')->name('update_reservadepnc');
 
+
+
 //rutas de renta para un depa
 //ruta para la busqueda automatica de los clientes
 Route::post('view_rentar_depa_c1/reserva/{Id_reservacion}/dep/{Id_departamento}/lugar/{Id_lugares_reservados}/myurl', 'ReservacionRentasController@ShowClientesEditDep');
@@ -325,6 +328,8 @@ Route::get('view_rentar_depa/reserva/{Id_reservacion}/dep/{Id_departamento}/luga
 //ruta que guarda el registro del form de los datos del lugar que es reglamento, contrato y fiador de un depa
 Route::post('store_rentar_depa/reserva/{Id_reservacion}/dep/{Id_departamento}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@StoreRentarDep')->name('storerentardep');
 
+//ruta que actualiza la fecha de salida de un huesped
+Route::put('updatesalida_dep/reserva/{Id_reservacion}/hab/{Id_departamento}', 'ReservacionRentasController@UpdateFechaSalidaD')->name('updatesalidadep');
 
 
 
@@ -385,6 +390,23 @@ Route::post('store_reservaloc/loc/{Id_local}/client/{nombreclient}', 'Reservacio
 //rutas para clientes
 //ruta boton que muestra la seccion de los clientes
 Route::get('view_clientes', 'ClienteController@ViewClientes')->name('clientes');
+//ruta del boton que muestra los detalles del registro de un cliente
+Route::get('view_detalle_cliente/cliente/{Id_cliente}', 'ClienteController@DetalleCliente')->name('detallecliente');
+//funcion para la vista de desactivar al cliente
+Route::get('view_desactivar_cliente/cliente/{Id_cliente}', 'ClienteController@ViewDesactCliente')->name('view_desact_cliente');
+//funcion que desactiva al cliente 
+Route::put('desactivar_cliente/cliente/{Id_cliente}', 'ClienteController@DesactivarCliente')->name('desactivar_cliente');
+//function que activa al cliente
+Route::put('activar_cliente/cliente/{Id_cliente}', 'ClienteController@ActivarCliente')->name('activar_cliente');
+//funcion para la vista de editar un cliente
+Route::get('view_editar_cliente/cliente/{Id_cliente}', 'ClienteController@ViewEditCliente')->name('editarcliente');
+//funcion que actualiza el registro de un cliente
+Route::put('update_cliente/client/{cliente}', 'ClienteController@UpdateCliente')->name('update_cliente');
+//ruta para la vista de agregar un nuevo cliente
+Route::get('view_nuevo_cliente', 'ClienteController@ViewNuevoCliente')->name('viewnuevocliente');
+//ruta para guardar el registro de un nuevo cliente
+Route::post('store_cliente', 'ClienteController@ClienteStore')->name('storecliente');
+
 
 
 
