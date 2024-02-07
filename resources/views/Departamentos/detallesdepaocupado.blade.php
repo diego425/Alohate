@@ -71,7 +71,7 @@
                 <p><h5>Locacion A La Que Pertenece:
                 </h5>
                <div class="gris">
-                <h6>Locacion {{$locacion[0]->Nombre_locacion}}</h6>
+                <h6>{{$locacion[0]->Nombre_locacion}}</h6>
                </div>
              </div>
  
@@ -509,19 +509,7 @@
                              <p><h6>{{$lugar_cliente_reservado[0]->Lugar_motivo_visita}}</h6></p>
                          </div>
                  </div>
-                 <div class="centrar_texto">
-                   <p><h5>Foto Del Cliente</h5></p>
-                       <div class="gris">
-                           <p><h6>{{$lugar_cliente_reservado[0]->Foto_cliente}}</h6></p>
-                       </div>
-                 </div>
-                 <div class="centrar_texto">
-                   <p><h5>Fotos De La INE</h5></p>
-                       <div class="gris">
-                           <p><h6>{{$lugar_cliente_reservado[0]->INE_frente}}</h6></p>
-                           <p><h6>{{$lugar_cliente_reservado[0]->INE_reverso}}</h6></p>
-                       </div>
-               </div>
+
           </div>
     </div>
  </div>
@@ -561,8 +549,8 @@
                      </div>
              </div>
              <div class="centrar_texto">
-                 <button class="btn btn-primary">Mensaje</button>
-                 <button class="btn btn-secondary">Llamar</button>
+                 <a href="https://wa.me/{{$lugar_cliente_reservado[0]->Ref1_celular}}" target="_blank" class="btn btn-success">Enviar Whatsapp <i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                 <a href="tel:{{$lugar_cliente_reservado[0]->Ref1_celular}}" class="btn btn-secondary" onclick="return(navigator.userAgent.match(/ Android | iPhone | movile /i)) != null;">Llamar</a>
              </div>
  
  <!--=============== Persona 2 ===============-->
@@ -586,8 +574,8 @@
                      </div>
              </div>
              <div class="centrar_texto">
-                 <button class="btn btn-primary"> Mensaje</button>
-                 <button class="btn btn-secondary">Llamar</button>
+                <a href="https://wa.me/{{$lugar_cliente_reservado[0]->Ref2_celular}}" target="_blank" class="btn btn-success">Enviar Whatsapp <i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                 <a href="tel:{{$lugar_cliente_reservado[0]->Ref2_celular}}" class="btn btn-secondary" onclick="return(navigator.userAgent.match(/ Android | iPhone | movile /i)) != null;">Llamar</a>
              </div>
           </div>
      </div>
@@ -677,8 +665,8 @@
                     </div>
             </div>
             <div class="centrar_texto">
-                <button class="btn btn-primary">Mensaje</button>
-                <button class="btn btn-secondary">Llamar</button>
+                <a href="https://wa.me/{{$lugar_cliente_reservado[0]->Ref1_celular}}" target="_blank" class="btn btn-success">Enviar Whatsapp <i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                <a href="tel:{{$lugar_cliente_reservado[0]->Ref1_celular}}" class="btn btn-secondary" onclick="return(navigator.userAgent.match(/ Android | iPhone | movile /i)) != null;">Llamar</a>
             </div>
 
 <!--=============== Persona 2 ===============-->
@@ -702,8 +690,8 @@
                     </div>
             </div>
             <div class="centrar_texto">
-                <button class="btn btn-primary"> Mensaje</button>
-                <button class="btn btn-secondary">Llamar</button>
+                <a href="https://wa.me/{{$lugar_cliente_reservado[0]->Ref2_celular}}" target="_blank" class="btn btn-success">Enviar Whatsapp <i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                <a href="tel:{{$lugar_cliente_reservado[0]->Ref2_celular}}" class="btn btn-secondary" onclick="return(navigator.userAgent.match(/ Android | iPhone | movile /i)) != null;">Llamar</a>
             </div>
          </div>
     </div>
@@ -938,11 +926,11 @@
                 <p><h6>Si el cliente desea quedarse mas dias, puedes modificar el tiempo de estancia aqui</h6></p>
                   <div class="detalles_tiempoest">
                      <p> <h6>¿Quieres Modificar El Tiempo De Estancia?</h6> </p>
-                     <input type="checkbox" class="tiempo_estancia" id="extender_t"  onclick="javascript:activar_ext_t('PC');">
+                     <input type="checkbox" class="tiempo_estancia" id="extender_t"  onclick="javascript:activar_ext_t('PC');" style="width: 20px; height:20px;">
                   </div>
                  <br>
                   <div id="ext_t">
-                        <form action="{{route('updatesalidadep',[$detallereserva[0]->Id_reservacion, $habitaciones[0]->Id_habitacion])}}" class="form" method="POST" enctype="multipart/form-data">
+                        <form action="{{route('updatesalidadep',[$detallereserva[0]->Id_reservacion, $departamentos[0]->Id_departamento])}}" class="form" method="POST" enctype="multipart/form-data">
                             @method('PUT')
                             @csrf
                               <p><h6>Nueva Fecha De Salida</h6></p>
@@ -960,6 +948,9 @@
  
 
  <!--=============== DATOS DEL CONTRATO ===============-->
+@if($contratofiles[0]->Tipo_contrato == "")
+
+@else
 <div class="seccion_padre_b">
     <div class="seccion_hijo_t"> 
             <div class="centrar_texto">
@@ -972,14 +963,38 @@
             </div>
                 <p>
                   <div class="detalle_contrato" id="detalle_contrato">
-                   <div class="gris">
-                      <h6>...</h6>
-                   </div>
+                   
+                    <div class="centrar_texto">
+                        <p><h5>Datos Del Contrato</h5></p>
+                     </div>
+                    <div class="gris">
+                        <div class="centrar_texto">
+                            <p><h6>Fechas</h6></p>
+                            <p>De Inicio: {{$contratofiles[0]->Fecha_inicio}}</p>
+                            <p>De Termino: {{$contratofiles[0]->Fecha_termino}}</p>
+                            
+                            <p><h6>Tipo De Contrato</h6></p>
+                            <p>{{$contratofiles[0]->Tipo_contrato}}</p>
+                        </div>
+                    
+                    <!--=============== FOTO REGLAMENTO===============-->
+                    <div class="centrar_texto">
+                        <p><h5>Foto Del Contrato</h5></p>
+                     </div>
+                    <div class="seccion_padre_b">
+                        <div class="seccion_interno_2">
+                            <div id="contenedor" class="rounded mx-auto d-block">
+                                <img class="imagen" src="{{asset('uploads/contratos/').'/'.$contratofiles[0]->Foto_contrato  }}" >
+                            </div>
+                        </div>
+                    </div>
+                    </div>
                   </div>
                 </p>
     </div>
  </div>
  
+@endif
 
  <!--=============== CARRUSEL DE FOTOS===============-->
 <div class="seccion_padre_b">
@@ -1031,8 +1046,8 @@
                <p><h5>Botones De Accion</h5></p>
                 <p>
                   <div class="gris">
-                     <button class="btn btn-success">Enviar Whatsapp <i class="fa fa-whatsapp" aria-hidden="true"></i></button>
-                     <button class="btn btn-secondary">Llamar</button>
+                     <a href="https://wa.me/{{$lugar_cliente_reservado[0]->Numero_celular}}" target="_blank" class="btn btn-success">Enviar Whatsapp <i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                     <a href="tel:{{$lugar_cliente_reservado[0]->Numero_celular}}" class="btn btn-secondary" onclick="return(navigator.userAgent.match(/ Android | iPhone | movile /i)) != null;">Llamar</a>
                      <button class="btn btn-primary">Registro De Pago</button>
                      <button class="btn btn-danger">Generar Contrato</button>
                      <button class="btn btn-info">Imprimir Contrato</button>

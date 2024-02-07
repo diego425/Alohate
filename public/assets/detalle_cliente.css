@@ -1,0 +1,476 @@
+*{
+    font-family: Montserrat, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  
+/* buscador */
+    .seccion_padre_b{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+    }
+  
+    .seccion_interno_b{
+      width: 50%;
+        margin-top: 6.5px;
+        align-items: center;
+    }
+    .formulario_buscador{
+      text-align: center;
+    }
+/* seccion de la tabla ext*/
+    .externo_padre_l{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 10px;
+    }
+    
+    .externo_l{ 
+      width: 100%;
+        margin-top: 6.5px;
+    }
+  
+    .titulos_buscador{
+      margin: 10px;
+    }
+  
+/* seccion de la tabla int*/
+    .interno_padre_l{
+      justify-content: center;
+      align-items: center;
+     
+    }
+  
+    .interno_l{ 
+      width: 100%;
+      align-items: center;
+    }
+  
+    .centrar_texto{
+      text-align: center;
+      align-items: center;
+    } 
+  
+    .gris{
+      background-color: rgb(240, 240, 240);
+    }
+    .btn{
+      margin-left: 1px;
+      margin-right: 1px;
+      margin-top: 2px;
+    }
+  
+    .listado{
+      font-size: 18px;
+      float: left;
+      margin: 4px;
+    }
+  
+/*estilos para los modales*/
+  .modal-header{
+    background-color: rgb(2, 173, 252);
+    border: 0;
+    
+    }    
+    .tamaño_lg{
+        height: 90%;
+    }
+    
+    .tamaño_sm{
+        height: 50%;
+    }
+    
+    .modal-title{
+        color: white;
+    }
+    
+    .modal-lg {
+        max-width: 90%;
+        width: 70%;
+    }
+        
+    .modal-sm {
+        max-width: 70%;
+        width: auto;
+    }
+    
+/*contacto de emergencia*/
+    #despliegue_emergencia{
+        cursor: pointer;
+        transition: all 2s;
+      }
+      #ocultar_emergencia{
+        cursor: pointer;
+        display: none;
+        transition: all 2s;
+      }
+      #detalle_emergencia{
+        display: none;
+        transition: all 2s;
+      }
+  
+/*fotos*/
+    #despliegue_fotos{
+        cursor: pointer;
+        transition: all 2s;
+      }
+      #ocultar_fotos{
+        cursor: pointer;
+        display: none;
+        transition: all 2s;
+      }
+      #detalle_fotos{
+        display: none;
+        transition: all 2s;
+      }
+  
+  /*titulo del carrusel*/
+  .content_titulo{
+    text-align: center;
+    color: rgb(0, 0, 0); 
+    margin: 5px;
+    }
+/*carrusel*/
+    #contenedor{
+    text-align: center;
+    }
+/*carrusel*/
+    .imagen{
+    max-width: 60%;
+    align-items: center;
+    border-radius: 5px;
+    margin: 10px;
+    }
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  /* For small devices mobiles*/
+  @media screen and (max-width: 1400px) {
+  
+  /*encabezado*/
+  
+  .encabezado {
+    top: -20px;
+    text-align: center;
+    width: 100%;
+    height: 120px;
+    background-size: cover;
+    background-attachment: fixed;
+    position: relative;
+    overflow: hidden;
+    border-radius: 0 0 85% 85% / 30%;
+  }
+  .encabezado .overlay{
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    color: #FFF;
+    text-shadow: 1px 1px 1px #333;
+    background-image: linear-gradient( 135deg, #e4410f 10%, #2c5af0 100%);
+    
+  }
+  
+  h1 {
+    font-family: Montserrat, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 30px;
+    margin-bottom: 30px;
+  }
+  
+  h3, p {
+    font-family: Montserrat, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin-bottom: 30px;
+  }
+  
+  .boton {
+    border: none;
+    outline: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    color: #333;
+    background: #fff;
+    margin-bottom: 50px;
+    box-shadow: 0 3px 20px 0 #0000003b;
+    font-family: Montserrat, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .boton:hover{
+    cursor: pointer;
+  }
+  
+  /* seccion del buscador */
+      .seccion_hijo_b{
+        background-color: rgb(255, 255, 255);
+        width: 80%;
+        border: 1px solid #c0c0c0;
+        border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        }
+  /* seccion de la tabla ext*/
+        .externo_hijo_l{
+          background-color: rgb(255, 255, 255);
+        width: 95%;
+        border: 1px solid #c0c0c0;
+        border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        }
+  
+  /* seccion de la tabla */
+        .table{
+          border: 0px;
+        }
+        .table thead{
+          display: none;
+        }
+        .table tr{
+          margin-bottom: 8px;
+          border-bottom: 4px solid #c0c0c0;
+          display: block;
+        }
+        .table td{
+          display: block;
+          border-bottom: 1px solid #c0c0c0;
+          text-align: right;
+          font-size: 14px;
+        }
+        .table td:last-child{
+          border-bottom: 0px;
+        }
+        .table td::before{
+          content: attr(data-label);
+          font-weight: bold;
+          text-transform: uppercase;
+          float: left;
+        }
+  
+        .centrar{
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        } 
+  
+        .titulos_buscador{
+          margin: 10px;
+        }
+  
+        .paginador{
+          justify-content: end;
+          margin: 7px;
+        }
+  
+  /*divs que muestran los registros de las locs*/
+        .seccion_hijo_t{
+          background-color: rgb(255, 255, 255);
+          width: 90%;
+          border: 1px solid #c0c0c0;
+          border-radius: 5px;
+        }  
+        .seccion_hijo_h{
+          background-color: rgb(255, 255, 255);
+          border-radius: 5px;
+          float: left;
+          margin: 5px;
+        }  
+  /*locaciones*/
+        .despliegue_locacion{
+          cursor: pointer;
+          transition: all 2s;
+        }
+        .ocultar_locacion{
+          cursor: pointer;
+          display: none;
+          transition: all 2s;
+        }
+        .detalle_locacion{
+          display: none;
+          transition: all 2s;
+        }
+        
+  
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  /* For large devices desktop*/
+  @media screen and (min-width: 1401px) {
+  
+  /*encabezado*/
+    
+  .encabezado {
+    top: -20px;
+    text-align: center;
+    width: 100%;
+    height: 130px;
+    background-size: cover;
+    background-attachment: fixed;
+    position: relative;
+    overflow: hidden;
+    border-radius: 0 0 85% 85% / 30%;
+  }
+  .encabezado .overlay{
+    width: 100%;
+    height: 100%;
+    padding: 15px;
+    color: #FFF;
+    text-shadow: 1px 1px 1px #333;
+    background-image: linear-gradient( 135deg, #e4410f 10%, #2c5af0 100%);
+    
+  }
+  
+  h1 {
+    font-family: Montserrat, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 30px;
+    margin-bottom: 30px;
+  }
+  
+  h3, p {
+    font-family: Montserrat, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    margin-bottom: 30px;
+  }
+  
+  .boton {
+    border: none;
+    outline: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    color: #333;
+    background: #fff;
+    margin-bottom: 50px;
+    box-shadow: 0 3px 20px 0 #0000003b;
+    font-family: Montserrat, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+  .boton:hover{
+    cursor: pointer;
+  }
+  
+  
+  /* seccion del buscador */
+      .seccion_hijo_b{
+        background-color: rgb(255, 255, 255);
+        width: 50%;
+        border: 1px solid #c0c0c0;
+        border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        }
+      
+    .elemento_b{
+      width: 200px;
+    }
+  /* seccion de la tabla ext*/
+    .externo_hijo_l{
+      background-color: rgb(255, 255, 255);
+      width: 70%;
+      border: 1px solid #c0c0c0;
+      border-radius: 5px;
+      display: flex;
+      justify-content: center;
+    }
+  
+  /* seccion de la tabla entera*/
+    .container_tabla{
+      width: 100%;
+      margin: auto;
+    }
+    .table{
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    padding: 0;
+    table-layout: fixed;
+    }
+    
+    .table th, .table td{
+      padding: 8px;
+      text-align: center;
+    
+    }
+    .table thead th{
+      text-transform: uppercase;
+      background-color: #94ddff;
+      font-size: 14.5px;
+    }
+    .table tbody tr:hover{
+      background-color: rgba(0, 0, 0, 0.3);
+    }
+  
+    .centrar{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    } 
+  
+    .paginador{
+      justify-content: end;
+      margin: 7px;
+    }
+  
+  /*titulo del nombre y tipo de renta*/
+    .seccion_hijo_t{
+      background-color: rgb(255, 255, 255);
+      width: 65%;
+      border: 1px solid #c0c0c0;
+      border-radius: 5px;
+    }  
+  
+  /*locaciones*/
+    .despliegue_locacion{
+      cursor: pointer;
+      transition: all 2s;
+    }
+    .ocultar_locacion{
+      cursor: pointer;
+      display: none;
+      transition: all 2s;
+    }
+    .detalle_locacion{
+      display: none;
+      transition: all 2s;
+    }
+    
+  }
+  
+  .externo_l .boton_agregar{
+    display: flex;
+    justify-content: right;
+    align-items: right;
+    margin-right: 5px;
+    padding: 5px;
+  }
+  
+  .titulo_gestion{
+    padding: 5px;
+    margin-left: 5px; 
+  }

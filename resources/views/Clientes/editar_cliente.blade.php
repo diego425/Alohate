@@ -18,7 +18,7 @@
 <!-- titulo central -->        
         <div class="titulo_central">
             <div class="centrar">
-                <label><h2>Renta Del Lugar</h2></label>
+                <label><h2>Editando Cliente</h2></label>
             </div>
         </div>
         <br><br>
@@ -39,65 +39,52 @@
                         </div>
                     </div>
                 </div>
-                    <div class="input-group">
-                        <div class="centrar">
-                            <label><h4><i class="fa-solid fa-magnifying-glass"></i> Autobuscador De Clientes</h4></label>
-                        </div>
-                        <label>Busca Por Numero De Celular</label>
-                        <input type="search" class="form-control" name="mysearch" id="mysearch" placeholder="#">
-                        <ul id="showlist" tabindex="1" class="list-group"></ul>
-                    </div>
-                    <div class="input-group">
-                        <div class="centrar">
-                            <label><h4>-Seleccionaste Al Cliente-</h4></label>
-                        </div>
-                    </div>
 
-<form action="{{route('storerentarlocc2',$renta[0]->Id_local)}}" method="POST" enctype="multipart/form-data">
+<form action="{{route('update_cliente', $cliente[0]->Id_cliente)}}" method="POST" enctype="multipart/form-data">
 @csrf 
+@method('PUT')
 
-<input type="text" style="display: none;" id="idcliente" name="idcliente" value="">
 
 
                 <div class="input-group">
                     <label for="nombre_c">Nombre:</label>
-                    <input type="text" class="form-control"  name="nombre_c" id="nombre_c" placeholder="nombre" value="">
+                    <input type="text" class="form-control"  name="nombre_c" id="nombre_c" placeholder="nombre" value="{{$cliente[0]->Nombre}}">
                 </div>
                 <div class="input-group">
                     <label for="apellido_pat">Apellido Paterno:</label>
-                    <input type="text" class="form-control"  name="apellido_pat" id="apellido_pat" placeholder="apellido" value="">
+                    <input type="text" class="form-control"  name="apellido_pat" id="apellido_pat" placeholder="apellido" value="{{$cliente[0]->Apellido_paterno}}">
                 </div>
                 <div class="input-group">
                     <label for="apellido_mat">Apellido Materno:</label>
-                    <input type="text" class="form-control"  name="apellido_mat" id="apellido_mat" placeholder="apellido" value="">
+                    <input type="text" class="form-control"  name="apellido_mat" id="apellido_mat" placeholder="apellido" value="{{$cliente[0]->Apellido_materno}}">
                 </div>
                 <div class="input-group">
                     <label for="celular">Numero De Celular:</label>
-                    <input type="tel" class="form-control"  name="celular_c" id="celular_c" placeholder="#" value="">
+                    <input type="tel" class="form-control"  name="celular_c" id="celular_c" placeholder="#" value="{{$cliente[0]->Numero_celular}}">
                 </div>
                 <div class="input-group">
                     <label for="email">Email:</label>
-                    <input type="email" class="form-control"  name="email_c" id="email_c" placeholder="@" value="">
+                    <input type="email" class="form-control"  name="email_c" id="email_c" placeholder="@" value="{{$cliente[0]->Email}}">
                 </div>
                 <div class="input-group">
                     <label for="estado">Estado De Proc.:</label>
-                    <input type="text" class="form-control"  name="estado" id="estado" placeholder="estado" value="">
+                    <input type="text" class="form-control"  name="estado" id="estado" placeholder="estado" value="{{$cliente[0]->Estado}}">
                 </div>
                 <div class="input-group">
                     <label for="ciudad">Ciudad De Proc.:</label>
-                    <input type="text" class="form-control"  name="ciudad" id="ciudad" placeholder="ciudad" value="">
+                    <input type="text" class="form-control"  name="ciudad" id="ciudad" placeholder="ciudad" value="{{$cliente[0]->Ciudad}}">
                 </div>
                 <div class="input-group">
                     <label for="pais">Pais De Proc.:</label>
-                    <input type="text" class="form-control"  name="pais" id="pais" placeholder="pais" value="">
+                    <input type="text" class="form-control"  name="pais" id="pais" placeholder="pais" value="{{$cliente[0]->Pais}}">
                 </div>
                 <div class="input-group">
                     <label for="motivo_v">Motivo De La Visita:</label>
-                    <input type="text" class="form-control"  name="motivo_v" id="motivo_v" placeholder="" value="">
+                    <input type="text" class="form-control"  name="motivo_v" id="motivo_v" placeholder="" value="{{$cliente[0]->Motivo_visita}}">
                 </div>
                 <div class="input-group">
                     <label for="lugar_v">Coloca El Nombre De La Institucion/Empresa:</label>
-                    <input type="text" class="form-control"  name="lugar_v" id="lugar_v" placeholder="" value="">
+                    <input type="text" class="form-control"  name="lugar_v" id="lugar_v" placeholder="" value="{{$cliente[0]->Lugar_motivo_visita}}">
                 </div>
                 
                 <div class="btns-group">
@@ -122,7 +109,7 @@
                     <div class="container3">
                         <div class="wrapper3">
                         <div class="image3">
-                            <img src="" alt="" id="colocar_img3">
+                            <img src="{{asset('uploads/clientes/').'/'.$cliente[0]->INE_frente}}" alt="" id="colocar_img3">
                         </div>
                         <div class="content3">
                             <div class="icon3">
@@ -156,7 +143,7 @@
                     <div class="container4">
                         <div class="wrapper4">
                         <div class="image4">
-                            <img src="" alt="" id="colocar_img4">
+                            <img src="{{asset('uploads/clientes/').'/'.$cliente[0]->INE_reverso}}" alt="" id="colocar_img4">
                         </div>
                         <div class="content4">
                             <div class="icon4">
@@ -200,31 +187,31 @@
                 </div>
                 <div class="input-group">
                     <label for="nombre_p_e1">Nombre Completo De La Persona 1:</label>
-                    <input type="text" class="form-control"  name="nombre_p_e1" id="nombre_p_e1" placeholder="nombre y apellidos" value="">
+                    <input type="text" class="form-control"  name="nombre_p_e1" id="nombre_p_e1" placeholder="nombre y apellidos" value="{{$cliente[0]->Ref1_nombre}}">
                 </div>
                 <div class="input-group">
                     <label for="numero_p_e1">Numero De Celular De La Persona 1:</label>
-                    <input type="tel" class="form-control"  name="numero_p_e1" id="numero_p_e1" placeholder="#" value="">
+                    <input type="tel" class="form-control"  name="numero_p_e1" id="numero_p_e1" placeholder="#" value="{{$cliente[0]->Ref1_celular}}">
                 </div>
                 <div class="input-group">
                     <label for="parentesco1">Parentesco De La Persona 1:</label>
-                    <input type="text" class="form-control"  name="parentesco1" id="parentesco1" placeholder="" value="">
+                    <input type="text" class="form-control"  name="parentesco1" id="parentesco1" placeholder="" value="{{$cliente[0]->Ref1_parentesco}}">
                 </div>
                 <div class="input-group">
                     <label for="nombre_p_e2">Nombre Completo De La Persona 2:</label>
-                    <input type="text" class="form-control"  name="nombre_p_e2" id="nombre_p_e2" placeholder="nombre y apellidos" value="">
+                    <input type="text" class="form-control"  name="nombre_p_e2" id="nombre_p_e2" placeholder="nombre y apellidos" value="{{$cliente[0]->Ref2_nombre}}">
                 </div>
                 <div class="input-group">
                     <label for="numero_p_e2">Numero De Celular De La Persona 2:</label>
-                    <input type="tel" class="form-control"  name="numero_p_e2" id="numero_p_e2" placeholder="#" value="">
+                    <input type="tel" class="form-control"  name="numero_p_e2" id="numero_p_e2" placeholder="#" value="{{$cliente[0]->Ref2_celular}}">
                 </div>
                 <div class="input-group">
                     <label for="parentesco2">Parentesco De La Persona 2:</label>
-                    <input type="text" class="form-control"  name="parentesco2" id="parentesco2" placeholder="" value="">
+                    <input type="text" class="form-control"  name="parentesco2" id="parentesco2" placeholder="" value="{{$cliente[0]->Ref2_parentesco}}">
                 </div>
                 <div class="btns-group">
                     <a href="#" class="btn btn-prev">Anterior</a>
-                    <input type="submit" value="Guardar y continuar" class="boton_finalizar" style="width: 170px">
+                    <input type="submit" value="Guardar" class="boton_finalizar" style="width: 170px">
                 </div>
             </div>
         </form>
@@ -236,7 +223,6 @@
     <script src="https://kit.fontawesome.com/110428e727.js" crossorigin="anonymous"></script>
     <script type="text/javascript" src="{{ url('js/Movimiento.js')}}"></script>
     <script type="text/javascript" src="{{ url('js/reservacion.js')}}"></script>
-    <script type="module" src="{{ url('js/buscarnum.js')}}"></script>
 
 <script>
     function seleccionar(Id_cliente,Nombre,Apellido_paterno,Apellido_materno,Numero_celular,Email,Ciudad,Estado,Pais,Ref1_nombre,Ref2_nombre,Ref1_celular,Ref2_celular,Ref1_parentesco,Ref2_parentesco,Motivo_visita,Lugar_motivo_visita){
@@ -264,84 +250,6 @@
 </script>
 <script>
 //funciones js para las fotografias 
-
-//imagen2
-const wrapper2 = document.querySelector(".wrapper2");
-const fileName2 = document.querySelector(".file-name2");
-const defaultBtn2 = document.querySelector("#img2");
-const customBtn2 = document.querySelector("#custom-btn2");
-const cancelBtn2 = document.querySelector("#cancel-btn2 i");
-const img2 = document.querySelector("#colocar_img2");
-const esconder2 = document.querySelector(".content2");
-let regExp2 = /[0-9a-zA-Z\^\&\'\@\{\}\[\]\,\$\=\!\-\#\(\)\.\%\+\~\_ ]+$/;
-function defaultBtnActive2(){
-  defaultBtn2.click();
-}
-defaultBtn2.addEventListener("change", function(){
-  const file = this.files[0];
-  if(file){
-    const reader = new FileReader();
-    reader.onload = function(){
-      const result = reader.result;
-      img2.src = result;
-      wrapper2.classList.add("active2");
-    }
-    cancelBtn2.addEventListener("click", function(){
-      img2.src = "";
-      wrapper2.classList.remove("active2");
-    })
-    reader.readAsDataURL(file);
-
-    esconder2.style.display = 'none';
-  }
-  if(this.value){
-    let valueStore = this.value.match(regExp2);
-    fileName2.textContent = valueStore;
-  }
-});
-
-//funcion para transformar la imagen 2 a base64 y lo manda al textarea 
-
-var imagen = [];
-    
-function revisarImagen2(input, num){
-  console.log(input.files);
-  var id_preview = input.getAttribute("id") + "_preview";
-  if (input.files && input.files[0]) {
-      var reader = new FileReader();
-      reader.onloadend = function (e) {
-          var id_preview_text = "#"+id_preview;
-          var base64image = e.target.result;                    
-          $("body").append("<canvas id='tempCanvas' width='800' height='800' style='display:none'></canvas>");
-          var canvas=document.getElementById("tempCanvas");
-          var ctx=canvas.getContext("2d");
-          var cw=canvas.width;
-          var ch=canvas.height;
-          var maxW=800;
-          var maxH=800;
-          var img = new Image;
-          img.src=this.result;
-          img.onload = function(){
-              var iw=img.width;
-              var ih=img.height;
-              var scale=Math.min((maxW/iw),(maxH/ih));
-              var iwScaled=iw*scale;
-              var ihScaled=ih*scale;
-              canvas.width=iwScaled;
-              canvas.height=ihScaled;
-              ctx.drawImage(img,0,0,iwScaled,ihScaled);
-              base64image = canvas.toDataURL("image/jpeg");                       
-              $(id_preview_text).attr('src', base64image).width(250).height(157);
-              imagen[num] = base64image;
-              $("#tempCanvas").remove();
-              $('#nuevaImagen2').val(base64image);
-              console.log($('#nuevaImagen2').val());
-          }
-      };
-      reader.readAsDataURL(input.files[0]);
-      $('#imagen_preview').show();
-  }}
-
 
 //imagen3
 const wrapper3 = document.querySelector(".wrapper3");
@@ -500,7 +408,6 @@ function revisarImagen4(input, num){
         $('#imagen_preview').show();
     }
 }
-
 </script>
 </html>
 

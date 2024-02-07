@@ -123,10 +123,10 @@
                     <select name="tipo_renta" id="tipo_renta">
                         <option value="-1" disabled selected>Selecciona una opcion</option>
                         <option value="{{$reservacion[0]->Tipo_de_cobro}}" @if($reservacion[0]->Id_departamento ) selected @endif>{{$reservacion[0]->Tipo_de_cobro}}</option>
-                        <option value="Noche">Noche</option>
-                        <option value="Semana">Semana</option>
-                        <option value="Catorcena">Catorcena</option>
-                        <option value="Mes">Mes</option>
+                        <option value="Noche">Noche ${{$departamento[0]->Precio_noche}}</option>
+                        <option value="Semana">Semana ${{$departamento[0]->Precio_semana}}</option>
+                        <option value="Catorcena">Catorcena ${{$departamento[0]->Precio_catorcedias}}</option>
+                        <option value="Mes">Mes ${{$departamento[0]->Precio_mes}}</option>
                     </select>
                 </div>
                 <div class="input-group">

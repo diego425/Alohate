@@ -33,7 +33,8 @@ class Cliente extends Model
     'Lugar_motivo_visita', 
     'Foto_cliente', 
     'INE_frente', 
-    'INE_reverso'
+    'INE_reverso',
+    'Estatus_cliente'
 
     );
 }

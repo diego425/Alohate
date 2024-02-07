@@ -101,37 +101,6 @@
                     <input type="text" class="form-control"  name="lugar_v" id="lugar_v" placeholder="" value="{{$renta[0]->Lugar_motivo_visita}}">
                 </div>
                 
-                <div class="input-group">
-                    <label>Fotografia Del Cliente:</label>
-                    <div class="centrar">
-                    <div class="container2">
-                        <div class="wrapper2">
-                        <div class="image2">
-                            <img src="{{asset('uploads/clientes/').'/'.$renta[0]->Foto_cliente}}" alt="" id="colocar_img2">
-                        </div>
-                        <div class="content2">
-                            <div class="icon2">
-                                <i class="fas fa-cloud-upload-alt"></i>
-                            </div>
-                            <div class="text2">
-                                No hay ningun archivo
-                            </div>
-                        </div>
-                        <div id="cancel-btn2">
-                            <i class="fas fa-times"></i>
-                        </div>
-                        <div class="file-name2">
-                            
-                        </div>
-                        </div>
-                        <a onclick="defaultBtnActive2()" id="custom-btn2">Selecciona un archivo</a>
-                        <input id="img2" name="img2" type="file" hidden onchange="revisarImagen2(this,1)">
-                        <!--input que ayuda a sacar el link de base64 de la img -->
-                        <input type="textarea" name="nuevaImagen2" id="nuevaImagen2" class="cuadrito">
-                        <br>
-                    </div>
-                    </div>
-                </div>
                 <div class="btns-group">
                     <a href="#" class="btn btn-next">Siguiente</a>
                 </div>

@@ -18,7 +18,7 @@
 <!-- titulo central -->        
         <div class="titulo_central">
             <div class="centrar">
-                <label><h2>Renta Del Lugar</h2></label>
+                <label><h2>Nuevo Cliente</h2></label>
             </div>
         </div>
         <br><br>
@@ -39,24 +39,9 @@
                         </div>
                     </div>
                 </div>
-                    <div class="input-group">
-                        <div class="centrar">
-                            <label><h4><i class="fa-solid fa-magnifying-glass"></i> Autobuscador De Clientes</h4></label>
-                        </div>
-                        <label>Busca Por Numero De Celular</label>
-                        <input type="search" class="form-control" name="mysearch" id="mysearch" placeholder="#">
-                        <ul id="showlist" tabindex="1" class="list-group"></ul>
-                    </div>
-                    <div class="input-group">
-                        <div class="centrar">
-                            <label><h4>-Seleccionaste Al Cliente-</h4></label>
-                        </div>
-                    </div>
 
-<form action="{{route('storerentarlocc2',$renta[0]->Id_local)}}" method="POST" enctype="multipart/form-data">
+<form action="" method="POST" enctype="multipart/form-data">
 @csrf 
-
-<input type="text" style="display: none;" id="idcliente" name="idcliente" value="">
 
 
                 <div class="input-group">
@@ -264,84 +249,6 @@
 </script>
 <script>
 //funciones js para las fotografias 
-
-//imagen2
-const wrapper2 = document.querySelector(".wrapper2");
-const fileName2 = document.querySelector(".file-name2");
-const defaultBtn2 = document.querySelector("#img2");
-const customBtn2 = document.querySelector("#custom-btn2");
-const cancelBtn2 = document.querySelector("#cancel-btn2 i");
-const img2 = document.querySelector("#colocar_img2");
-const esconder2 = document.querySelector(".content2");
-let regExp2 = /[0-9a-zA-Z\^\&\'\@\{\}\[\]\,\$\=\!\-\#\(\)\.\%\+\~\_ ]+$/;
-function defaultBtnActive2(){
-  defaultBtn2.click();
-}
-defaultBtn2.addEventListener("change", function(){
-  const file = this.files[0];
-  if(file){
-    const reader = new FileReader();
-    reader.onload = function(){
-      const result = reader.result;
-      img2.src = result;
-      wrapper2.classList.add("active2");
-    }
-    cancelBtn2.addEventListener("click", function(){
-      img2.src = "";
-      wrapper2.classList.remove("active2");
-    })
-    reader.readAsDataURL(file);
-
-    esconder2.style.display = 'none';
-  }
-  if(this.value){
-    let valueStore = this.value.match(regExp2);
-    fileName2.textContent = valueStore;
-  }
-});
-
-//funcion para transformar la imagen 2 a base64 y lo manda al textarea 
-
-var imagen = [];
-    
-function revisarImagen2(input, num){
-  console.log(input.files);
-  var id_preview = input.getAttribute("id") + "_preview";
-  if (input.files && input.files[0]) {
-      var reader = new FileReader();
-      reader.onloadend = function (e) {
-          var id_preview_text = "#"+id_preview;
-          var base64image = e.target.result;                    
-          $("body").append("<canvas id='tempCanvas' width='800' height='800' style='display:none'></canvas>");
-          var canvas=document.getElementById("tempCanvas");
-          var ctx=canvas.getContext("2d");
-          var cw=canvas.width;
-          var ch=canvas.height;
-          var maxW=800;
-          var maxH=800;
-          var img = new Image;
-          img.src=this.result;
-          img.onload = function(){
-              var iw=img.width;
-              var ih=img.height;
-              var scale=Math.min((maxW/iw),(maxH/ih));
-              var iwScaled=iw*scale;
-              var ihScaled=ih*scale;
-              canvas.width=iwScaled;
-              canvas.height=ihScaled;
-              ctx.drawImage(img,0,0,iwScaled,ihScaled);
-              base64image = canvas.toDataURL("image/jpeg");                       
-              $(id_preview_text).attr('src', base64image).width(250).height(157);
-              imagen[num] = base64image;
-              $("#tempCanvas").remove();
-              $('#nuevaImagen2').val(base64image);
-              console.log($('#nuevaImagen2').val());
-          }
-      };
-      reader.readAsDataURL(input.files[0]);
-      $('#imagen_preview').show();
-  }}
-
 
 //imagen3
 const wrapper3 = document.querySelector(".wrapper3");

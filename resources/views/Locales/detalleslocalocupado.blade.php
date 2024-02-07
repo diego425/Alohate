@@ -70,7 +70,7 @@
                <p><h5>Locacion A La Que Pertenece:
                </h5>
               <div class="gris">
-               <h6>Locacion{{$locacion[0]->Nombre_locacion}}</h6>
+               <h6>{{$locacion[0]->Nombre_locacion}}</h6>
               </div>
             </div>
 
@@ -394,7 +394,7 @@
    sino, se muestra el otro contenido para solo mostrar 1 huesped
 ===============-->
 
-@if($lugar_cliente_reservado[0]->totalclientes <= "1")
+@if($lugar_cliente_reservado[0]->Total_de_personas <= "1")
 
 
 <!--=============== DATOS DEL CLIENTE  ===============-->
@@ -457,19 +457,6 @@
                              <p><h6>{{$lugar_cliente_reservado[0]->Lugar_motivo_visita}}</h6></p>
                          </div>
                  </div>
-                 <div class="centrar_texto">
-                   <p><h5>Foto Del Cliente</h5></p>
-                       <div class="gris">
-                           <p><h6>{{$lugar_cliente_reservado[0]->Foto_cliente}}</h6></p>
-                       </div>
-                 </div>
-                 <div class="centrar_texto">
-                   <p><h5>Fotos De La INE</h5></p>
-                       <div class="gris">
-                           <p><h6>{{$lugar_cliente_reservado[0]->INE_frente}}</h6></p>
-                           <p><h6>{{$lugar_cliente_reservado[0]->INE_reverso}}</h6></p>
-                       </div>
-               </div>
           </div>
     </div>
  </div>
@@ -509,8 +496,8 @@
                      </div>
              </div>
              <div class="centrar_texto">
-                 <button class="btn btn-primary">Mensaje</button>
-                 <button class="btn btn-secondary">Llamar</button>
+                <a href="https://wa.me/{{$lugar_cliente_reservado[0]->Ref1_celular}}" target="_blank" class="btn btn-success">Enviar Whatsapp <i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                <a href="tel:{{$lugar_cliente_reservado[0]->Ref1_celular}}" class="btn btn-secondary" onclick="return(navigator.userAgent.match(/ Android | iPhone | movile /i)) != null;">Llamar</a>
              </div>
  
  <!--=============== Persona 2 ===============-->
@@ -534,15 +521,15 @@
                      </div>
              </div>
              <div class="centrar_texto">
-                 <button class="btn btn-primary"> Mensaje</button>
-                 <button class="btn btn-secondary">Llamar</button>
+                <a href="https://wa.me/{{$lugar_cliente_reservado[0]->Ref2_celular}}" target="_blank" class="btn btn-success">Enviar Whatsapp <i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                 <a href="tel:{{$lugar_cliente_reservado[0]->Ref2_celular}}" class="btn btn-secondary" onclick="return(navigator.userAgent.match(/ Android | iPhone | movile /i)) != null;">Llamar</a>
              </div>
           </div>
      </div>
   </div>
   
 
-@else($lugar_cliente_reservado[0]->totalclientes >= "2")
+@else($lugar_cliente_reservado[0]->Total_de_personas >= "2")
 <div class="interno_padre_C">
     <div class="interno_hijo_C">
           <div class="interno_C">
@@ -557,7 +544,6 @@
        <div class="detalle_clientes" id="detalle_clientes">
            <div class="container_tabla_C">
                <table class="table table-striped table-hover">
-                @foreach($lugar_cliente_reservado as $lugar_cliente)
                       <thead>
                             <tr>
                                   <th>NOMBRE</th>
@@ -568,11 +554,10 @@
                                   <th>PAIS PROC.</th>
                                   <th>MOTIVO DE VISITA</th>
                                   <th>INSTITUCION O EMPRESA</th>
-                                  <th>FOTOS DE LA INE</th>
-                                  <th>FOTO DEL CLIENTE</th>
                             </tr>
                       </thead>
                       <tbody>
+                        @foreach($lugar_cliente_reservado as $lugar_cliente)
                             <tr>
                                   <td data-label="NOMBRE">{{$lugar_cliente->Nombre}} {{$lugar_cliente->Apellido_paterno}} {{$lugar_cliente->Apellido_materno}}</td>
                                   <td data-label="NUM. CELULAR">{{$lugar_cliente->Numero_celular}}</td>
@@ -582,12 +567,10 @@
                                   <td data-label="PAIS PROC.">{{$lugar_cliente->Pais}}</td>
                                   <td data-label="MOTIVO DE VISITA">{{$lugar_cliente->Motivo_visita}}</td>
                                   <td data-label="INSTITUCION O EMPRESA">{{$lugar_cliente->Lugar_motivo_visita}}</td>
-                                  <td data-label="FOTOS DE LA INE">...</td>
-                                  <td data-label="FOTO DEL CLIENTE">...</td>
                             </tr>
                            
+                        @endforeach     
                       </tbody>
-                 @endforeach     
                </table>
           </div>
           </div>
@@ -629,8 +612,8 @@
                     </div>
             </div>
             <div class="centrar_texto">
-                <button class="btn btn-primary">Mensaje</button>
-                <button class="btn btn-secondary">Llamar</button>
+                <a href="https://wa.me/{{$lugar_cliente_reservado[0]->Ref1_celular}}" target="_blank" class="btn btn-success">Enviar Whatsapp <i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                <a href="tel:{{$lugar_cliente_reservado[0]->Ref1_celular}}" class="btn btn-secondary" onclick="return(navigator.userAgent.match(/ Android | iPhone | movile /i)) != null;">Llamar</a>
             </div>
 
 <!--=============== Persona 2 ===============-->
@@ -654,8 +637,8 @@
                     </div>
             </div>
             <div class="centrar_texto">
-                <button class="btn btn-primary"> Mensaje</button>
-                <button class="btn btn-secondary">Llamar</button>
+                <a href="https://wa.me/{{$lugar_cliente_reservado[0]->Ref2_celular}}" target="_blank" class="btn btn-success">Enviar Whatsapp <i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                <a href="tel:{{$lugar_cliente_reservado[0]->Ref2_celular}}" class="btn btn-secondary" onclick="return(navigator.userAgent.match(/ Android | iPhone | movile /i)) != null;">Llamar</a>
             </div>
          </div>
     </div>
@@ -663,28 +646,6 @@
  
 @endif
 
-
-<!--=============== DOCUMENTOS DE ESTANCIA===============-->
-<div class="seccion_padre_b">
-    <div class="seccion_hijo_t"> 
-             <div class="centrar_texto">
-                <div>
-                  <p><h5>Documentos De Estancia</h5></p>
-                  <i id="despliegue_doc_est" class="fa-solid fa-chevron-down" onclick="presentar_doc_est()"></i>
-                  <i id="ocultar_doc_est" class="fa-solid fa-chevron-up" onclick="esconder_doc_est()"></i>
-                  </p>
-               </div>
-               <div class="detalle_doc_est" id="detalle_doc_est">  
-                <p>
-                   <div class="gris">
-                      <h6>...</h6>
-                   </div>
-                </p>
-             </div>
-            </div>
-    </div>
- </div>
- 
 <!--=============== FOTOS DEL REGLAMENTO===============-->
 <div class="seccion_padre_b">
     <div class="seccion_hijo_t"> 
@@ -699,7 +660,14 @@
             <div class="detalle_reglamento" id="detalle_reglamento">  
                <p>
                    <div class="gris">
-                      <h6>...</h6>
+<!--=============== FOTO REGLAMENTO===============-->
+                      <div class="seccion_padre_b">
+                        <div class="seccion_interno_2">
+                            <div id="contenedor" class="rounded mx-auto d-block">
+                                <img class="imagen" src="{{asset('uploads/reglamentos_avisos/').'/'.$reglafiles[0]->Foto_reglamento  }}" >
+                            </div>
+                        </div>
+                    </div>
                    </div>
                 </p>
              
@@ -707,7 +675,14 @@
                 <p><h5>Fotos Del Aviso De Privacidad</h5></p>
                 <p>
                    <div class="gris">
-                      <h6>...</h6>
+<!--===============FOTO AVISO DE PRIV===============-->
+                      <div class="seccion_padre_b">
+                        <div class="seccion_interno_2">
+                            <div id="contenedor" class="rounded mx-auto d-block">
+                                <img class="imagen" src="{{asset('uploads/reglamentos_avisos/').'/'.$reglafiles[0]->Foto_aviso_privacidad  }}" >
+                            </div>
+                        </div>
+                    </div>
                    </div>
                 </p>
              </div>
@@ -727,30 +702,68 @@
                </div>
              </div>
          <div class="detalle_alojamiento" id="detalle_alojamiento">  
-             <div class="centrar_texto">
-                <p><h5>Fecha De Entrada</h5></p>
-                <p>
-                   <div class="gris">
-                      <h6>...</h6>
-                   </div>
-                </p>
-             </div>
-             <div class="centrar_texto">
-                <p><h5>Fecha De Salida</h5></p>
-                <p>
-                   <div class="gris">
-                      <h6>...</h6>
-                   </div>
-                </p>
-             </div>
-             <div class="centrar_texto">
-                <p><h5>Numero De Personas</h5></p>
-                <p>
-                   <div class="gris">
-                      <h6>...</h6>
-                   </div>
-                </p>
-             </div>
+<!--=============== TABLA DATOS DE ALOJAMIENTO ===============-->    
+          <div class="interno_l">
+           <div class="container_tabla">
+               <table class="table table-striped table-hover">
+                      <thead>
+                            <tr>
+                               <th>Fecha De Entrada</th>
+                               <th>Fecha De Salida</th>
+                               <th>Personas Extras</th>
+                               <th>Nombre Del Lugar</th>
+                               <th>Estatus</th>
+                               <th>Tipo De Cobro</th>
+                               <th>No. De Cocheras Que Usara</th>
+                            </tr>
+                      </thead>
+                      <tbody>
+                            <tr>
+                               <td data-label="Fecha De Entrada">...</td>
+                               <td data-label="Fecha De Salida">...</td> 
+                               <td data-label="Personas Extras">0</td> 
+                               <td data-label="Nombre Del Lugar">local: {{$detallereserva[0]->Nombre_local}}</td>
+                               <td data-label="Estatus">
+                                     @if($detallereserva[0]->Nombre_estado == "Ocupada")
+                                     <h6 style="color:  rgb(179, 60, 60)">{{$detallereserva[0]->Nombre_estado}}</h6>
+                                     @endif
+ 
+                                     @if($detallereserva[0]->Nombre_estado == "Desocupada")
+                                     <h6 style="color: mediumseagreen">{{$detallereserva[0]->Nombre_estado}}</h6>
+                                     @endif
+ 
+                                     @if($detallereserva[0]->Nombre_estado == "Reservada")
+                                     <h6 style="color: rgb(0, 140, 210)">{{$detallereserva[0]->Nombre_estado}}</h6>
+                                     @endif
+ 
+                                     @if($detallereserva[0]->Nombre_estado == "Desactivada")
+                                     <h6 style="color: rgb(207, 33, 204)">{{$detallereserva[0]->Nombre_estado}}</h6>
+                                     @endif
+ 
+                                     @if($detallereserva[0]->Nombre_estado == "Rentada")
+                                     <h6 style="color: rgb(33, 36, 207)">{{$detallereserva[0]->Nombre_estado}}</h6>
+                                     @endif
+ 
+                                     @if($detallereserva[0]->Nombre_estado == "Pago por confirmar")
+                                     <h6 style="color: rgb(142, 122, 7)">{{$detallereserva[0]->Nombre_estado}}</h6>
+                                     @endif</td>
+ 
+                               <td data-label="Tipo De Cobro">Por: {{$detallereserva[0]->Tipo_de_cobro}}</td>
+                               <td data-label="No. De Cocheras Que Usara"><i class="fa-solid fa-car-side"></i>
+                                  @if($detallereserva[0]->Espacios_cochera == "")
+                                  0
+                                  @else
+                                  {{$detallereserva[0]->Espacios_cochera}}
+                                  @endif
+                               </td>
+ 
+                            </tr>
+                      </tbody>
+               </table>
+           </div>
+          </div>
+
+ 
           </div>
     </div>
  </div>
@@ -768,30 +781,80 @@
                </div>
              </div>
          <div class="detalle_cobro" id="detalle_cobro">
-           <div class="container_tabla">
-               <table class="table table-striped table-hover">
-                      <thead>
-                            <tr>
-                                  <th>Tiempo Estancia</th>
-                                  <th>Personas Extras</th>
-                                  <th>Deposito De G.</th>
-                                  <th>Cobro Total</th>
-                            </tr>
-                      </thead>
-                      <tbody>
-                            <tr>
-                                  <td data-label="Tiempo Estancia">en proceso</td>
-                                  <td data-label="Personas Extras">en proceso</td>
-                                  <td data-label="Deposito De G.">en proceso</td>   
-                                  <td data-label="Cobro Total">en proceso</td>   
-                            </tr>
-                      </tbody>
-               </table>
-           </div>
+            <div class="interno_l">
+                <div class="container_tabla">
+                  <div class="centrar_texto">
+                      <p><h5>Detalles Y Costo Total</h5></p>
+                   </div>
+                    <table class="table table-striped table-hover">
+                           <thead>
+                                 <tr>
+                                      <th>Total De Noches:  </th>
+                                      <th>Personas Extras: </th>
+                                      <th>Monto De Garantia</th>
+                                      <th>Monto Por Uso De Cocheras</th>
+                                      <th style="color: red">Total A Pagar</th>
+                                      @if($detallereserva[0]->Tipo_de_cobro == "Noche")  
+                                      @endif
+                                      @if($detallereserva[0]->Tipo_de_cobro == "Semana")
+                                      <th style="color: rgb(38, 0, 255)">Monto De Anticipo</th>  
+                                      @endif
+                                      @if($detallereserva[0]->Tipo_de_cobro == "Catorcena")
+                                      <th style="color: rgb(38, 0, 255)">Monto De Anticipo</th>
+                                      @endif
+                                      @if($detallereserva[0]->Tipo_de_cobro == "Mes")
+                                      <th style="color: rgb(38, 0, 255)">Monto De Anticipo</th> 
+                                      @endif
+                                 </tr>
+                           </thead>
+                           <tbody>
+                             
+                                 <tr>
+                                      <td data-label="Total De Noches: ">$</td>
+                                      <td data-label="Personas Extras: 0">
+                                         {{-- @if($detallereserva[0]->Tipo_de_cobro == "Noche")  
+                                         $0
+                                         @endif
+                                         @if($detallereserva[0]->Tipo_de_cobro == "Semana")
+                                         ${{$monto_por_p_extras}}
+                                         @endif
+                                         @if($detallereserva[0]->Tipo_de_cobro == "Catorcena")
+                                         ${{$monto_por_p_extras}}
+                                         @endif
+                                         @if($detallereserva[0]->Tipo_de_cobro == "Mes")
+                                         ${{$monto_por_p_extras}}
+                                         @endif --}}
+                                         0
+                                      </td>
+                                      <td data-label="Monto De Garantia">$</td>
+                                      <td data-label="Monto Por Uso De Cocheras">
+                                         @if($detallereserva[0]->Espacios_cochera == "")
+                                         $0
+                                         @else
+                                         ${{$detallereserva[0]->Monto_uso_cochera}}
+                                         @endif
+                                      </td>
+                                      <td data-label="Total A Pagar">$</td> 
+                                      {{-- @if($detallereserva[0]->Tipo_de_cobro == "Noche")  
+                                      @endif
+                                      @if($detallereserva[0]->Tipo_de_cobro == "Semana")
+                                      <td data-label="Monto De Anticipo">${{$detallereserva[0]->Cobro_anticipo_catorcena_d}}</td>   
+                                      @endif
+                                      @if($detallereserva[0]->Tipo_de_cobro == "Catorcena")
+                                      <td data-label="Monto De Anticipo">${{$detallereserva[0]->Cobro_anticipo_catorcena_d}}</td>   
+                                      @endif
+                                      @if($detallereserva[0]->Tipo_de_cobro == "Mes")
+                                      <td data-label="Monto De Anticipo">${{$detallereserva[0]->Cobro_anticipo_mes_d}}</td>   
+                                      @endif --}}
+                                 </tr>
+                           </tbody>
+                    </table>
+                </div>
+               </div>
          </div>
        </div>
     </div>
- </div>
+</div>
  
  
  <!--=============== EXTENDER ESTANCIA===============-->
@@ -802,20 +865,20 @@
                 <p><h6>Si el cliente desea quedarse mas dias, puedes modificar el tiempo de estancia aqui</h6></p>
                   <div class="detalles_tiempoest">
                      <p> <h6>¿Quieres Modificar El Tiempo De Estancia?</h6> </p>
-                     <input type="checkbox" class="tiempo_estancia" id="extender_t"  onclick="javascript:activar_ext_t('PC');">
+                     <input type="checkbox" class="tiempo_estancia" id="extender_t"  onclick="javascript:activar_ext_t('PC');" style="width: 20px; height:20px;">
                   </div>
                  <br>
                   <div id="ext_t">
-                        <form action="">
-                              <p><h6>Nueva Fecha De Salida</h6>
-                              <input type="date" name="fecha_salida" id="fecha_salida" class="form-control">
-                              </p>
-
-                              <p><h6>Total A Pagar</h6></p>
-                              <h6>...</h6>
+                        {{-- <form action="{{route('updatesalidadep',[$detallereserva[0]->Id_reservacion, $departamentos[0]->Id_departamento])}}" class="form" method="POST" enctype="multipart/form-data">
+                            @method('PUT')
+                            @csrf
+                              <p><h6>Nueva Fecha De Salida</h6></p>
+                              <div class="centrar">
+                                <input type="date" name="up_fecha_salida" id="up_fecha_salida" class="form-control" style="width: 250px; height:45px;">
+                              </div>
                            <br>
-                              <button type="submit" class="btn btn-success"> Guardar y Generar Nuevo Contrato</button>
-                        </form>
+                              <button type="submit" class="btn btn-success">Guardar</button>
+                        </form> --}}
                   </div>
 
              </div>
@@ -824,6 +887,9 @@
  
 
  <!--=============== DATOS DEL CONTRATO ===============-->
+@if($contratofiles[0]->Tipo_contrato == "")
+
+@else
 <div class="seccion_padre_b">
     <div class="seccion_hijo_t"> 
             <div class="centrar_texto">
@@ -836,14 +902,38 @@
             </div>
                 <p>
                   <div class="detalle_contrato" id="detalle_contrato">
-                   <div class="gris">
-                      <h6>...</h6>
-                   </div>
+                   
+                    <div class="centrar_texto">
+                        <p><h5>Datos Del Contrato</h5></p>
+                     </div>
+                    <div class="gris">
+                        <div class="centrar_texto">
+                            <p><h6>Fechas</h6></p>
+                            <p>De Inicio: {{$contratofiles[0]->Fecha_inicio}}</p>
+                            <p>De Termino: {{$contratofiles[0]->Fecha_termino}}</p>
+                            
+                            <p><h6>Tipo De Contrato</h6></p>
+                            <p>{{$contratofiles[0]->Tipo_contrato}}</p>
+                        </div>
+                    
+                    <!--=============== FOTO REGLAMENTO===============-->
+                    <div class="centrar_texto">
+                        <p><h5>Foto Del Contrato</h5></p>
+                     </div>
+                    <div class="seccion_padre_b">
+                        <div class="seccion_interno_2">
+                            <div id="contenedor" class="rounded mx-auto d-block">
+                                <img class="imagen" src="{{asset('uploads/contratos/').'/'.$contratofiles[0]->Foto_contrato  }}" >
+                            </div>
+                        </div>
+                    </div>
+                    </div>
                   </div>
                 </p>
     </div>
  </div>
  
+@endif
 
  <!--=============== CARRUSEL DE FOTOS===============-->
 <div class="seccion_padre_b">
@@ -853,7 +943,7 @@
                 <div class="carrusel_interno">
                    
                    <div class="content_titulo">
-                      <h5> Fotos De La Habitacion</h5>
+                      <h5> Fotos Del Local</h5>
                    </div>
                       
                       <div id="carouselExample" class="carousel slide">
@@ -862,7 +952,7 @@
                           @forelse ($files as $file)
  <!-- se realiza un if para poder extraer las fotos y que se acomoden al carrusel  -->
                           <div id="contenedor" class="carousel-item @if ($loop->index==0) active @endif">
-                              <img class="imagen" src="{{asset('uploads/habitaciones/').'/'.$file->Ruta_lugar  }}" >
+                              <img class="imagen" src="{{asset('uploads/locales/').'/'.$file->Ruta_lugar  }}" >
                           </div>
                       
                           @empty
@@ -895,8 +985,8 @@
                <p><h5>Botones De Accion</h5></p>
                 <p>
                   <div class="gris">
-                     <button class="btn btn-success">Enviar Whatsapp <i class="fa fa-whatsapp" aria-hidden="true"></i></button>
-                     <button class="btn btn-secondary">Llamar</button>
+                     <a href="https://wa.me/{{$lugar_cliente_reservado[0]->Numero_celular}}" target="_blank" class="btn btn-success">Enviar Whatsapp <i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                     <a href="tel:{{$lugar_cliente_reservado[0]->Numero_celular}}" class="btn btn-secondary" onclick="return(navigator.userAgent.match(/ Android | iPhone | movile /i)) != null;">Llamar</a>
                      <button class="btn btn-primary">Registro De Pago</button>
                      <button class="btn btn-danger">Generar Contrato</button>
                      <button class="btn btn-info">Imprimir Contrato</button>
@@ -906,22 +996,22 @@
             </div>
 
             <div class="centrar_texto">
-                <p><h5>Botones De Accion Para La Habitacion</h5>
+                <p><h5>Botones De Accion Para El Local</h5>
                    <div class="gris">
                     @if($locales[0]->Nombre_estado == "Reservada")
-                    <button class="btn btn-primary clickForm" href="{{route('view_editar_hab', $habitaciones[0]->Id_habitacion)}}">Editar</button>
+                    <button class="btn btn-primary clickForm" href="{{route('view_editar_local', $locales[0]->Id_local )}}">Editar</button>
                     <a href="{{route('limpieza.create')}}?tipoLocacion=Local&id={{$locales[0]->Id_local}}&Id_locacion={{$locacion[0]->Id_locacion}}" class="btn btn-warning">Reporte De MTTO.</a>
                     <button class="btn btn-secondary">Rentar</button>
                     @endif
 
                     @if($locales[0]->Nombre_estado == "Cotizada")
-                    <button class="btn btn-primary clickForm" href="{{route('view_editar_hab', $habitaciones[0]->Id_habitacion)}}">Editar</button>
+<button class="btn btn-primary clickForm" href="{{route('view_editar_local', $locales[0]->Id_local )}}">Editar</button>
                     <a href="{{route('limpieza.create')}}?tipoLocacion=Local&id={{$locales[0]->Id_local}}&Id_locacion={{$locacion[0]->Id_locacion}}" class="btn btn-warning">Reporte De MTTO.</a>
                     <button class="btn btn-secondary">Rentar</button>
                     @endif
 
                     @if($locales[0]->Nombre_estado == "Rentada")
-                    <button class="btn btn-primary clickForm" href="{{route('view_editar_hab', $habitaciones[0]->Id_habitacion)}}">Editar</button>
+<button class="btn btn-primary clickForm" href="{{route('view_editar_local', $locales[0]->Id_local )}}">Editar</button>
                     <a href="{{route('limpieza.create')}}?tipoLocacion=Local&id={{$locales[0]->Id_local}}&Id_locacion={{$locacion[0]->Id_locacion}}" class="btn btn-warning">Reporte De MTTO.</a>
                     @endif
                    </div>

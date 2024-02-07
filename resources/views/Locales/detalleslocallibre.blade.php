@@ -70,7 +70,7 @@
                <p><h5>Locacion A La Que Pertenece:
                </h5>
               <div class="gris">
-               <h6>Locacion{{$locacion[0]->Nombre_locacion}}</h6>
+               <h6>{{$locacion[0]->Nombre_locacion}}</h6>
               </div>
             </div>
 
