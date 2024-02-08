@@ -39,7 +39,7 @@
                     </div>
                 </div>
             </section>
-        @else            
+        @else
             <section class="pt-5 pb-9">
                 <div class="container-small container container-fluid">
                     @if (session()->has('message'))
@@ -325,7 +325,7 @@
     $(document).ready(function() {
         @if ($totalapagar <= 0)
         @else 
-            @if (!empty($cobros[0]->preference_mp))     
+            @if (!empty($cobros[0]->preference_mp))
                 const mp = new MercadoPago('APP_USR-e5322f5a-f53f-4910-960a-95090076ee83', {
                     locale: 'es-MX'
                 });

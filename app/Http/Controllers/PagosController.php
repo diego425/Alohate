@@ -625,7 +625,6 @@ class PagosController extends Controller
     public function pagoClienteDirecto(Request $request, string $tipoLugar, string $Id_locacion, string $Id_lugar) {
         if (!empty($tipoLugar) && !empty($Id_locacion) && !empty($Id_lugar)) {
             $totalapagar = 0;
-            $idcobro = "1";
             $cobros = DB::table('cobro_renta AS cr')
             ->selectRaw('cr.preference_mp,cr.Id_cobro_renta,cr.Id_reservacion, cr.Cobro_persona_extra, cr.Periodo_total, cr.Estatus_cobro,
                 cr.Tiempo_rebasado, cr.Deposito_garantia, cr.Monto_total, cr.Saldo, res.Start_date, res.End_date,
@@ -635,9 +634,30 @@ class PagosController extends Controller
             ->leftJoin('lugares_reservados AS lr', 'cr.Id_lugares_reservados', '=', 'lr.Id_lugares_reservados')
             ->leftJoin('estado_ocupacion AS eo', 'eo.Id_estado_ocupacion', '=', 'lr.Id_estado_ocupacion')
             ->leftJoin('estado_ocupacion AS eso', 'eso.Id_estado_ocupacion', '=', 'cr.Estatus_cobro')
-            ->where('cr.Id_cobro_renta', $idcobro)
+            ->where(function ($query) use ($tipoLugar,$Id_lugar) {
+                if (!empty($tipoLugar)) {
+                    if ($tipoLugar == "Entera") {
+                        return $query->where('lr.Id_locacion', '=', "$Id_lugar");
+                    }elseif ($tipoLugar == "Local") {
+                        return $query->where('lr.Id_local', '=', "$Id_lugar");
+                    }elseif ($tipoLugar == "Departamento") {
+                        return $query->where('lr.Id_departamento', '=', "$Id_lugar");
+                    }elseif ($tipoLugar == "Habitación" || $tipoLugar == "Habitacion") {
+                        return $query->where('lr.Id_habitacion', '=', "$Id_lugar");
+                    }else{
+                        return $query->whereRaw('cr.Id_cobro_renta IS NULL');
+                    }
+                }
+            })
+            ->where('cr.Estatus_cobro','=','7')
             ->groupByRaw('cr.Id_cobro_renta')
             ->get();
+
+            $datosLugar = DB::select('call seleccionarLugar(?,?,?);', [$Id_lugar, $tipoLugar, $Id_locacion]);
+
+            if (!empty($cobros[0]->Id_cobro_renta)) {
+                $idcobro = $cobros[0]->Id_cobro_renta;
+            }
 
             $tipos = array(
                 "Id_habitacion",
@@ -790,28 +810,28 @@ class PagosController extends Controller
                                                         ->where('Id_locacion', $datosEntera[0]->Id_locacion)
                                                         ->update(['Id_estado_ocupacion' => 4]);
                                                         
-                                                        echo "ref1";
+                                                        // echo "ref1";
                                                         // return redirect()->route('pagos.index')->with('message', 'Se actualizo la locación entera y todos sus lugares a rentados');
                                                     }else {
-                                                        $updatePago = DB::table('pago_renta')
-                                                        ->where('Id_pago_renta', $idPago)
-                                                        ->update(['Estatus_pago' => "Pendiente"]);
+                                                        // $updatePago = DB::table('pago_renta')
+                                                        // ->where('Id_pago_renta', $idPago)
+                                                        // ->update(['Estatus_pago' => "Pendiente"]);
         
-                                                        $affected = DB::table('cobro_renta')
-                                                        ->where('Id_cobro_renta', $idCobro)
-                                                        ->update(['Saldo' => $cobros[0]->Saldo,'Estatus_cobro' => '7']);
-                                                        echo "ref2";
+                                                        // $affected = DB::table('cobro_renta')
+                                                        // ->where('Id_cobro_renta', $idCobro)
+                                                        // ->update(['Saldo' => $cobros[0]->Saldo,'Estatus_cobro' => '7']);
+                                                        // echo "ref2";
                                                         // return redirect()->route('pagos.index')->with('error', 'No se pudo actualizar la locación a rentada');
                                                     }
                                                 }else {
-                                                    $updatePago = DB::table('pago_renta')
-                                                    ->where('Id_pago_renta', $idPago)
-                                                    ->update(['Estatus_pago' => "Pendiente"]);
+                                                    // $updatePago = DB::table('pago_renta')
+                                                    // ->where('Id_pago_renta', $idPago)
+                                                    // ->update(['Estatus_pago' => "Pendiente"]);
         
-                                                    $affected = DB::table('cobro_renta')
-                                                    ->where('Id_cobro_renta', $idCobro)
-                                                    ->update(['Saldo' => $cobros[0]->Saldo,'Estatus_cobro' => '7']);
-                                                    echo "ref3";
+                                                    // $affected = DB::table('cobro_renta')
+                                                    // ->where('Id_cobro_renta', $idCobro)
+                                                    // ->update(['Saldo' => $cobros[0]->Saldo,'Estatus_cobro' => '7']);
+                                                    // echo "ref3";
                                                     // return redirect()->route('pagos.index')->with('error', 'No se pudo actualizar la locación a rentada, pago aún disponible');
                                                 }
                                             }elseif ($cobros[0]->tipoLocacion == "Local") {
@@ -824,18 +844,18 @@ class PagosController extends Controller
                                                     ->where('Id_local', $datosLocal[0]->Id_local)
                                                     ->update(['Id_estado_ocupacion' => 4]);
         
-                                                    echo "ref4";
+                                                    // echo "ref4";
                                                     // return redirect()->route('pagos.index')->with('message', 'Registro de local actualizado, pago aplicado');
                                                 } else {
-                                                    $updatePago = DB::table('pago_renta')
-                                                    ->where('Id_pago_renta', $idPago)
-                                                    ->update(['Estatus_pago' => "Pendiente"]);
+                                                    // $updatePago = DB::table('pago_renta')
+                                                    // ->where('Id_pago_renta', $idPago)
+                                                    // ->update(['Estatus_pago' => "Pendiente"]);
         
-                                                    $affected = DB::table('cobro_renta')
-                                                    ->where('Id_cobro_renta', $idCobro)
-                                                    ->update(['Saldo' => $cobros[0]->Saldo,'Estatus_cobro' => '7']);
+                                                    // $affected = DB::table('cobro_renta')
+                                                    // ->where('Id_cobro_renta', $idCobro)
+                                                    // ->update(['Saldo' => $cobros[0]->Saldo,'Estatus_cobro' => '7']);
     
-                                                    echo "ref5";
+                                                    // echo "ref5";
                                                     // return redirect()->route('pagos.index')->with('error', 'No se pudo actualizar el local a rentado, pago aún disponible');
                                                 }
                                             }elseif ($cobros[0]->tipoLocacion == "Departamento") {
@@ -848,18 +868,18 @@ class PagosController extends Controller
                                                     ->where('Id_departamento', $datosDepa[0]->Id_departamento)
                                                     ->update(['Id_estado_ocupacion' => 4]);
         
-                                                    echo "ref6";
+                                                    // echo "ref6";
                                                     // return redirect()->route('pagos.index')->with('message', 'Registro del departamento actualizado, pago aplicado');
                                                 } else {
-                                                    $updatePago = DB::table('pago_renta')
-                                                    ->where('Id_pago_renta', $idPago)
-                                                    ->update(['Estatus_pago' => "Pendiente"]);
+                                                    // $updatePago = DB::table('pago_renta')
+                                                    // ->where('Id_pago_renta', $idPago)
+                                                    // ->update(['Estatus_pago' => "Pendiente"]);
         
-                                                    $affected = DB::table('cobro_renta')
-                                                    ->where('Id_cobro_renta', $idCobro)
-                                                    ->update(['Saldo' => $cobros[0]->Saldo,'Estatus_cobro' => '7']);
+                                                    // $affected = DB::table('cobro_renta')
+                                                    // ->where('Id_cobro_renta', $idCobro)
+                                                    // ->update(['Saldo' => $cobros[0]->Saldo,'Estatus_cobro' => '7']);
     
-                                                    echo "ref7";
+                                                    // echo "ref7";
                                                     // return redirect()->route('pagos.index')->with('error', 'No se pudo actualizar el local a rentado, pago aún disponible');
                                                 }
                                             }elseif ($cobros[0]->tipoLocacion == "Habitación") {
@@ -872,18 +892,18 @@ class PagosController extends Controller
                                                     ->where('Id_habitacion', $datosHabitacion[0]->Id_habitacion)
                                                     ->update(['Id_estado_ocupacion' => 4]);
         
-                                                    echo "ref8";
+                                                    // echo "ref8";
                                                     // return redirect()->route('pagos.index')->with('message', 'Registro de local actualizado, pago aplicado');
                                                 } else {
-                                                    $updatePago = DB::table('pago_renta')
-                                                    ->where('Id_pago_renta', $idPago)
-                                                    ->update(['Estatus_pago' => "Pendiente"]);
+                                                    // $updatePago = DB::table('pago_renta')
+                                                    // ->where('Id_pago_renta', $idPago)
+                                                    // ->update(['Estatus_pago' => "Pendiente"]);
         
-                                                    $affected = DB::table('cobro_renta')
-                                                    ->where('Id_cobro_renta', $idCobro)
-                                                    ->update(['Saldo' => $cobros[0]->Saldo,'Estatus_cobro' => '7']);
+                                                    // $affected = DB::table('cobro_renta')
+                                                    // ->where('Id_cobro_renta', $idCobro)
+                                                    // ->update(['Saldo' => $cobros[0]->Saldo,'Estatus_cobro' => '7']);
     
-                                                    echo "ref9";
+                                                    // echo "ref9";
                                                     // return view('Pagos.pagoCliente',["cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar])->with('error', 'No se pudo actualizar el local a rentado, pago aún disponible');
                                                 }
                                             }else {
@@ -891,13 +911,13 @@ class PagosController extends Controller
                                             }
                                         }else{
                                             //No se pudo actualizar la renta a pago completo
-                                             /*  $updatePago = DB::table('pago_renta')
-                                            ->where('Id_pago_renta', $idPago)
-                                            ->update(['Estatus_pago' => "Pendiente"]); */
+                                            //   $updatePago = DB::table('pago_renta')
+                                            // ->where('Id_pago_renta', $idPago)
+                                            // ->update(['Estatus_pago' => "Pendiente"]);
         
-                                            $affected = DB::table('cobro_renta')
-                                            ->where('Id_cobro_renta', $idCobro)
-                                            ->update(['Saldo' => $cobros[0]->Saldo,'Estatus_cobro' => '7']);
+                                            // $affected = DB::table('cobro_renta')
+                                            // ->where('Id_cobro_renta', $idCobro)
+                                            // ->update(['Saldo' => $cobros[0]->Saldo,'Estatus_cobro' => '7']);
         
                                             return view('Pagos.pagoCliente',["cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar])->with('error', 'Registros no actualizados verifique el saldo de la renta');
                                         }
@@ -923,9 +943,9 @@ class PagosController extends Controller
                         return view('Pagos.pagoCliente',["cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar]);
                     }
                 }
-            }            
+            }
         } else {
             return view('Errores.error500');
-        }        
+        }
     }
 }
