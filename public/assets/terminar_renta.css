@@ -1,0 +1,1120 @@
+/*ESTILOS GENERALES*/
+
+*{
+    font-family: Montserrat, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  
+  
+  /* seccion principal */
+    .seccion_padre_b{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 1px;
+    }
+  
+    .seccion_interno_b{
+      width: 50%;
+      margin-top: 6.5px;
+      align-items: center;
+    }
+  
+    .centrar_contenido{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    } 
+  
+    .centrar_texto{
+      text-align: center;
+      align-items: center;
+    } 
+  
+    .gris{
+      background-color: rgb(240, 240, 240);
+    }
+  
+    .btn{
+      margin: 2px;
+    }
+  
+    #ext_t{ display: none;}
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  /* For small devices mobiles*/
+  @media screen and (max-width: 1400px) {
+  /* seccion del recuadro blanco para el carrusel*/
+      .seccion_hijo_f{
+        background-color: rgb(255, 255, 255);
+        width: 80%;
+        border: 1px solid #c0c0c0;
+        border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        }
+  
+  /*seccion del recuadro gris para el carrusel*/
+        .seccion_interno_2{
+          max-width: 70%;
+          display: flex;
+          justify-content: center;
+          margin: 5px;
+        }
+  /*titulo del carrusel*/
+        .content_titulo{
+            text-align: center;
+            color: rgb(0, 0, 0); 
+            margin: 5px;
+        }
+  /*carrusel*/
+        #contenedor{
+          text-align: center;
+        }
+  /*carrusel*/
+          .imagen{
+          max-width: 60%;
+          align-items: center;
+          border-radius: 5px;
+          margin: 10px;
+        }
+  
+  
+  /*titulo del nombre y tipo de renta*/
+        .seccion_hijo_t{
+          background-color: rgb(255, 255, 255);
+          width: 80%;
+          border: 1px solid #c0c0c0;
+          border-radius: 5px;
+          }  
+          
+  
+  /*tabla subtitulo del cap de personas y otros elementos*/
+  
+          
+  /* seccion de la tabla int cap de personas y otros elementos*/
+        .interno_padre_l{
+          display: flex;
+          justify-content: center;
+          align-items: center;
+  
+        }
+  
+  /* seccion de la tabla int cap de personas y otros elementos*/
+        .interno_hijo_l{
+          background-color: rgb(255, 255, 255);
+          width: 80%;
+          border: 1px solid #c0c0c0;
+          border-radius: 5px;
+        }
+  
+        .interno_l{ 
+          width: 100%;
+          align-items: center;
+        }
+  /* seccion de la tabla entera cap de personas y otros elementos*/
+        .container_tabla{
+          width: 100%;
+          margin: auto;
+        }
+  
+  
+  /* seccion de la tabla ext cap de personas y otros elementos*/
+        .externo_hijo_l{
+          background-color: rgb(255, 255, 255);
+          width: 80%;
+          border: 1px solid #c0c0c0;
+          border-radius: 5px;
+        }
+  
+        .table{
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+        padding: 0;
+        table-layout: fixed;
+        }
+  
+        .table th, .table td{
+          padding: 8px;
+          text-align: center;
+  
+        }
+        .table thead th{
+          text-transform: uppercase;
+          background-color: #ffffff;
+          font-size: 12px;
+        }
+  
+  /*encabezado*/
+  
+    .encabezado {
+      top: -20px;
+      text-align: center;
+      width: 100%;
+      height: 160px;
+      background-size: cover;
+      background-attachment: fixed;
+      position: relative;
+      overflow: hidden;
+      border-radius: 0 0 85% 85% / 30%;
+    }
+    .encabezado .overlay{
+      width: 100%;
+      height: 100%;
+      padding: 10px;
+      color: #FFF;
+      text-shadow: 1px 1px 1px #333;
+      background-image: linear-gradient( 135deg, rgb(190, 73, 0) 10%, rgb(7, 9, 102) 100%);
+      
+    }
+  
+    h1 {
+      font-family: Montserrat, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 30px;
+      margin-bottom: 30px;
+    }
+  
+    h3, p {
+      font-family: Montserrat, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin-bottom: 30px;
+    }
+  
+    .boton {
+      border: none;
+      outline: none;
+      padding: 10px 20px;
+      border-radius: 50px;
+      color: #333;
+      background: #fff;
+      margin-bottom: 50px;
+      box-shadow: 0 3px 20px 0 #0000003b;
+      font-family: Montserrat, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .boton:hover{
+      cursor: pointer;
+    }
+  
+    /* diseño de los checksboxs */
+    
+    .tamano_icono{
+      width: 40px;
+      height: 40px;
+    }
+    
+    .centrar{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    } 
+  
+    
+    
+    .option_item{
+      display: block;
+      position: relative;
+      width: 130px;
+      margin: 5px;
+    }
+    /* tamaño y color del recuadro */
+    .option_inner{
+      width: 100%;
+      height: 90%;
+      border-radius: 7px;
+      background-color: whitesmoke;
+      text-align: center;
+      padding: 9px 5px;
+      cursor: pointer;
+      color: #585c68;
+      display: block;
+      border: 1px solid #a5a5a5;
+      position: relative;
+    }
+    /* tamaño y direccion del check */
+    .checkbox{
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      z-index: 1;
+      opacity: 0;
+    }
+    .icon{
+      margin-bottom: 5px;
+    }
+    /* tamaño de la letra del nombre */
+    
+    /* agrega accion de seleccionar y da colores al fondo y al estilo */
+    .option_item .checkbox:checked ~ .option_inner.seleccionar1 {
+      background-color: rgb(52, 138, 219);
+      border: 3px solid rgb(49, 50, 55);
+      color: white;
+      
+    }
+    
+    .option_item .checkbox:checked ~ .option_inner.seleccionar2 {
+      background-color: rgb(0, 180, 153);
+      border: 3px solid rgb(49, 50, 55);
+      color: white;
+      
+    }
+    
+    .option_item .checkbox:checked ~ .option_inner.seleccionar3 {
+      background-color: rgb(175, 49, 95);
+      border: 3px solid rgb(49, 50, 55);
+      color: white;
+    }
+         /* mostrar y ocultar contenido */
+         .subtitulo{
+          text-align: center;
+          border: 1px solid #a5a5a5;
+          border-radius: 10px;
+          margin: 10px;
+          font-size: 15px;
+          background-color: rgb(255, 255, 255);
+        }
+  
+  /*para mostrar y ocultar las secciones de la pagina*/     
+  /*servicios*/
+      #despliegue_servicios{
+        cursor: pointer;
+        transition: all 2s;
+      }
+      #ocultar_servicios{
+        cursor: pointer;
+        display: none;
+        transition: all 2s;
+      }
+      #detalle_servicios{
+        display: none;
+        transition: all 2s;
+      }
+  
+  /*precios*/
+   
+      #despliegue_precios{
+        cursor: pointer;
+        transition: all 2s;
+      }
+      #ocultar_precios{
+        cursor: pointer;
+        display: none;
+        transition: all 2s;
+      }
+      #detalle_precios{
+        display: none;
+        transition: all 2s;
+      }
+  /*clientes*/
+    #despliegue_clientes{
+      cursor: pointer;
+      transition: all 2s;
+    }
+    #ocultar_clientes{
+      cursor: pointer;
+      display: none;
+      transition: all 2s;
+    }
+    #detalle_clientes{
+      display: none;
+      transition: all 2s;
+    }
+  /*cliente*/
+    #despliegue_cliente{
+      cursor: pointer;
+      transition: all 2s;
+    }
+    #ocultar_cliente{
+      cursor: pointer;
+      display: none;
+      transition: all 2s;
+    }
+    #detalle_cliente{
+      display: none;
+      transition: all 2s;
+    }
+  
+  /*contacto de emergencia*/
+    #despliegue_emergencia{
+      cursor: pointer;
+      transition: all 2s;
+    }
+    #ocultar_emergencia{
+      cursor: pointer;
+      display: none;
+      transition: all 2s;
+    }
+    #detalle_emergencia{
+      display: none;
+      transition: all 2s;
+    }
+  
+  /*documentos de estancia*/
+    #despliegue_doc_est{
+      cursor: pointer;
+      transition: all 2s;
+    }
+    #ocultar_doc_est{
+      cursor: pointer;
+      display: none;
+      transition: all 2s;
+    }
+    #detalle_doc_est{
+      display: none;
+      transition: all 2s;
+    }
+  
+  /*reglamento*/
+    #despliegue_reglamento{
+      cursor: pointer;
+      transition: all 2s;
+    }
+    #ocultar_reglamento{
+      cursor: pointer;
+      display: none;
+      transition: all 2s;
+    }
+    #detalle_reglamento{
+      display: none;
+      transition: all 2s;
+    }
+  
+    
+  /* datos de alojamiento*/
+    #despliegue_alojamiento{
+      cursor: pointer;
+      transition: all 2s;
+    }
+    #ocultar_alojamiento{
+      cursor: pointer;
+      display: none;
+      transition: all 2s;
+    }
+    #detalle_alojamiento{
+      display: none;
+      transition: all 2s;
+    }
+  
+    /* servicio de cobro*/
+    #despliegue_cobro{
+      cursor: pointer;
+      transition: all 2s;
+    }
+    #ocultar_cobro{
+      cursor: pointer;
+      display: none;
+      transition: all 2s;
+    }
+    #detalle_cobro{
+      display: none;
+      transition: all 2s;
+    }
+  /* datos del contrato*/
+    #despliegue_contrato{
+      cursor: pointer;
+      transition: all 2s;
+    }
+    #ocultar_contrato{
+      cursor: pointer;
+      display: none;
+      transition: all 2s;
+    }
+    #detalle_contrato{
+      display: none;
+      transition: all 2s;
+    }
+  
+  /*para mostrar y ocultar las secciones de los servicios */
+  /*cocina*/    
+      #despliegue_cocina{
+        cursor: pointer;
+      }
+      #ocultar_cocina{
+        cursor: pointer;
+        display: none;
+        
+      }
+      #detalle_cocina{
+        display: none;
+      }
+
+      #despliegue_sinservicio{
+        cursor: pointer;
+      }
+      #ocultar_sinservicio{
+        cursor: pointer;
+        display: none;
+        
+      }
+      #detalle_sinservicio{
+        display: none;
+      }
+      
+    
+  /*lavanderia*/       
+      #despliegue_lavanderia{
+        cursor: pointer;
+      }
+      #ocultar_lavanderia{
+        cursor: pointer;
+        display: none;
+        
+      }
+      #detalle_lavanderia{
+        display: none;
+      }
+  /*otros servicios*/     
+      #despliegue_otro_s{
+        cursor: pointer;
+      }
+      #ocultar_otro_s{
+        cursor: pointer;
+        display: none;
+        
+      }
+      #detalle_otro_s{
+        display: none;
+      }
+  /*estacionamiento*/     
+      #despliegue_estacionamiento{
+        cursor: pointer;
+      }
+      #ocultar_estacionamiento{
+        cursor: pointer;
+        display: none;
+        
+      }
+      #detalle_estacionamiento{
+        display: none;
+      }
+      
+  
+  
+  
+  /*TABLA PARA MOSTRAR LOS CLIENTES QUE ESTAN EN LA CASA*/
+  /* seccion de la tabla ext*/
+  
+    /* seccion de la tabla int LOS CLIENTES*/
+    .interno_padre_C{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    
+    }
+  
+    .interno_C{ 
+      width: 100%;
+      align-items: center;
+    }
+  
+    /* seccion de la tabla int LOS CLIENTES*/
+    .interno_hijo_C{
+    background-color: rgb(255, 255, 255);
+    width: 85%;
+    border: 1px solid #c0c0c0;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    }
+  /* seccion de la tabla LOS CLIENTES*/
+    .table{
+      border: 0px;
+    }
+    .table thead{
+      display: none;
+    }
+    .table tr{
+      margin-bottom: 8px;
+      border-bottom: 4px solid #c0c0c0;
+      display: block;
+    }
+    .table td{
+      display: block;
+      border-bottom: 1px solid #c0c0c0;
+      text-align: right;
+      font-size: 14px;
+    }
+    .table td:last-child{
+      border-bottom: 0px;
+    }
+    .table td::before{
+      content: attr(data-label);
+      font-weight: bold;
+      text-transform: uppercase;
+      float: left;
+    }
+  
+    
+  }
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  /* For large devices desktop*/
+  @media screen and (min-width: 1401px) {
+  /* seccion del recuadro blanco para el carrusel*/
+        .seccion_hijo_f{
+          background-color: rgb(255, 255, 255);
+          width: 45%;
+          border: 1px solid #c0c0c0;
+          border-radius: 5px;
+          display: flex;
+          justify-content: center;
+          }
+  
+  
+  /*seccion del recuadro gris para el carrusel*/
+  
+        .seccion_interno_2{
+        max-width: 65%;
+        display: flex;
+        justify-content: center;
+        margin: 5px;
+        }
+  /*titulo del carrusel*/
+        .content_titulo{
+        text-align: center;
+        color: rgb(0, 0, 0); 
+        margin: 5px;
+        }
+  /*carrusel*/
+        #contenedor{
+        text-align: center;
+        }
+  /*carrusel*/
+        .imagen{
+        max-width: 60%;
+        align-items: center;
+        border-radius: 5px;
+        margin: 10px;
+        }
+  
+  
+  
+  
+  /*titulo del nombre y tipo de renta*/
+        .seccion_hijo_t{
+          background-color: rgb(255, 255, 255);
+          width: 45%;
+          border: 1px solid #c0c0c0;
+          border-radius: 5px;
+          }  
+          
+  
+  /*tabla subtitulo del cap de personas y otros elementos*/
+  
+          
+  /* seccion de la tabla int*/
+        .interno_padre_l{
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        
+        }
+  
+  /* seccion de la tabla int*/
+        .interno_hijo_l{
+          background-color: rgb(255, 255, 255);
+          width: 45%;
+          border: 1px solid #c0c0c0;
+          border-radius: 5px;
+        }
+        
+        .interno_l{ 
+          width: 100%;
+          align-items: center;
+        }
+  /* seccion de la tabla entera*/
+        .container_tabla{
+          width: 100%;
+          margin: auto;
+        }
+  
+  
+  /* seccion de la tabla ext*/
+        .externo_hijo_l{
+          background-color: rgb(255, 255, 255);
+          width: 45%;
+          border: 1px solid #c0c0c0;
+          border-radius: 5px;
+        }
+  
+        .table{
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+        padding: 0;
+        table-layout: fixed;
+        }
+        
+        .table th, .table td{
+          padding: 8px;
+          text-align: center;
+        
+        }
+        .table thead th{
+          text-transform: uppercase;
+          background-color: #ffffff;
+          font-size: 14.5px;
+        }
+  
+  /*encabezado*/
+    
+    .encabezado {
+      top: -20px;
+      text-align: center;
+      width: 100%;
+      height: 160px;
+      background-size: cover;
+      background-attachment: fixed;
+      position: relative;
+      overflow: hidden;
+      border-radius: 0 0 85% 85% / 30%;
+    }
+    .encabezado .overlay{
+      width: 100%;
+      height: 100%;
+      padding: 15px;
+      color: #FFF;
+      text-shadow: 1px 1px 1px #333;
+      background-image: linear-gradient( 135deg, rgb(190, 73, 0) 10%, rgb(7, 9, 102) 100%);
+      
+    }
+  
+    h1 {
+      font-family: Montserrat, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 30px;
+      margin-bottom: 30px;
+    }
+  
+    h3, p {
+      font-family: Montserrat, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      margin-bottom: 30px;
+    }
+  
+    .boton {
+      border: none;
+      outline: none;
+      padding: 10px 20px;
+      border-radius: 50px;
+      color: #333;
+      background: #fff;
+      margin-bottom: 50px;
+      box-shadow: 0 3px 20px 0 #0000003b;
+      font-family: Montserrat, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .boton:hover{
+      cursor: pointer;
+    }
+  
+  
+    
+    /* diseño de los checksboxs */
+    
+    .tamano_icono{
+      width: 40px;
+      height: 40px;
+    }
+  
+    .centrar{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    } 
+  
+  
+  
+    .option_item{
+      display: block;
+      position: relative;
+      width: 130px;
+      margin: 5px;
+  
+      
+    }
+  /* tamaño y color del recuadro */
+    .option_inner{
+      width: 100%;
+      height: 90%;
+      border-radius: 7px;
+      background-color: whitesmoke;
+      text-align: center;
+      padding: 9px 5px;
+      cursor: pointer;
+      color: #585c68;
+      display: block;
+      border: 1px solid #a5a5a5;
+      position: relative;
+    }
+  /* tamaño y direccion del check */
+    .checkbox{
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      z-index: 1;
+      opacity: 0;
+    }
+    .icon{
+      margin-bottom: 5px;
+    }
+  /* tamaño de la letra del nombre */
+   
+  /* agrega accion de seleccionar y da colores al fondo y al estilo */
+    .option_item .checkbox:checked ~ .option_inner.seleccionar1 {
+      background-color: rgb(52, 138, 219);
+      border: 3px solid rgb(49, 50, 55);
+      color: white;
+      
+    }
+  
+    .option_item .checkbox:checked ~ .option_inner.seleccionar2 {
+      background-color: rgb(0, 180, 153);
+      border: 3px solid rgb(49, 50, 55);
+      color: white;
+      
+    }
+  
+    .option_item .checkbox:checked ~ .option_inner.seleccionar3 {
+      background-color: rgb(175, 49, 95);
+      border: 3px solid rgb(49, 50, 55);
+      color: white;
+    }
+  
+      /* mostrar y ocultar contenido */
+      .subtitulo{
+        text-align: center;
+        border: 1px solid #a5a5a5;
+        border-radius: 10px;
+        margin: 10px;
+        font-size: 18px;
+        background-color: rgb(255, 255, 255);
+      }
+  /*para mostrar y ocultar las secciones de la pagina*/      
+  /*servicios*/
+   #despliegue_servicios{
+    cursor: pointer;
+    transition: all 2s;
+  }
+  #ocultar_servicios{
+    cursor: pointer;
+    display: none;
+    transition: all 2s;
+  }
+  #detalle_servicios{
+    display: none;
+    transition: all 2s;
+  }
+  
+  /*precios*/
+  #despliegue_precios{
+    cursor: pointer;
+    transition: all 2s;
+  }
+  #ocultar_precios{
+    cursor: pointer;
+    display: none;
+    transition: all 2s;
+  }
+  #detalle_precios{
+    display: none;
+    transition: all 2s;
+  }
+  
+  /*clientes*/
+  #despliegue_clientes{
+    cursor: pointer;
+    transition: all 2s;
+  }
+  #ocultar_clientes{
+    cursor: pointer;
+    display: none;
+    transition: all 2s;
+  }
+  #detalle_clientes{
+    display: none;
+    transition: all 2s;
+  }
+  
+  
+  /*cliente*/
+    #despliegue_cliente{
+      cursor: pointer;
+      transition: all 2s;
+    }
+    #ocultar_cliente{
+      cursor: pointer;
+      display: none;
+      transition: all 2s;
+    }
+    #detalle_cliente{
+      display: none;
+      transition: all 2s;
+    }
+  
+  /*contacto de emergencia*/
+    #despliegue_emergencia{
+      cursor: pointer;
+      transition: all 2s;
+    }
+    #ocultar_emergencia{
+      cursor: pointer;
+      display: none;
+      transition: all 2s;
+    }
+    #detalle_emergencia{
+      display: none;
+      transition: all 2s;
+    }
+  
+    
+  /*documentos de estancia*/
+    #despliegue_doc_est{
+      cursor: pointer;
+      transition: all 2s;
+    }
+    #ocultar_doc_est{
+      cursor: pointer;
+      display: none;
+      transition: all 2s;
+    }
+    #detalle_doc_est{
+      display: none;
+      transition: all 2s;
+    }
+  
+    /*reglamento*/
+    #despliegue_reglamento{
+      cursor: pointer;
+      transition: all 2s;
+    }
+    #ocultar_reglamento{
+      cursor: pointer;
+      display: none;
+      transition: all 2s;
+    }
+    #detalle_reglamento{
+      display: none;
+      transition: all 2s;
+    }
+    /* datos de alojamiento*/
+    #despliegue_alojamiento{
+      cursor: pointer;
+      transition: all 2s;
+    }
+    #ocultar_alojamiento{
+      cursor: pointer;
+      display: none;
+      transition: all 2s;
+    }
+    #detalle_alojamiento{
+      display: none;
+      transition: all 2s;
+    }
+  /* servicio de cobro*/
+    #despliegue_cobro{
+      cursor: pointer;
+      transition: all 2s;
+    }
+    #ocultar_cobro{
+      cursor: pointer;
+      display: none;
+      transition: all 2s;
+    }
+    #detalle_cobro{
+      display: none;
+      transition: all 2s;
+    }
+    /* datos del contrato*/
+    #despliegue_contrato{
+      cursor: pointer;
+      transition: all 2s;
+    }
+    #ocultar_contrato{
+      cursor: pointer;
+      display: none;
+      transition: all 2s;
+    }
+    #detalle_contrato{
+      display: none;
+      transition: all 2s;
+    }
+  
+  /*para mostrar y ocultar las secciones de los servicios */
+  /* cocina */
+    #despliegue_cocina{
+      cursor: pointer;
+      transition: all 2s;
+    }
+    #ocultar_cocina{
+      cursor: pointer;
+      display: none;
+      transition: all 2s;
+    }
+    #detalle_cocina{
+      display: none;
+      transition: all 2s;
+    }
+
+    #despliegue_sinservicio{
+      cursor: pointer;
+    }
+    #ocultar_sinservicio{
+      cursor: pointer;
+      display: none;
+      
+    }
+    #detalle_sinservicio{
+      display: none;
+    }
+    
+  
+  /* lavanderia */
+    #despliegue_lavanderia{
+      cursor: pointer;
+    }
+    #ocultar_lavanderia{
+      cursor: pointer;
+      display: none;
+      
+    }
+    #detalle_lavanderia{
+      display: none;
+    }
+  
+  /* otros serv */
+  #despliegue_otro_s{
+    cursor: pointer;
+  }
+  #ocultar_otro_s{
+    cursor: pointer;
+    display: none;
+    
+  }
+  #detalle_otro_s{
+    display: none;
+  }
+  
+  /* estacionamiento */
+  #despliegue_estacionamiento{
+    cursor: pointer;
+  }
+  #ocultar_estacionamiento{
+    cursor: pointer;
+    display: none;
+    
+  }
+  #detalle_estacionamiento{
+    display: none;
+  }
+  
+  
+    
+  
+  /*SECCION DE LA TABLA PARA LOS CLIENTES DE LA CASA*/
+  
+  /* seccion de la tabla int*/
+  .interno_padre_C{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+   
+  }
+  
+  /* seccion de la tabla int*/
+  .interno_hijo_C{
+    background-color: rgb(255, 255, 255);
+    width: 60%;
+    border: 1px solid #c0c0c0;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+  }
+  /* seccion de la tabla entera*/
+  .container_tabla_C{
+    width: 100%;
+    margin: auto;
+  }
+  
+  .table{
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  table-layout: fixed;
+  }
+  
+  .table th, .table td{
+    padding: 8px;
+    text-align: center;
+  
+  }
+  .table thead th{
+    text-transform: uppercase;
+    background-color: #d3d3d3;
+    font-size: 14.5px;
+  }
+  .table tbody tr:hover{
+    background-color: rgba(0, 0, 0, 0.3);
+  }
+  
+  }
+  
+  
+  
+  

@@ -244,7 +244,8 @@ Route::get('view_rentar_hab/reserva/{Id_reservacion}/hab/{Id_habitacion}/lugar/{
 Route::post('store_rentar_hab/reserva/{Id_reservacion}/hab/{Id_habitacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@StoreRentarHab')->name('storerentarhab');
 
 
-
+//rutas para terminar la renta de una hab
+Route::get('view_terminar_renta_hab/reserva/{Id_reservacion}/hab/{Id_habitacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@ViewTerminarRentaHab')->name('viewterminarrentahab');
 
 
 
@@ -401,6 +402,10 @@ Route::put('activar_cliente/cliente/{Id_cliente}', 'ClienteController@ActivarCli
 Route::get('view_editar_cliente/cliente/{Id_cliente}', 'ClienteController@ViewEditCliente')->name('editarcliente');
 //funcion que actualiza el registro de un cliente
 Route::put('update_cliente/client/{cliente}', 'ClienteController@UpdateCliente')->name('update_cliente');
+//ruta para la vista de agregar un nuevo cliente
+Route::get('view_nuevo_cliente', 'ClienteController@ViewNuevoCliente')->name('viewnuevocliente');
+//ruta para guardar el registro de un nuevo cliente
+Route::post('store_cliente', 'ClienteController@ClienteStore')->name('storecliente');
 
 
 

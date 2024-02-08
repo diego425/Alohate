@@ -40,48 +40,78 @@
                     </div>
                 </div>
 
-<form action="" method="POST" enctype="multipart/form-data">
+<form action="{{route('storecliente')}}" method="POST" enctype="multipart/form-data">
 @csrf 
 
 
                 <div class="input-group">
                     <label for="nombre_c">Nombre:</label>
+                    @error('nombre_c')
+                        <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="nombre_c" id="nombre_c" placeholder="nombre" value="">
                 </div>
                 <div class="input-group">
                     <label for="apellido_pat">Apellido Paterno:</label>
+                    @error('apellido_pat')
+                        <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="apellido_pat" id="apellido_pat" placeholder="apellido" value="">
                 </div>
                 <div class="input-group">
                     <label for="apellido_mat">Apellido Materno:</label>
+                    @error('apellido_mat')
+                        <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="apellido_mat" id="apellido_mat" placeholder="apellido" value="">
                 </div>
                 <div class="input-group">
                     <label for="celular">Numero De Celular:</label>
+                    @error('celular_c')
+                        <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="tel" class="form-control"  name="celular_c" id="celular_c" placeholder="#" value="">
                 </div>
                 <div class="input-group">
                     <label for="email">Email:</label>
+                    @error('email_c')
+                        <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="email" class="form-control"  name="email_c" id="email_c" placeholder="@" value="">
                 </div>
                 <div class="input-group">
                     <label for="estado">Estado De Proc.:</label>
+                    @error('estado')
+                        <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="estado" id="estado" placeholder="estado" value="">
                 </div>
                 <div class="input-group">
                     <label for="ciudad">Ciudad De Proc.:</label>
+                    @error('ciudad')
+                        <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="ciudad" id="ciudad" placeholder="ciudad" value="">
                 </div>
                 <div class="input-group">
                     <label for="pais">Pais De Proc.:</label>
+                    @error('pais')
+                        <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="pais" id="pais" placeholder="pais" value="">
                 </div>
                 <div class="input-group">
                     <label for="motivo_v">Motivo De La Visita:</label>
+                    @error('motivo_v')
+                        <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="motivo_v" id="motivo_v" placeholder="" value="">
                 </div>
                 <div class="input-group">
                     <label for="lugar_v">Coloca El Nombre De La Institucion/Empresa:</label>
+                    @error('lugar_v')
+                        <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="lugar_v" id="lugar_v" placeholder="" value="">
                 </div>
                 
@@ -185,31 +215,49 @@
                 </div>
                 <div class="input-group">
                     <label for="nombre_p_e1">Nombre Completo De La Persona 1:</label>
+                    @error('nombre_p_e1')
+                        <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="nombre_p_e1" id="nombre_p_e1" placeholder="nombre y apellidos" value="">
                 </div>
                 <div class="input-group">
                     <label for="numero_p_e1">Numero De Celular De La Persona 1:</label>
+                    @error('numero_p_e1')
+                        <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="tel" class="form-control"  name="numero_p_e1" id="numero_p_e1" placeholder="#" value="">
                 </div>
                 <div class="input-group">
                     <label for="parentesco1">Parentesco De La Persona 1:</label>
+                    @error('parentesco1')
+                        <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="parentesco1" id="parentesco1" placeholder="" value="">
                 </div>
                 <div class="input-group">
                     <label for="nombre_p_e2">Nombre Completo De La Persona 2:</label>
+                    @error('nombre_p_e2')
+                        <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="nombre_p_e2" id="nombre_p_e2" placeholder="nombre y apellidos" value="">
                 </div>
                 <div class="input-group">
                     <label for="numero_p_e2">Numero De Celular De La Persona 2:</label>
+                    @error('numero_p_e2')
+                        <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="tel" class="form-control"  name="numero_p_e2" id="numero_p_e2" placeholder="#" value="">
                 </div>
                 <div class="input-group">
                     <label for="parentesco2">Parentesco De La Persona 2:</label>
+                    @error('parentesco2')
+                        <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="parentesco2" id="parentesco2" placeholder="" value="">
                 </div>
                 <div class="btns-group">
                     <a href="#" class="btn btn-prev">Anterior</a>
-                    <input type="submit" value="Guardar y continuar" class="boton_finalizar" style="width: 170px">
+                    <input type="submit" value="Guardar" class="boton_finalizar" style="width: 170px">
                 </div>
             </div>
         </form>
@@ -221,32 +269,8 @@
     <script src="https://kit.fontawesome.com/110428e727.js" crossorigin="anonymous"></script>
     <script type="text/javascript" src="{{ url('js/Movimiento.js')}}"></script>
     <script type="text/javascript" src="{{ url('js/reservacion.js')}}"></script>
-    <script type="module" src="{{ url('js/buscarnum.js')}}"></script>
+    <script type="text/javascript" src="{{ url('js/Mantener_datos.js')}}"></script>
 
-<script>
-    function seleccionar(Id_cliente,Nombre,Apellido_paterno,Apellido_materno,Numero_celular,Email,Ciudad,Estado,Pais,Ref1_nombre,Ref2_nombre,Ref1_celular,Ref2_celular,Ref1_parentesco,Ref2_parentesco,Motivo_visita,Lugar_motivo_visita){
-
-    $("#idcliente").val(Id_cliente);
-    $("#nombre_c").val(Nombre);
-    $("#apellido_pat").val(Apellido_paterno);
-    $("#apellido_mat").val(Apellido_materno);
-    $("#celular_c").val(Numero_celular);
-    $("#email_c").val(Email);
-    $("#ciudad").val(Ciudad);
-    $("#estado").val(Estado);
-    $("#pais").val(Pais);
-    $("#nombre_p_e1").val(Ref1_nombre);
-    $("#nombre_p_e2").val(Ref2_nombre);
-    $("#numero_p_e1").val(Ref1_celular);
-    $("#numero_p_e2").val(Ref2_celular);
-    $("#parentesco1").val(Ref1_parentesco);
-    $("#parentesco2").val(Ref2_parentesco);
-    $("#motivo_v").val(Motivo_visita);
-    $("#lugar_v").val(Lugar_motivo_visita);
-
-    document.getElementById('showlist').style.display = 'none';
-}
-</script>
 <script>
 //funciones js para las fotografias 
 

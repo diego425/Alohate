@@ -2385,6 +2385,68 @@ if($request->get('tipo_contrato') == "Flexible"){
 }
 
 
+public function ViewTerminarRentaHab($Id_reservacion, $Id_habitacion, $Id_lugares_reservados){
+
+    $renta = DB::table('lugares_reservados')
+    ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion','lugares_reservados.Id_locacion', 
+     'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
+     'est.Nombre_estado',
+     'reserva.Id_reservacion','reserva.Id_colaborador',
+     'reserva.Start_date','reserva.End_date', 'reserva.Title','reserva.Fecha_reservacion',
+     'reserva.Numero_personas_extras', 'reserva.Foto_comprobante_anticipo', 'reserva.Fecha_pago_anticipo',
+     'reserva.Foto_aviso_privacidad', 'reserva.Foto_reglamento','reserva.Monto_uso_cochera', 
+     'reserva.Metodo_pago_anticipo','reserva.Espacios_cochera','reserva.Monto_pagado_anticipo',
+     'reserva.Tipo_de_cobro','reserva.Nota_pago_anticipo',
+     'cliente.Id_cliente','cliente.Id_colaborador','cliente.Nombre',
+     'cliente.Apellido_paterno','cliente.Apellido_materno','cliente.Email', 
+     'cliente.Numero_celular','cliente.Ciudad','cliente.Estado',
+     'cliente.Pais', 'cliente.Ref1_nombre','cliente.Ref2_nombre',
+     'cliente.Ref1_celular','cliente.Ref2_celular','cliente.Ref1_parentesco',
+     'cliente.Ref2_parentesco','cliente.Motivo_visita', 'cliente.Lugar_motivo_visita', 
+     'cliente.Foto_cliente', 'cliente.INE_frente', 'cliente.INE_reverso',
+     'hab.Id_habitacion','hab.Id_locacion','hab.Id_estado_ocupacion', 
+     'hab.Id_colaborador','hab.Nombre_hab', 'hab.Capacidad_personas',  'hab.Deposito_garantia_hab', 
+     'hab.Precio_noche', 'hab.Precio_semana','hab.Precio_catorcedias', 'hab.Precio_mes', 
+     'hab.Encargado','hab.Espacio_superficie', 'hab.Nota','hab.Descripcion',
+     'hab.Cobro_p_ext_mes_h','hab.Cobro_p_ext_catorcena_h','hab.Cobro_p_ext_noche_h',
+     'hab.Cobro_anticipo_mes_h','hab.Cobro_anticipo_catorcena_h','hab.Camas_juntas',
+     'loc.Nombre_locacion')
+    ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
+    ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+    ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+    ->leftJoin("habitacion as hab", "hab.Id_habitacion", "=", "lugares_reservados.Id_habitacion")
+    ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
+    ->where('reserva.Id_reservacion', '=', $Id_reservacion)
+    ->where('hab.Id_habitacion', '=', $Id_habitacion)
+    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    ->get();
+
+    $consulta_pago_renta = DB::table('cobro_renta')
+    ->select('cobro_renta.Id_cobro_renta','cobro_renta.Id_reservacion','cobro_renta.Id_lugares_reservados',
+    'cobro_renta.Id_colaborador','cobro_renta.Cobro_persona_extra',
+    'cobro_renta.Periodo_total','cobro_renta.Estatus_cobro',
+    'cobro_renta.Tiempo_rebasado','cobro_renta.Deposito_garantia',
+    'cobro_renta.Monto_total','cobro_renta.Saldo','cobro_renta.Id_locacion')
+    ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "cobro_renta.Id_reservacion")
+    ->leftJoin("lugares_reservados", "lugares_reservados.Id_lugares_reservados", "=", "cobro_renta.Id_lugares_reservados")
+    ->where('reserva.Id_reservacion', '=', $Id_reservacion)
+    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    ->get();
+
+    if($consulta_pago_renta[0]->Saldo == $consulta_pago_renta[0]->Monto_total){
+
+        return view('Reservaciones y rentas.Terminar_renta.terminar_renta_hab', compact('renta'));
+    }else{
+        Alert::error('Alto', 'Se detecto que este cliente no ha pagado el monto total de renta. por favor pidele que pague para que pueda irse');
+        return redirect()->back();
+    }
+
+    
+
+}
+
+
+
 
 
 

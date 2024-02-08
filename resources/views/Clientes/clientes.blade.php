@@ -46,7 +46,7 @@
     <div class="externo_hijo_l">
           <div class="externo_l">
                 <div class="boton_agregar"> 
-                <button  class="btn btn-secondary clickForm" href=""><i class="ri-add-circle-fill"></i></button>
+                <button  class="btn btn-secondary clickForm" href="{{route('viewnuevocliente' )}}"><i class="ri-add-circle-fill"></i></button>
                 </div>
                <div class="titulo_gestion">
                 <h5><label>Gestion De Los Clientes</label></h5>

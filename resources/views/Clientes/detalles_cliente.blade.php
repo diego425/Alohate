@@ -204,7 +204,7 @@
                 <p><h5>Botones De Accion</h5></p>
                 <p>
                     <button class="btn btn-success clickForm" href="{{route('editarcliente', $cliente[0]->Id_cliente)}}"><i class="fa-solid fa-user-pen"></i></button>
-                    @if($cliente[0]->Estatus_cliente == "Desactivado")
+                    @if($cliente[0]->Estatus_cliente == "Bloqueado")
                     <button class="btn btn-warning clickForm" href="{{route('view_desact_cliente',$cliente[0]->Id_cliente)}}" >Activar</button>
                     @else
                     <button class="btn btn-danger clickForm" href="{{route('view_desact_cliente', $cliente[0]->Id_cliente)}}" >Bloquear</button>

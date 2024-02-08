@@ -38,7 +38,9 @@ use GuzzleHttp\Client;
 
 class ClienteController extends Controller
 {
-public function ViewClientes(){
+public function ViewClientes(Request $request){
+
+    $num_cel =trim($request->get('no_cel'));
 
     $clientes = DB::table('cliente')
     ->select(
@@ -49,6 +51,7 @@ public function ViewClientes(){
     'Ref1_celular','Ref2_celular','Ref1_parentesco',
     'Ref2_parentesco','Motivo_visita', 'Lugar_motivo_visita', 
     'Foto_cliente', 'INE_frente', 'INE_reverso', 'Estatus_cliente')
+    ->where('Numero_celular','LIKE','%'.$num_cel.'%')
     ->paginate(4);
 
     return view('Clientes.clientes', compact('clientes'));
@@ -104,9 +107,14 @@ try{
         $affected = DB::table('cliente')
         ->where('Id_cliente', '=', $Id_cliente)
         ->update(['Estatus_cliente' => "Bloqueado"]);
-    
+
+        UsuariosController::historial_log(Cookie::get('Id_colaborador'),"Bloqueo a un cliente");
+        
         Alert::success('Exito', 'Se ha bloqueado al cliente con exito');
         return redirect()->back();
+
+        
+
 
     }else{
      
@@ -127,6 +135,8 @@ try{
     $affected = DB::table('cliente')
     ->where('Id_cliente', '=', $Id_cliente)
     ->update(['Estatus_cliente' => "Activado"]);
+
+    UsuariosController::historial_log(Cookie::get('Id_colaborador'),"Desbloqueo a un cliente");
 
     Alert::success('Exito', 'Se ha activado al cliente con exito');
     return redirect()->back();
@@ -224,6 +234,8 @@ try{
 
     }}
 
+    UsuariosController::historial_log(Cookie::get('Id_colaborador'),"Edito un registro de un cliente");
+
     Alert::success('Exito', 'Se ha actualizado al cliente con exito');
     return redirect()->back();
 
@@ -240,7 +252,24 @@ public function ViewNuevoCliente(){
 
 public function ClienteStore(Request $request){
 
-try{
+    $request->validate([
+        'nombre_c' => 'required',
+        'apellido_pat' => 'required',
+        'apellido_mat' => 'required',
+        'email_c'=> 'required',
+        'celular_c'=> 'required',
+        'ciudad'=> 'required',
+        'estado'=> 'required',
+        'pais'=> 'required',
+        'nombre_p_e1'=> 'required',
+        'nombre_p_e2'=> 'required',
+        'numero_p_e1'=> 'required',
+        'numero_p_e2'=> 'required',
+        'parentesco1'=> 'required',
+        'parentesco2'=> 'required',
+        'motivo_v'=> 'required',
+        'lugar_v'=> 'required',
+    ]);
 
     $agregarcliente = new Cliente();
     $agregarcliente -> Nombre = $request->get('nombre_c');
@@ -283,7 +312,7 @@ try{
         $image = $request->file('img3');
       
         if($image != ''){
-            $nombreImagen = 'INE'.'_'.$cliente->Apellido_paterno.'_'.$cliente->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
+            $nombreImagen = 'INE'.'_'.$cliente[0]->Apellido_paterno.'_'.$cliente[0]->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
             $base64Img = $request->nuevaImagen3;
             $base_to_php = explode(',',$base64Img);
             $data = base64_decode($base_to_php[1]);
@@ -294,7 +323,7 @@ try{
       
             if ($guardarImagen !== false) {
                 DB::table('cliente')
-                ->where('Id_cliente', '=', $cliente->Id_cliente)
+                ->where('Id_cliente', '=', $cliente[0]->Id_cliente)
                 ->update(['INE_frente' => $nombreImagen]);
         }}
     
@@ -306,7 +335,7 @@ try{
         $image = $request->file('img4');
       
         if($image != ''){
-            $nombreImagen = 'INE'.'_'.$cliente->Apellido_paterno.'_'.$cliente->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
+            $nombreImagen = 'INE'.'_'.$cliente[0]->Apellido_paterno.'_'.$cliente[0]->Apellido_materno.'_'.rand(). '.' . $image->getClientOriginalExtension();
             $base64Img = $request->nuevaImagen4;
             $base_to_php = explode(',',$base64Img);
             $data = base64_decode($base_to_php[1]);
@@ -317,16 +346,17 @@ try{
       
             if ($guardarImagen !== false) {
                 DB::table('cliente')
-                ->where('Id_cliente', '=', $cliente->Id_cliente)
+                ->where('Id_cliente', '=', $cliente[0]->Id_cliente)
                 ->update(['INE_reverso' => $nombreImagen]);
     
         }}
 
-}catch(Exception $ex){
-    Alert::error('Error', 'No se pudo agregar al cliente, verifica que todo este en orden');
-    return redirect()->back();
-}
+        UsuariosController::historial_log(Cookie::get('Id_colaborador'),"Registro un nuevo cliente");
+
+        Alert::success('Exito', 'Se agrego al cliente con exito');
+        return redirect()->back();
 
 }
 
 }
+
