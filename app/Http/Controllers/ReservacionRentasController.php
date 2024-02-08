@@ -464,7 +464,7 @@ public function ViewReservaHabOC($Id_locacion, $Id_habitacion){
 
 //funcion que guarda el registro para añadir una reservacion con cliente existente en una hab
 public function StoreReservaHabOC(Request $request, $Id_locacion, $Id_habitacion){
-try{
+//try{
 //consulta que me revisa las fechas ya agendadas en la bd para que no se repitan las fechas
     $fecha_bd = DB::table('reservacion')
     ->select('hab.Id_habitacion', 'Start_date', 'End_date' )
@@ -563,10 +563,10 @@ try{
         Alert::warning('Advertencia', 'La fecha seleccionada ya esta ocupada, por favor selecciona otra');
         return redirect()->back();
     }
-}catch(Exception $ex){
-     Alert::error('Error', 'La reservacion no se pudo registrar revisa que todo este en orden');
-     return redirect()->back();
-}
+// }catch(Exception $ex){
+//      Alert::error('Error', 'La reservacion no se pudo registrar revisa que todo este en orden');
+//      return redirect()->back();
+//}
 
 }
 
