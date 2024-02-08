@@ -1,5 +1,5 @@
 @extends('layouts.menu_layout')
-@section('title', 'COBROS DE RENTA')
+@section('title', 'DETALLE DE RENTA')
 @section('css')
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js">
@@ -109,6 +109,14 @@
                 </a>
             </div>
             <br>
+            <h6 class="card-title center bold">Datos generales</h6>
+            <div class="user-detail-card justify" data-mh="card-one">
+                @if (!empty($cobros[0]->lugarEspecifico[0]["Nombre"]))
+                    <p><span>Cliente :</span> {{ $cobros[0]->Title[0]->Nombre }}</p>
+                    <p><span>Lugar :</span> {{ $cobros[0]->tipoLocacion.": ".$cobros[0]->lugarEspecifico[0]["Nombre"] }}</p>
+                @endif
+            </div>
+            <hr>
             <h6 class="card-title center bold">Detalles del cobro</h6>
             <div class="user-detail-card justify" data-mh="card-one">
                 <p><span>Tiempo predefinido de estancia :</span> {{ $cobros[0]->Periodo_total }}</p>

@@ -19,18 +19,98 @@ class PagosController extends Controller
      */
     public function index(Request $request)
     {
+        $tipos = array(
+            "Id_habitacion",
+            "Id_departamento",
+            "Id_local",
+            "Id_locacion"
+        );
+
+        $cobrosSin = DB::table('cobro_renta AS cr')
+        ->selectRaw('cr.Id_cobro_renta,cr.Id_reservacion, cr.Cobro_persona_extra, cr.Periodo_total, cr.Estatus_cobro,
+        cr.Tiempo_rebasado, cr.Deposito_garantia, cr.Monto_total, cr.Saldo, res.Start_date, res.End_date,
+        res.Monto_pagado_anticipo, res.Title,lr.Id_habitacion, lr.Id_locacion, lr.Id_local, lr.Id_departamento, eo.Nombre_estado
+        , ("") AS lugarEspecifico, ("") AS tipoLocacion, eso.Nombre_estado AS Estado, ("Si") AS mostrar')
+            ->leftJoin('reservacion AS res', 'res.Id_reservacion', '=', 'cr.Id_reservacion')
+            ->leftJoin('lugares_reservados AS lr', 'cr.Id_lugares_reservados', '=', 'lr.Id_lugares_reservados')
+            ->leftJoin('estado_ocupacion AS eo', 'eo.Id_estado_ocupacion', '=', 'lr.Id_estado_ocupacion')
+            ->leftJoin('estado_ocupacion AS eso', 'eso.Id_estado_ocupacion', '=', 'cr.Estatus_cobro')
+        ->whereRaw('cr.Id_locacion IS NULL')
+        ->groupByRaw('cr.Id_cobro_renta')
+        ->orderByDesc('cr.Id_cobro_renta')
+        ->get();
+
+        foreach ($cobrosSin as $key => $reporte) {
+            $reporte = json_decode(json_encode($reporte), true);
+            $id = null;
+            $lugar = array();
+            $tipoLocacion = '';
+            for ($i = 0; $i < 4; $i++) {
+                if (!empty($reporte[$tipos[$i]])) {
+                    if ($tipos[$i] == 'Id_locacion') {
+                        $tipoLocacion = "Entera";
+                    } elseif ($tipos[$i] == 'Id_local') {
+                        $tipoLocacion = "Local";
+                    } elseif ($tipos[$i] == 'Id_departamento') {
+                        $tipoLocacion = "Departamento";
+                    } elseif ($tipos[$i] == 'Id_habitacion') {
+                        $tipoLocacion = "Habitación";
+                    }
+
+                    $id = $reporte[$tipos[$i]];
+                    break;
+                }
+            }
+            $lugar = DB::select('call seleccionarLugar(?,?,?);', [$id, $tipoLocacion, $reporte["Id_locacion"]]);
+            $lugar = json_decode(json_encode($lugar), true);
+
+            if (!empty($lugar[0]['Id_locacion'])) {
+                $affected = DB::table('cobro_renta')
+                ->where('Id_cobro_renta', $cobrosSin[$key]->Id_cobro_renta)
+                ->update(['Id_locacion' => $lugar[0]['Id_locacion']]);
+            }
+
+            $cobrosSin[$key]->lugarEspecifico = $lugar;
+            $cobrosSin[$key]->tipoLocacion = $tipoLocacion;
+        }
+
         if (!empty(Cookie::get('puesto'))) {
             if (Cookie::get('puesto') == "ADMIN" || Cookie::get('puesto') == "OPERADOR" || Cookie::get('puesto') == "AUXILIAR") {
+                $buscar = $request->buscar;
+                $Id_locacion = $request->Id_locacion;
+                $statusCobro = $request->statusCobro;
+
+                $locaciones = DB::table('locacion')
+                ->get();
+
                 $cobros = DB::table('cobro_renta AS cr')
                     ->selectRaw('cr.Id_cobro_renta,cr.Id_reservacion, cr.Cobro_persona_extra, cr.Periodo_total, cr.Estatus_cobro,
                 cr.Tiempo_rebasado, cr.Deposito_garantia, cr.Monto_total, cr.Saldo, res.Start_date, res.End_date,
                 res.Monto_pagado_anticipo, res.Title,lr.Id_habitacion, lr.Id_locacion, lr.Id_local, lr.Id_departamento, eo.Nombre_estado
-                , ("") AS lugarEspecifico, ("") AS tipoLocacion, eso.Nombre_estado AS Estado')
+                , ("") AS lugarEspecifico, ("") AS tipoLocacion, eso.Nombre_estado AS Estado, ("Si") AS mostrar')
                     ->leftJoin('reservacion AS res', 'res.Id_reservacion', '=', 'cr.Id_reservacion')
                     ->leftJoin('lugares_reservados AS lr', 'cr.Id_lugares_reservados', '=', 'lr.Id_lugares_reservados')
                     ->leftJoin('estado_ocupacion AS eo', 'eo.Id_estado_ocupacion', '=', 'lr.Id_estado_ocupacion')
                     ->leftJoin('estado_ocupacion AS eso', 'eso.Id_estado_ocupacion', '=', 'cr.Estatus_cobro')
+                    ->leftJoin('pago_renta AS pr', 'pr.Id_cobro_renta', '=', 'cr.Id_cobro_renta')
                     ->groupByRaw('cr.Id_cobro_renta')
+                ->where(function($query) use($buscar){
+                    if($buscar)
+                        return  $query->where('cr.Id_cobro_renta', $buscar)
+                        ->orWhere('res.Title','LIKE',"%$buscar%")
+                        ->orWhere('eo.Nombre_estado','LIKE',"%$buscar%");
+                })
+                ->where(function($query) use($Id_locacion){
+                    if($Id_locacion)
+                        return  $query->orWhere('cr.Id_locacion', $Id_locacion);
+                })
+                ->where(function($query) use($statusCobro){
+                    if($statusCobro == '7' || $statusCobro == '8'){
+                        return  $query->orWhere('cr.Estatus_cobro', $statusCobro);
+                    }elseif ($statusCobro == 'porConfirmar') {
+                        return  $query->where('pr.Estatus_pago', '=', "Pendiente");
+                    }
+                })
                 ->orderByDesc('cr.Id_cobro_renta')
                 ->paginate(5);
 
@@ -65,12 +145,29 @@ class PagosController extends Controller
                     $lugar = DB::select('call seleccionarLugar(?,?,?);', [$id, $tipoLocacion, $reporte["Id_locacion"]]);
                     $lugar = json_decode(json_encode($lugar), true);
 
+                    if (!empty($lugar[0]['Id_locacion'])) {
+                        if ($lugar[0]['Id_locacion'] != $cobros[$key]->Id_locacion) {
+                            $affected = DB::table('cobro_renta')
+                            ->where('Id_cobro_renta', $cobros[$key]->Id_cobro_renta)
+                            ->update(['Id_locacion' => $lugar[0]['Id_locacion']]);
+                        }
+                    }
+
                     $cobros[$key]->lugarEspecifico = $lugar;
                     $cobros[$key]->tipoLocacion = $tipoLocacion;
                 }
 
+                /* if (!empty($Id_locacion)) {
+                    foreach ($cobros as $key => $value) {
+                        if ($value->Id_locacion == $Id_locacion) {
+                        }else{
+                            $cobros[$key]->mostrar = "ocultar";
+                        }
+                    }
+                } */
+
                 session()->flashInput($request->input());
-                return view('Pagos.index', ['cobros' => $cobros]);
+                return view('Pagos.index', ['cobros' => $cobros, 'locaciones' => $locaciones]);
             } else {
                 return view('Errores.error403');
             }
@@ -95,7 +192,11 @@ class PagosController extends Controller
             ->leftJoin('estado_ocupacion AS eso', 'eso.Id_estado_ocupacion', '=', 'cr.Estatus_cobro')
             ->where('cr.Id_cobro_renta', $id)
             ->groupByRaw('cr.Id_cobro_renta')
-            ->paginate(5);
+            ->get();
+        
+        $formaPagos = DB::table('forma_pago')
+        ->orderBy('c_FormaPago','ASC')
+        ->get();
 
         $tipos = array(
             "Id_habitacion",
@@ -128,12 +229,13 @@ class PagosController extends Controller
             $lugar = DB::select('call seleccionarLugar(?,?,?);', [$id, $tipoLocacion, $reporte["Id_locacion"]]);
             $lugar = json_decode(json_encode($lugar), true);
 
+            $cobros[$key]->Title = json_decode($cobros[$key]->Title);
             $cobros[$key]->lugarEspecifico = $lugar;
             $cobros[$key]->tipoLocacion = $tipoLocacion;
         }
 
         session()->flashInput($request->input());
-        return view('Pagos.create', ['cobros' => $cobros]);
+        return view('Pagos.create', ['cobros' => $cobros, 'formaPagos' => $formaPagos]);
     }
 
     /**
@@ -163,6 +265,7 @@ class PagosController extends Controller
                 'Monto_pago' => $request->Monto_pago,
                 'Fecha_pago' => date("Y-m-d"),
                 'Metodo_pago' => $request->Metodo_pago,
+                'c_FormaPago' => $request->c_FormaPago,
                 'Concepto_pago_renta' => $request->Concepto_pago_renta,
                 'Estatus_pago' => "Pendiente",
             ]);
@@ -184,6 +287,11 @@ class PagosController extends Controller
                         ->update(['Foto_comprobante_pago' => $nombreImagen]);
                     }
                 }
+
+                
+                UsuariosController::historial_log(Cookie::get('Id_colaborador'),
+                        "Se registro un pago por la cantidad de ".$request->Monto_pago. " para el cobro ".$id);
+                return redirect()->route('pagos.index')->with('message', 'Pago registrado');
             }
         }
     }
@@ -230,6 +338,7 @@ class PagosController extends Controller
                         $tipoLocacion = "Habitación";
                     }
 
+                    $cobros[$key]->Title = json_decode($cobros[$key]->Title);
                     $id = $reporte[$tipos[$i]];
                     break;
                 }
@@ -311,6 +420,7 @@ class PagosController extends Controller
                         $tipoLocacion = "Habitación";
                     }
 
+                    $cobros[$key]->Title = json_decode($cobros[$key]->Title);
                     $id = $reporte[$tipos[$i]];
                     break;
                 }
@@ -323,6 +433,7 @@ class PagosController extends Controller
         }
 
         $pagos = DB::table('pago_renta')
+        ->leftJoin('forma_pago AS fp', 'fp.c_FormaPago', '=', 'pago_renta.c_FormaPago')
         ->where('Id_cobro_renta','=',$idCobro)
         ->get();
 
@@ -333,8 +444,8 @@ class PagosController extends Controller
         $pago = DB::select('SELECT * FROM `pago_renta` WHERE Estatus_pago = "Pendiente" AND Id_pago_renta = ?',[$idPago]);
         $cobro = DB::select('SELECT * FROM `cobro_renta` WHERE Id_cobro_renta = ?',[$idCobro]);
 
-        // print_r($cobro);
-        if (!empty($pago[0]->Metodo_pago)) {
+        print_r($request->all());
+        if (!empty($pago[0]->Metodo_pago) && !empty($request->id) && !empty($request->tipoLocacion)) {
             switch ($referencia) {
                 case 'Confirmar':
                     $saldo = 0;
@@ -357,17 +468,138 @@ class PagosController extends Controller
                         UsuariosController::historial_log(Cookie::get('Id_colaborador'), 
                         "Confirmo un pago de ".$pago[0]->Monto_pago. " para el cobro ".$cobro[0]->Id_cobro_renta);
 
-                        if ($saldo >= (float)$cobro[0]->Monto_total) {
+                        if ($saldo >= (float)$cobro[0]->Monto_total) {                            
                             $affected = DB::table('cobro_renta')
                             ->where('Id_cobro_renta', $idCobro)
                             ->update(['Estatus_cobro' => "8"]);
-                            return redirect()->route('pagos.index')->with('message', 'Renta pagada');
+                            
+                            if ($affected) {
+                                //Pago completo cambia los estados
+                                if ($request->tipoLocacion == "Entera") {
+                                    $datosEntera = DB::table('locacion')
+                                    ->where('Id_locacion',$request->id)
+                                    ->get();
+                                    $datosEntera = json_decode(json_encode($datosEntera));
+    
+                                    if (!empty($datosEntera[0]->Id_locacion)) {
+                                        $updateLocacion = DB::table('locacion')
+                                            ->where('Id_locacion', $datosEntera[0]->Id_locacion)
+                                        ->update(['Id_estado_ocupacion' => 4]);
+
+                                        if ($updateLocacion) {
+                                            $updatelocal = DB::table('local')
+                                            ->where('Id_locacion', $datosEntera[0]->Id_locacion)
+                                            ->update(['Id_estado_ocupacion' => 4]);
+                                            $updatedepartamento = DB::table('departamento')
+                                            ->where('Id_locacion', $datosEntera[0]->Id_locacion)
+                                            ->update(['Id_estado_ocupacion' => 4]);
+                                            $updatehabitacion = DB::table('habitacion')
+                                            ->where('Id_locacion', $datosEntera[0]->Id_locacion)
+                                            ->update(['Id_estado_ocupacion' => 4]);
+
+                                            return redirect()->route('pagos.index')->with('message', 'Se actualizo la locación entera y todos sus lugares a rentados');
+                                        }else {
+                                            $updatePago = DB::table('pago_renta')
+                                            ->where('Id_pago_renta', $idPago)
+                                            ->update(['Estatus_pago' => "Pendiente"]);
+
+                                            $affected = DB::table('cobro_renta')
+                                            ->where('Id_cobro_renta', $idCobro)
+                                            ->update(['Saldo' => $cobro[0]->Saldo,'Estatus_cobro' => '7']);
+                                            return redirect()->route('pagos.index')->with('error', 'No se pudo actualizar la locación a rentada');
+                                        }
+                                    }else {
+                                        $updatePago = DB::table('pago_renta')
+                                        ->where('Id_pago_renta', $idPago)
+                                        ->update(['Estatus_pago' => "Pendiente"]);
+
+                                        $affected = DB::table('cobro_renta')
+                                        ->where('Id_cobro_renta', $idCobro)
+                                        ->update(['Saldo' => $cobro[0]->Saldo,'Estatus_cobro' => '7']);
+                                        return redirect()->route('pagos.index')->with('error', 'No se pudo actualizar la locación a rentada, pago aún disponible');
+                                    }
+                                }elseif ($request->tipoLocacion == "Local") {
+                                    $datosLocal = DB::table('local')
+                                    ->where('Id_local',$request->id)
+                                    ->get();
+
+                                    if (!empty($datosLocal[0]->Id_local)) {
+                                        $updatelocal = DB::table('local')
+                                        ->where('Id_local', $datosLocal[0]->Id_local)
+                                        ->update(['Id_estado_ocupacion' => 4]);
+
+                                        return redirect()->route('pagos.index')->with('message', 'Registro de local actualizado, pago aplicado');
+                                    } else {
+                                        $updatePago = DB::table('pago_renta')
+                                        ->where('Id_pago_renta', $idPago)
+                                        ->update(['Estatus_pago' => "Pendiente"]);
+
+                                        $affected = DB::table('cobro_renta')
+                                        ->where('Id_cobro_renta', $idCobro)
+                                        ->update(['Saldo' => $cobro[0]->Saldo,'Estatus_cobro' => '7']);
+                                        return redirect()->route('pagos.index')->with('error', 'No se pudo actualizar el local a rentado, pago aún disponible');
+                                    }
+                                }elseif ($request->tipoLocacion == "Departamento") {
+                                    $datosDepa = DB::table('departamento')
+                                    ->where('Id_departamento',$request->id)
+                                    ->get();
+
+                                    if (!empty($datosDepa[0]->Id_departamento)) {
+                                        $updatelocal = DB::table('departamento')
+                                        ->where('Id_departamento', $datosDepa[0]->Id_departamento)
+                                        ->update(['Id_estado_ocupacion' => 4]);
+
+                                        return redirect()->route('pagos.index')->with('message', 'Registro de local actualizado, pago aplicado');
+                                    } else {
+                                        $updatePago = DB::table('pago_renta')
+                                        ->where('Id_pago_renta', $idPago)
+                                        ->update(['Estatus_pago' => "Pendiente"]);
+
+                                        $affected = DB::table('cobro_renta')
+                                        ->where('Id_cobro_renta', $idCobro)
+                                        ->update(['Saldo' => $cobro[0]->Saldo,'Estatus_cobro' => '7']);
+                                        return redirect()->route('pagos.index')->with('error', 'No se pudo actualizar el local a rentado, pago aún disponible');
+                                    }
+                                }elseif ($request->tipoLocacion == "Habitación") {
+                                    $datosHabitacion = DB::table('habitacion')
+                                    ->where('Id_habitacion',$request->id)
+                                    ->get();
+
+                                    if (!empty($datosHabitacion[0]->Id_habitacion)) {
+                                        $updatelocal = DB::table('habitacion')
+                                        ->where('Id_habitacion', $datosHabitacion[0]->Id_habitacion)
+                                        ->update(['Id_estado_ocupacion' => 4]);
+
+                                        return redirect()->route('pagos.index')->with('message', 'Registro de local actualizado, pago aplicado');
+                                    } else {
+                                        $updatePago = DB::table('pago_renta')
+                                        ->where('Id_pago_renta', $idPago)
+                                        ->update(['Estatus_pago' => "Pendiente"]);
+
+                                        $affected = DB::table('cobro_renta')
+                                        ->where('Id_cobro_renta', $idCobro)
+                                        ->update(['Saldo' => $cobro[0]->Saldo,'Estatus_cobro' => '7']);
+                                        return redirect()->route('pagos.index')->with('error', 'No se pudo actualizar el local a rentado, pago aún disponible');
+                                    }
+                                }else {
+                                    return redirect()->route('pagos.index')->with('error', 'El pago se tomó, pero no actualizo ningún lugar.');
+                                }
+                            }else{
+                                //No se pudo actualizar la renta a pago completo
+                                $updatePago = DB::table('pago_renta')
+                                ->where('Id_pago_renta', $idPago)
+                                ->update(['Estatus_pago' => "Pendiente"]);
+
+                                $affected = DB::table('cobro_renta')
+                                ->where('Id_cobro_renta', $idCobro)
+                                ->update(['Saldo' => $cobro[0]->Saldo,'Estatus_cobro' => '7']);
+
+                                return redirect()->back()->with('error', 'Registros no actualizados verifique el saldo de la renta');
+                            }
                         }else{
                             return redirect()->back()->with('message', 'Pago confirmado');
                         }
-
-
-                    }else{                        
+                    }else{
                         return redirect()->back()->with('error', 'No se pudo insertar el registro');
                     }
 
@@ -376,17 +608,17 @@ class PagosController extends Controller
                     $affected = DB::table('pago_renta')
                         ->where('Id_pago_renta', $idPago)
                     ->update(['Estatus_pago' => "Cancelado"]);
+
+                    UsuariosController::historial_log(Cookie::get('Id_colaborador'), 
+                        "Se cancelo un pago de ".$pago[0]->Monto_pago. " para el cobro ".$cobro[0]->Id_cobro_renta);
                     
                     //todo el codigo para saldo
-                    // $affected = DB::table('cobro_renta')
-                    //     ->where('Id_cobro_renta', $idCobro)
-                    // ->update(['Saldo' => 0]);
-    
                     break;
-                default:            
+                default:
                 break;
             }
         } else {
+            return redirect()->back()->with('error', 'No se puede localizar el tipo de lugar');
         }
     }
 }
