@@ -1912,6 +1912,10 @@ switch ($detallereserva[0]->Tipo_de_cobro) {
         $cobro -> Monto_total = $suma_monto;
         $cobro->save();
 
+        $id = DB::getPdo()->lastInsertId();
+
+        
+
     break;
         
     case 'Semana':
@@ -1937,6 +1941,8 @@ switch ($detallereserva[0]->Tipo_de_cobro) {
         $cobro -> Monto_total = $suma_monto;
         $cobro->save();
 
+        $id = DB::getPdo()->lastInsertId();
+
     break;
          
     case 'Catorcena':
@@ -1959,6 +1965,8 @@ switch ($detallereserva[0]->Tipo_de_cobro) {
         $cobro -> Deposito_garantia = $detallereserva[0]->Deposito_garantia_hab;
         $cobro -> Monto_total = $suma_monto;
         $cobro->save();
+
+        $id = DB::getPdo()->lastInsertId();
 
     break;
 
@@ -1983,6 +1991,8 @@ switch ($detallereserva[0]->Tipo_de_cobro) {
         $cobro -> Deposito_garantia = $detallereserva[0]->Deposito_garantia_hab;
         $cobro -> Monto_total = $suma_monto;
         $cobro->save();
+
+        $id = DB::getPdo()->lastInsertId();
 
     break;
     }
@@ -2376,7 +2386,7 @@ if($request->get('tipo_contrato') == "Flexible"){
 }
 
      Alert::success('Exito', 'Haz concluido el registro para pasar a rentar ahora el clente podra usar el lugar. puedes cerrar esta ventana');
-     return redirect()->back();
+    return redirect()->route('pagos.create', $id);
 
 }catch(Exception $ex){
      Alert::error('Error', 'los datos que ingresaste no son correctos, revisa que todo este en orden');
