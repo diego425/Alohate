@@ -106,6 +106,7 @@
              <li><a href="#" class="lol__link">Listas de asistencias</a></li>
              <li><a href="#" class="lol__link">Historial LOG</a></li>
              <li><a href="#" class="lol__link">Reportes</a></li>
+             <li><a href="#" class="lol__link">Confirmar pagos</a></li>
              <li>
                <form action="{{route('login.cerrarSesion')}}" method="post">
                   @csrf
