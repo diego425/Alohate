@@ -19,6 +19,7 @@ class PagosController extends Controller
      */
     public function index(Request $request)
     {
+        DB::statement("SET SQL_MODE=''");
         $tipos = array(
             "Id_habitacion",
             "Id_departamento",
@@ -181,6 +182,7 @@ class PagosController extends Controller
      */
     public function create(Request $request, string $id)
     {
+        DB::statement("SET SQL_MODE=''");
         $cobros = DB::table('cobro_renta AS cr')
             ->selectRaw('cr.Id_cobro_renta,cr.Id_reservacion, cr.Cobro_persona_extra, cr.Periodo_total, cr.Estatus_cobro,
                 cr.Tiempo_rebasado, cr.Deposito_garantia, cr.Monto_total, cr.Saldo, res.Start_date, res.End_date,
@@ -287,11 +289,14 @@ class PagosController extends Controller
                         ->update(['Foto_comprobante_pago' => $nombreImagen]);
                     }
                 }
-
                 
-                UsuariosController::historial_log(Cookie::get('Id_colaborador'),
-                        "Se registro un pago por la cantidad de ".$request->Monto_pago. " para el cobro ".$id);
-                return redirect()->route('pagos.index')->with('message', 'Pago registrado');
+                if (!empty(Cookie::get('puesto'))) {
+                    UsuariosController::historial_log(Cookie::get('Id_colaborador'),
+                            "Se registro un pago por la cantidad de ".$request->Monto_pago. " para el cobro ".$id);
+                    return redirect()->route('pagos.index')->with('message', 'Pago registrado');
+                } else {
+                    return redirect()->back()->with('message','El pago se registró y tendrá un proceso de verificación.');
+                }
             }
         }
     }
@@ -609,9 +614,11 @@ class PagosController extends Controller
                         ->where('Id_pago_renta', $idPago)
                     ->update(['Estatus_pago' => "Cancelado"]);
 
-                    UsuariosController::historial_log(Cookie::get('Id_colaborador'), 
-                        "Se cancelo un pago de ".$pago[0]->Monto_pago. " para el cobro ".$cobro[0]->Id_cobro_renta);
-                    
+                    if ($affected) {
+                        UsuariosController::historial_log(Cookie::get('Id_colaborador'), 
+                            "Se cancelo un pago de ".$pago[0]->Monto_pago. " para el cobro ".$cobro[0]->Id_cobro_renta);
+                        return redirect()->back()->with('message', 'Pago cancelado');
+                    }                    
                     //todo el codigo para saldo
                     break;
                 default:
@@ -624,7 +631,16 @@ class PagosController extends Controller
 
     public function pagoClienteDirecto(Request $request, string $tipoLugar, string $Id_locacion, string $Id_lugar) {
         if (!empty($tipoLugar) && !empty($Id_locacion) && !empty($Id_lugar)) {
+            $keyMP = MercadoPagoController::traerKey();
+            $keyMP = $keyMP[0]->value;
+            $tokenMP = MercadoPagoController::traerToken();
+            $tokenMP = $tokenMP[0]->value;
+            
             $totalapagar = 0;
+            $cuentas = DB::table("cuentas_bancarias")
+            ->leftJoin('bancos','bancos.Id_Banco','=','cuentas_bancarias.Id_Banco')
+            ->where('tipo_cuenta','!=','Cancelada')
+            ->get();
             $cobros = DB::table('cobro_renta AS cr')
             ->selectRaw('cr.preference_mp,cr.Id_cobro_renta,cr.Id_reservacion, cr.Cobro_persona_extra, cr.Periodo_total, cr.Estatus_cobro,
                 cr.Tiempo_rebasado, cr.Deposito_garantia, cr.Monto_total, cr.Saldo, res.Start_date, res.End_date,
@@ -636,13 +652,13 @@ class PagosController extends Controller
             ->leftJoin('estado_ocupacion AS eso', 'eso.Id_estado_ocupacion', '=', 'cr.Estatus_cobro')
             ->where(function ($query) use ($tipoLugar,$Id_lugar) {
                 if (!empty($tipoLugar)) {
-                    if ($tipoLugar == "Entera") {
+                    if ($tipoLugar == "entera" || $tipoLugar == "Entera") {
                         return $query->where('lr.Id_locacion', '=', "$Id_lugar");
-                    }elseif ($tipoLugar == "Local") {
+                    }elseif ($tipoLugar == "local" || $tipoLugar == "Local") {
                         return $query->where('lr.Id_local', '=', "$Id_lugar");
-                    }elseif ($tipoLugar == "Departamento") {
+                    }elseif ($tipoLugar == "departamento" || $tipoLugar == "Departamento") {
                         return $query->where('lr.Id_departamento', '=', "$Id_lugar");
-                    }elseif ($tipoLugar == "Habitación" || $tipoLugar == "Habitacion") {
+                    }elseif ($tipoLugar == "habitación" || $tipoLugar == "habitacion" || $tipoLugar == "Habitación") {
                         return $query->where('lr.Id_habitacion', '=', "$Id_lugar");
                     }else{
                         return $query->whereRaw('cr.Id_cobro_renta IS NULL');
@@ -709,13 +725,13 @@ class PagosController extends Controller
             ->get();
 
             if ($totalapagar <= 0) {
-                return view('Pagos.pagoCliente',["cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar])->with('message', 'No tienes pagos pendientes.');
+                return view('Pagos.pagoCliente',["cuentas" => $cuentas,"cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar, "datosLugar" => $datosLugar, "keyMP" => $keyMP])->with('message', 'No tienes pagos pendientes.');
             } else {
                 if (!empty($cobros[0]->preference_mp) && $cobros[0]->Estatus_cobro != "8") {
                     // CURLOPT_URL => 'https://api.mercadopago.com/v1/payments/search?sort=date_approved&criteria=desc&range=date_created&begin_date=NOW-3MONTHS&end_date=NOW&external_reference=renta-'.$idcobro.'',
                     $curl = curl_init();
                     curl_setopt_array($curl, array(
-                        CURLOPT_URL => 'https://api.mercadopago.com/v1/payments/search?sort=date_approved&criteria=desc&range=date_created&begin_date=NOW-3MONTHS&end_date=NOW&external_reference=4484',
+                        CURLOPT_URL => 'https://api.mercadopago.com/v1/payments/search?sort=date_approved&criteria=desc&range=date_created&begin_date=NOW-3MONTHS&end_date=NOW&external_reference=renta-'.$idcobro.'',
                         CURLOPT_RETURNTRANSFER => true,
                         CURLOPT_ENCODING => '',
                         CURLOPT_MAXREDIRS => 10,
@@ -725,7 +741,7 @@ class PagosController extends Controller
                         CURLOPT_CUSTOMREQUEST => 'GET',
                         CURLOPT_HTTPHEADER => array(
                             'Content-Type: application/json',
-                            'Authorization: Bearer APP_USR-1407753417909038-021502-32f0e290b25942fafa863ebc6f079abe-75914864'
+                            'Authorization: Bearer '.$tokenMP
                         ),
                     ));
                     $response = curl_exec($curl);
@@ -904,10 +920,10 @@ class PagosController extends Controller
                                                     // ->update(['Saldo' => $cobros[0]->Saldo,'Estatus_cobro' => '7']);
     
                                                     // echo "ref9";
-                                                    // return view('Pagos.pagoCliente',["cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar])->with('error', 'No se pudo actualizar el local a rentado, pago aún disponible');
+                                                    // return view('Pagos.pagoCliente',["cuentas" => $cuentas,"cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar, "datosLugar" => $datosLugar, "keyMP" => $keyMP])->with('error', 'No se pudo actualizar el local a rentado, pago aún disponible');
                                                 }
                                             }else {
-                                                return view('Pagos.pagoCliente',["cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar])->with('error', 'El pago se tomó, pero no actualizo ningún lugar.');
+                                                return view('Pagos.pagoCliente',["cuentas" => $cuentas,"cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar, "datosLugar" => $datosLugar, "keyMP" => $keyMP])->with('error', 'El pago se tomó, pero no actualizo ningún lugar.');
                                             }
                                         }else{
                                             //No se pudo actualizar la renta a pago completo
@@ -919,33 +935,91 @@ class PagosController extends Controller
                                             // ->where('Id_cobro_renta', $idCobro)
                                             // ->update(['Saldo' => $cobros[0]->Saldo,'Estatus_cobro' => '7']);
         
-                                            return view('Pagos.pagoCliente',["cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar])->with('error', 'Registros no actualizados verifique el saldo de la renta');
+                                            return view('Pagos.pagoCliente',["cuentas" => $cuentas,"cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar, "datosLugar" => $datosLugar, "keyMP" => $keyMP])->with('error', 'Registros no actualizados verifique el saldo de la renta');
                                         }
                                     }else{
-                                        return view('Pagos.pagoCliente',["cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar])->with('message', 'Pago confirmado');
+                                        return view('Pagos.pagoCliente',["cuentas" => $cuentas,"cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar, "datosLugar" => $datosLugar, "keyMP" => $keyMP])->with('message', 'Pago confirmado');
                                     }
                                 }else{
-                                    return view('Pagos.pagoCliente',["cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar]);
+                                    return view('Pagos.pagoCliente',["cuentas" => $cuentas,"cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar, "datosLugar" => $datosLugar, "keyMP" => $keyMP]);
                                 }
                             }
 
-                            return view('Pagos.pagoCliente',["cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar]);
+                            return view('Pagos.pagoCliente',["cuentas" => $cuentas,"cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar, "datosLugar" => $datosLugar, "keyMP" => $keyMP]);
                         }else{
-                            return view('Pagos.pagoCliente',["cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar]);
+                            return view('Pagos.pagoCliente',["cuentas" => $cuentas,"cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar, "datosLugar" => $datosLugar, "keyMP" => $keyMP]);
                         }
                     }else{
-                        return view('Pagos.pagoCliente',["cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar]);
+                        return view('Pagos.pagoCliente',["cuentas" => $cuentas,"cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar, "datosLugar" => $datosLugar, "keyMP" => $keyMP]);
                     }
                 }else{
                     if (!empty($cobros[0]->preference_mp)) {
-                        return view('Pagos.pagoCliente',["cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar])->with('message', 'Pago pendiente en MercadoPago');
+                        return view('Pagos.pagoCliente',["cuentas" => $cuentas,"cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar, "datosLugar" => $datosLugar, "keyMP" => $keyMP])->with('message', 'Pago pendiente en MercadoPago');
                     } else {
-                        return view('Pagos.pagoCliente',["cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar]);
+                        return view('Pagos.pagoCliente',["cuentas" => $cuentas,"cobros" => $cobros, "formaPagos" => $formaPagos, "totalapagar" => $totalapagar, "datosLugar" => $datosLugar, "keyMP" => $keyMP]);
                     }
                 }
             }
         } else {
             return view('Errores.error500');
+        }
+    }
+
+    public function generarLinkPago(Request $request){
+        $nombreLocacion = $request->locacion;
+        $tipoLugar = $request->tipoLugar;
+
+        $locales = DB::table('local')
+        ->selectRaw('("mostrar") AS mostrar,Id_local AS id,Id_locacion,cola.Id_colaborador,(SELECT loc.Nombre_locacion FROM locacion AS loc WHERE loc.Id_locacion = local.Id_locacion LIMIT 1) AS nombreLocacion,
+        cola.Id_colaborador, cola.Nombre as NombreCola, cola.Apellido_pat, local.Nombre_local AS Nombre, ("Local") AS tipoLocacion, eo.Nombre_estado')
+        ->leftJoin('estado_ocupacion as eo','eo.Id_estado_ocupacion','=','local.Id_estado_ocupacion')
+        ->leftJoin('colaboradores as cola','cola.Id_colaborador','=','local.Id_colaborador');
+        
+        $departamentos = DB::table('departamento')
+        ->selectRaw('("mostrar") AS mostrar,Id_departamento AS id,Id_locacion,cola.Id_colaborador,(SELECT loc.Nombre_locacion FROM locacion AS loc WHERE loc.Id_locacion = departamento.Id_locacion LIMIT 1) AS nombreLocacion,
+        cola.Id_colaborador, cola.Nombre as NombreCola, cola.Apellido_pat, departamento.Nombre_depa AS Nombre, ("Departamento") AS tipoLocacion, eo.Nombre_estado')
+        ->leftJoin('estado_ocupacion as eo','eo.Id_estado_ocupacion','=','departamento.Id_estado_ocupacion')
+        ->leftJoin('colaboradores as cola','cola.Id_colaborador','=','departamento.Id_colaborador');
+
+        $habitaciones = DB::table('habitacion')
+        ->selectRaw('("mostrar") AS mostrar,Id_habitacion AS id,Id_locacion,cola.Id_colaborador,(SELECT loc.Nombre_locacion FROM locacion AS loc WHERE loc.Id_locacion = habitacion.Id_locacion LIMIT 1) AS nombreLocacion,
+        cola.Id_colaborador, cola.Nombre as NombreCola, cola.Apellido_pat, habitacion.Nombre_hab AS Nombre, ("Habitación") AS tipoLocacion, eo.Nombre_estado')
+        ->leftJoin('estado_ocupacion as eo','eo.Id_estado_ocupacion','=','habitacion.Id_estado_ocupacion')
+        ->leftJoin('colaboradores as cola','cola.Id_colaborador','=','habitacion.Id_colaborador');
+
+        $locaciones = DB::table('locacion')
+        ->selectRaw('("mostrar") AS mostrar,Id_locacion AS id,Id_locacion,cola.Id_colaborador,("General") AS nombreLocacion,
+        cola.Id_colaborador, cola.Nombre as NombreCola, cola.Apellido_pat, Nombre_locacion AS Nombre, ("Entera") AS tipoLocacion, eo.Nombre_estado')
+        ->leftJoin('estado_ocupacion as eo','eo.Id_estado_ocupacion','=','locacion.Id_estado_ocupacion')
+        ->leftJoin('colaboradores as cola','cola.Id_colaborador','=','locacion.Id_colaborador')
+        ->union($locales)
+        ->union($habitaciones)
+        ->union($departamentos)
+        ->get();
+        
+        return view('pagos.generarLinkPago', ['locaciones' => $locaciones]);
+    }
+
+    function verificarTelefono(Request $request) {
+        if (!empty($request->telefono) && !empty($request->idCobro)) {
+            $cobros = DB::table('cobro_renta AS cr')
+                ->selectRaw('cr.Id_cobro_renta,cr.Id_reservacion, cr.Cobro_persona_extra, cr.Periodo_total, cr.Estatus_cobro,
+                    cr.Tiempo_rebasado, cr.Deposito_garantia, cr.Monto_total, cr.Saldo, res.Start_date, res.End_date,
+                    res.Monto_pagado_anticipo, res.Title,lr.Id_habitacion, lr.Id_locacion, lr.Id_local, lr.Id_departamento, eo.Nombre_estado
+                    , ("") AS lugarEspecifico, ("") AS tipoLocacion, eso.Nombre_estado AS Estado')
+                ->leftJoin('reservacion AS res', 'res.Id_reservacion', '=', 'cr.Id_reservacion')
+                ->leftJoin('lugares_reservados AS lr', 'cr.Id_lugares_reservados', '=', 'lr.Id_lugares_reservados')
+                ->leftJoin('estado_ocupacion AS eo', 'eo.Id_estado_ocupacion', '=', 'lr.Id_estado_ocupacion')
+                ->leftJoin('estado_ocupacion AS eso', 'eso.Id_estado_ocupacion', '=', 'cr.Estatus_cobro')
+                ->where('cr.Id_cobro_renta', $request->idCobro)
+                ->groupByRaw('cr.Id_cobro_renta')
+            ->get();
+
+            foreach ($cobros as $key => $value) {
+                $cobros[$key]->Title = json_decode($cobros[$key]->Title);
+            }
+
+            return $cobros;
         }
     }
 }

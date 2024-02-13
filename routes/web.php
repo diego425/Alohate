@@ -11,6 +11,7 @@
 |
 */
 
+use App\Http\Controllers\CuentasBancariasController;
 use Illuminate\Support\Facades\Cookie;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -436,6 +437,7 @@ Route::controller(UsuariosController::class)->group(function (){
 
 Route::controller(PagosController::class)->group(function (){
     Route::get('pagos', 'index')->name('pagos.index');
+    Route::get('pagos/generarLinkPago', 'generarLinkPago')->name('pagos.generarLinkPago');
     Route::get('pagos/create/{id}', 'create')->name('pagos.create');
     Route::post('pagos/store/{id}', 'store')->name('pagos.store');
     Route::get('pagos/{id}', 'show')->name('pagos.show');
@@ -444,7 +446,8 @@ Route::controller(PagosController::class)->group(function (){
     Route::post('pagos/destroy/{id}', 'destroy')->name('pagos.destroy');
     Route::get('pagos/confirmarPago/{id}', 'confirmarPago')->name('pagos.confirmarPago');
     Route::post('pagos/update/pago/{idPago}/{idCobro}/{referencia}', 'updatepago')->name('pagos.updatepago');
-    Route::get('pagos/client/direct/{tipoLugar}/{Id_locacion}/{Id_lugar}/654ada21ewq32d5sa4328a94fd5a6', 'pagoClienteDirecto')->name('pagos.pagoClienteDirecto');
+    Route::get('pagos/client/direct/{tipoLugar}/{Id_locacion}/{Id_lugar}', 'pagoClienteDirecto')->name('pagos.pagoClienteDirecto');
+    Route::post('pagos/client/verificarTelefono', 'verificarTelefono')->name('pagos.verificarTelefono');
 });
 
 Route::controller(DatatableController::class)->group(function (){
@@ -454,6 +457,16 @@ Route::controller(DatatableController::class)->group(function (){
 Route::controller(MercadoPagoController::class)->group(function (){
     Route::post('mp/generate', 'generarLinkPago')->name('mp.generarLinkPago');
     Route::post('mp/process_payment/{idCobro}', 'process_payment')->name('mp.process_payment');
+});
+
+Route::controller(CuentasBancariasController::class)->group(function (){
+    Route::get('cuentas/bancarias', 'index')->name('cuentas.index');
+    Route::get('cuentas/bancarias/create', 'create')->name('cuentas.create');
+    Route::post('cuentas/bancarias/store', 'store')->name('cuentas.store');
+    Route::get('cuentas/bancarias/{id}', 'show')->name('cuentas.show');
+    Route::get('cuentas/bancarias/edit/{id}', 'edit')->name('cuentas.edit');
+    Route::post('cuentas/bancarias/update/{id}', 'update')->name('cuentas.update');
+    Route::post('cuentas/bancarias/destroy/{id}', 'destroy')->name('cuentas.destroy');
 });
 
 
