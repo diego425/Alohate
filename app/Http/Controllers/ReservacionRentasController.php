@@ -2385,7 +2385,7 @@ if($request->get('tipo_contrato') == "Flexible"){
 }
 }
 
-     Alert::success('Exito', 'Haz concluido el registro para pasar a rentar ahora el clente podra usar el lugar. puedes cerrar esta ventana');
+     Alert::success('Exito', 'Haz concluido el registro para pasar a rentar ahora registra el primer pago de la renta en el siguiente formulario');
     return redirect()->route('pagos.create', $id);
 
 }catch(Exception $ex){
@@ -4340,6 +4340,8 @@ case 'Noche':
     $cobro -> Monto_total = $suma_monto;
     $cobro->save();
 
+    $id = DB::getPdo()->lastInsertId();
+
 break;
         
 case 'Semana':
@@ -4364,6 +4366,8 @@ case 'Semana':
     $cobro -> Monto_total = $suma_monto;
     $cobro->save();
 
+    $id = DB::getPdo()->lastInsertId();
+
 break;
          
 case 'Catorcena':
@@ -4386,6 +4390,8 @@ case 'Catorcena':
     $cobro -> Deposito_garantia = $detallereserva[0]->Deposito_garantia_dep;
     $cobro -> Monto_total = $suma_monto;
     $cobro->save();
+
+    $id = DB::getPdo()->lastInsertId();
 
 break;
 
@@ -4410,6 +4416,9 @@ case 'Mes':
     $cobro -> Deposito_garantia = $detallereserva[0]->Deposito_garantia_dep;
     $cobro -> Monto_total = $suma_monto;
     $cobro->save();
+
+    $id = DB::getPdo()->lastInsertId();
+
 break;
 }
     
@@ -4804,8 +4813,8 @@ $this->validate($request, array(
 }
 }
 
-     Alert::success('Exito', 'Haz concluido el registro para pasar a rentar ahora el clente podra usar el lugar. puedes cerrar esta ventana');
-     return redirect()->back();
+    Alert::success('Exito', 'Haz concluido el registro para pasar a rentar ahora registra el primer pago de la renta en el siguiente formulario');
+    return redirect()->route('pagos.create', $id);
 
 }catch(Exception $ex){
      Alert::error('Error', 'los datos que ingresaste no son correctos, revisa que todo este en orden');
@@ -6511,6 +6520,8 @@ switch ($detallereserva[0]->Tipo_de_cobro) {
     $cobro -> Monto_total = $suma_monto;
     $cobro->save();
 
+    $id = DB::getPdo()->lastInsertId();
+
     break;
             
     case 'Semana':
@@ -6533,6 +6544,8 @@ switch ($detallereserva[0]->Tipo_de_cobro) {
     $cobro -> Deposito_garantia = $detallereserva[0]->Deposito_garantia_casa;
     $cobro -> Monto_total = $suma_monto;
     $cobro->save();
+
+    $id = DB::getPdo()->lastInsertId();
 
     break;
              
@@ -6558,6 +6571,8 @@ switch ($detallereserva[0]->Tipo_de_cobro) {
     $cobro -> Monto_total = $suma_monto;
     $cobro->save();
 
+    $id = DB::getPdo()->lastInsertId();
+
     break;
     
     case 'Mes':
@@ -6580,6 +6595,8 @@ switch ($detallereserva[0]->Tipo_de_cobro) {
     $cobro -> Deposito_garantia = $detallereserva[0]->Deposito_garantia_casa;
     $cobro -> Monto_total = $suma_monto;
     $cobro->save();
+
+    $id = DB::getPdo()->lastInsertId();
 
     break;
     }
@@ -6990,8 +7007,8 @@ $this->validate($request, array(
 }
 }
 
-     Alert::success('Exito', 'Haz concluido el registro para pasar a rentar ahora el clente podra usar el lugar. puedes cerrar esta ventana');
-     return redirect()->back();
+    Alert::success('Exito', 'Haz concluido el registro para pasar a rentar ahora registra el primer pago de la renta en el siguiente formulario');
+    return redirect()->route('pagos.create', $id);
 
 }catch(Exception $ex){
      Alert::error('Error', 'los datos que ingresaste no son correctos, revisa que todo este en orden');
@@ -7553,6 +7570,8 @@ try{
     $cobro -> Monto_total = $suma_monto;
     $cobro->save();
 
+    $id = DB::getPdo()->lastInsertId();
+
 
 //condicionales if que ayudan a saber que tipo de contrato se esta guardando y que datos se deben de guardar segun el contrato 
 //"-1" significa que no se usara contrato 
@@ -7932,8 +7951,8 @@ $this->validate($request, array(
 }
 }
 
-     Alert::success('Exito', 'Haz concluido el registro para pasar a rentar ahora el clente podra usar el lugar. puedes cerrar esta ventana');
-     return redirect()->back();
+    Alert::success('Exito', 'Haz concluido el registro para pasar a rentar ahora registra el primer pago de la renta en el siguiente formulario');
+    return redirect()->route('pagos.create', $id);
 
 }catch(Exception $ex){
      Alert::error('Error', 'los datos que ingresaste no son correctos, revisa que todo este en orden');
