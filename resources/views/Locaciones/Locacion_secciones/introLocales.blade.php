@@ -24,7 +24,7 @@
 
 
     <div class="titulo">
-      <p>Haz Concluido El Registro De Los Departamentos, Ahora Vamos A Registrar Los Locales Que Tiene El Lugar.</p>
+      <p>Ahora Vamos A Registrar Los Locales Que Tiene El Lugar.</p>
     </div> 
 
     <div class="sub">

@@ -53,16 +53,10 @@
                     <input type="text" class="form-control"  name="nombre" id="nombre" placeholder="">
                 </div>
                 <div class="input-group">
-                    <label>Estatus Del Local</label>
-                    <select name="estatus" id="estatus" class="form-control">
-                          <option value="-1" selected disabled>Selecciona una opcion</option>
-                          @foreach($estatus_locaciones as $estatus_locacion)
-                          <option value="{{$estatus_locacion->Id_estado_ocupacion}}">{{$estatus_locacion->Id_estado_ocupacion}} .- {{$estatus_locacion->Nombre_estado}}</option>
-                          @endforeach
-                    </select>
-                </div>
-                <div class="input-group">
                     <label for="planta">Piso En El Que Se Encuentra: </label>
+                    @error('planta')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <select name="planta" id="planta" class="form-control">
                         <option value="-1" disabled selected>Selecciona una opcion</option>
                         <option value="Planta baja">Planta Baja</option>
@@ -77,10 +71,16 @@
                 </div>
                 <div class="input-group">
                     <label for="renta">Precio De La Renta Por Mes:</label>
+                    @error('renta')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="renta" id="renta" placeholder="$">
                 </div>
                 <div class="input-group">
                     <label for="superficie">Espacio De Superficie:</label>
+                    @error('superficie')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="superficie" id="superficie" placeholder="m2">
                 </div>
                 <div class="input-group">
@@ -89,10 +89,16 @@
                 </div>
                 <div class="input-group">
                     <label for="descripcion">Descripcion Del Lugar</label>
+                    @error('descripcion')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <textarea name="descripcion" id="descripcion" cols="40" rows="10" class="form-control"></textarea>
                 </div>
                 <div class="input-group">
                     <label for="garantia">Deposito De Garantia:</label>
+                    @error('garantia')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="garantia" id="garantia" placeholder="$">
                 </div>
                 <div class="btns-group">

@@ -24,7 +24,7 @@
 
 
     <div class="titulo">
-      <p>Haz Concluido El Registro De Las Habitaciones de la locacion, Ahora Vamos A Registrar Los Departamentos Que Tiene El Lugar.</p>
+      <p>Ahora Vamos A Registrar Los Departamentos Que Tiene El Lugar.</p>
     </div> 
 
     <div class="sub">

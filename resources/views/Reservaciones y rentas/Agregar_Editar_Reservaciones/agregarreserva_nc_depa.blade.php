@@ -47,23 +47,38 @@
                     </div>
                     <div class="input-group">
                         <label for="cel">Numero De Celular:</label>
+                        @error('cel')
+                        <span style="color: crimson">*campo requerido</span>
+                        @enderror
                         <input type="tel" class="form-control"  name="cel" id="cel" placeholder="#">
                     </div>
                     
                     <div class="input-group">
                         <label for="nombre">Nombre:</label>
+                        @error('nombre')
+                        <span style="color: crimson">*campo requerido</span>
+                        @enderror
                         <input type="text" class="form-control"  name="nombre" id="nombre" placeholder="nombre">
                     </div>
                     <div class="input-group">
                         <label for="a_paterno">Apellido Paterno:</label>
+                        @error('a_paterno')
+                        <span style="color: crimson">*campo requerido</span>
+                        @enderror
                         <input type="text" class="form-control"  name="a_paterno" id="a_paterno" placeholder="apellido paterno">
                     </div>
                     <div class="input-group">
                         <label for="a_materno">Apellido Materno:</label>
+                        @error('a_materno')
+                        <span style="color: crimson">*campo requerido</span>
+                        @enderror
                         <input type="text" class="form-control"  name="a_materno" id="a_materno" placeholder="apellido materno">
                     </div>
                     <div class="input-group">
                         <label for="email">Email:</label>
+                        @error('email')
+                        <span style="color: crimson">*campo requerido</span>
+                        @enderror
                         <input type="text" class="form-control"  name="email" id="email" placeholder="email">
                     </div>
                 <div class="btns-group">
@@ -83,22 +98,37 @@
                 </div>
                 <div class="input-group">
                     <label for="extras">Numero De Personas Extras:</label>
+                    @error('extras')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="number" class="form-control"  name="extras" id="extras">
                 </div>
                 <div class="input-group">
                     <label for="p_total">Numero Total De Personas Que Usaran El Lugar:</label>
+                    @error('p_total')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="number" class="form-control"  name="p_total" id="p_total">
                 </div>
                 <div class="input-group">
                     <label for="f_entrada">Fecha De Entrada:</label>
+                    @error('f_entrada')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="date" class="form-control"  name="f_entrada" id="f_entrada">
                 </div>
                 <div class="input-group">
                     <label for="f_salida">Fecha De Salida:</label>
+                    @error('f_salida')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror 
                     <input type="date" class="form-control"  name="f_salida" id="f_salida">
                 </div>
                 <div class="input-group">
                     <label for="tipo_renta">¿Como Se Cobrara La Renta?</label>
+                    @error('tipo_renta')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror 
                     <select name="tipo_renta" id="tipo_renta">
                         <option value="-1" disabled selected>Selecciona una opcion</option>
                         <option value="Noche">Noche ${{$departamento[0]->Precio_noche}}</option>

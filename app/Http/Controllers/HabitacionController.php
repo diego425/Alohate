@@ -1015,8 +1015,23 @@ public function ViewHab($Id_locacion){
 public function HabStore(Request $request, $Id_locacion, Locacion $lochabstotal){
 //aqui envie la vairable de "idlocacion" como parametro para obtener el id al que corresponde la hab y lo envio en el compact
 //info basica
-try{ 
-
+$request->validate([
+   'cap_personas' => 'required',
+   'garantia'=> 'required',
+   'precio_noche'=> 'required',
+   'precio_semana'=> 'required',
+   'precio_catorcena'=> 'required',
+   'precio_mes'=> 'required',
+   'superficie'=> 'required',
+   'descripcion'=> 'required',
+   'p_ext_mes'=> 'required',
+   'p_ext_catorce'=> 'required',
+   'p_ext_noche'=> 'required',
+   'c_anticipo_mes'=> 'required',
+   'c_anticipo_catorce'=> 'required',
+   'camas_juntas'=> 'required',
+   'planta' => 'required',
+]);
 //minifuncion para el bucle de crear las habs      
 //hago una consulta a la bd para checar el numero de de habs 
       $lochabstotal=DB::table('locacion')
@@ -1037,9 +1052,10 @@ try{
       ->where('Id_locacion', '=', $Id_locacion)
       ->get();
 
+      
       $agregarhab = new Habitacion();
       $agregarhab-> Id_locacion = $Id_locacion;
-      $agregarhab-> Id_estado_ocupacion = $request->get('estatus');
+      $agregarhab-> Id_estado_ocupacion = "2";
       $agregarhab-> Nombre_hab = $request->get('nombre');
       $agregarhab-> Capacidad_personas = $request->get('cap_personas');
       $agregarhab-> Deposito_garantia_hab = $request->get('garantia');
@@ -1231,14 +1247,13 @@ try{
       }}
       else{Alert::error('Error', 'LA IMAGEN 6 NO ES ADMITIDA, CAMBIALA');
          return redirect()->back();}
-  
+      
+      //metodo que guarda la accion realizada en la tabla de historial log
+      UsuariosController::historial_log(Cookie::get('Id_colaborador'),"Registro una nueva habitacion");
 
          Alert::success('Exito', 'Se agrego la habitacion con exito. Ya puedes cerrar esta ventana');
          return redirect()->back();
-        }catch(Exception $ex){
-            Alert::error('Error', 'La habitacion no se pudo agregar. revisa que todo este en orden');
-            return redirect()->back();
-         }
+
 }
 
 //funcion que lanza la alerta de que no se pueden guardar mas habs en la casa

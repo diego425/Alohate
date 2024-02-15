@@ -246,7 +246,8 @@ Route::post('store_rentar_hab/reserva/{Id_reservacion}/hab/{Id_habitacion}/lugar
 
 //rutas para terminar la renta de una hab
 Route::get('view_terminar_renta_hab/reserva/{Id_reservacion}/hab/{Id_habitacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@ViewTerminarRentaHab')->name('viewterminarrentahab');
-
+//ruta que calcula el monto por desperfectos
+Route::get('view_monto_desperfecto/reserva/{Id_reservacion}/hab/{Id_habitacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@CalcularMontoDesperfecto')->name('viewmonto');
 
 
 

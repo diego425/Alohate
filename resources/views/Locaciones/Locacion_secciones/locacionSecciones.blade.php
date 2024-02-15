@@ -40,12 +40,7 @@
 <!-- Step 1 -->
             <div class="form-step form-step-active">
 
-                <div class="input-group" style="display: none;">
-                    <label for="tipo_renta">¿Como se rentara la casa?</label>
-                    <select name="tipo_renta" id="tipo_renta" class="form-control">
-                        <option value="Secciones" selected>Secciones</option>
-                    </select>
-                </div>
+
                 <div class="input-group">
                     <div class="titulo_central">
                         <div class="centrar">
@@ -54,81 +49,82 @@
                     </div>
                 </div>
                 <div class="input-group">
-                    <label>Estatus De La Casa</label>
-                    <select name="estatus" id="estatus" class="form-control">
-                          <option value="-1" selected disabled>Selecciona una opcion</option>
-                          @foreach($estatus_locaciones as $estatus_locacion)
-                          <option value="{{$estatus_locacion->Id_estado_ocupacion}}">{{$estatus_locacion->Id_estado_ocupacion}} .- {{$estatus_locacion->Nombre_estado}}</option>
-                          @endforeach
-                    </select>
-                </div>
-                <div class="input-group">
                     <label for="nombre">Nombre De La Locacion:</label>
+                    @error('nombre')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="nombre" id="nombre" placeholder="NickName">
                 </div>
                 <div class="input-group">
                     <label for="numero_ext">Numero Exterior:</label>
+                    @error('numero_ext')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="numero_ext" id="numero_ext" placeholder="#">
                 </div>
                 <div class="input-group">
                     <label for="calle">Calle:</label>
+                    @error('calle')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="calle" id="calle" placeholder="Calle">
                 </div>
                 <div class="input-group">
                     <label for="colonia">Colonia:</label>
+                    @error('colonia')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="colonia" id="colonia" placeholder="Colonia">
                 </div>
                 <div class="input-group">
                     <label for="zona">¿En Que Zona De La Ciudad Se Encuentra?</label>
+                    @error('zona')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="zona" id="zona" placeholder="zona">
                 </div>
                 <div class="input-group">
                     <label for="link">Link De Ubicacion De Google Maps:</label>
+                    @error('LinkGM')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="LinkGM" id="LinkGM" placeholder="Link De Google Maps">
                 </div>
                 <div class="input-group">
                     <label for="pisos">No. Total De Pisos:</label>
+                    @error('pisos')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="pisos" id="pisos" placeholder="Total De Pisos">
                 </div>
                 <div class="input-group">
                     <label for="cap_personas">Capacidad De Personas:</label>
+                    @error('cap_personas')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="cap_personas" id="cap_personas" placeholder="Capacidad Total">
                 </div>
-                <div class="input-group">
-                    <label for="noche">Precio Por Noche:</label>
-                    <input type="text" class="form-control"  name="precio_noche" id="precio_noche" placeholder="$">
-                </div>
-                <div class="input-group">
-                    <label for="semana">Precio Por Semana:</label>
-                    <input type="text" class="form-control"  name="precio_semana" id="precio_semana" placeholder="$">
-                </div>
-                <div class="input-group">
-                    <label for="catorcena">Precio Por Catorcena:</label>
-                    <input type="text" class="form-control"  name="precio_catorcena" id="precio_catorcena" placeholder="$">
-                </div>
-                <div class="input-group">
-                    <label for="mes">Precio Por Mes:</label>
-                    <input type="text" class="form-control"  name="precio_mes" id="precio_mes" placeholder="$">
-                </div>
-                <div class="input-group">
-                    <label for="garantia">Deposito De Garantia:</label>
-                    <input type="text" class="form-control"  name="garantia" id="garantia" placeholder="$">
-                </div>
+                
                 <div class="input-group">
                     <label for="total_hab">No. Total De Habitaciones</label>
+                    @error('total_hab')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="total_hab" id="total_hab" placeholder="#">
                 </div>
                 <div class="input-group">
                     <label for="total_dep">No. Total De Departamentos</label>
+                    @error('total_dep')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="total_dep" id="total_dep" placeholder="#">
                 </div>
                 <div class="input-group">
                     <label for="total_loc">No. Total De Locales</label>
+                    @error('total_loc')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="text" class="form-control"  name="total_loc" id="total_loc" placeholder="#">
-                </div>
-                <div class="input-group">
-                    <label for="superficie">Espacio De Superficie:</label>
-                    <input type="text" class="form-control"  name="superficie" id="superficie" placeholder="m2">
                 </div>
                 <div class="input-group">
                     <label for="nota">Deja Una Nota Por Si Tienes Algo Importante Que Remarcar</label>
@@ -136,6 +132,9 @@
                 </div>
                 <div class="input-group">
                     <label for="descripcion">Descripcion Del Lugar</label>
+                    @error('total_loc')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <textarea name="descripcion" id="descripcion" cols="40" rows="10" class="form-control"></textarea>
                 </div>
                 <div class="btns-group">

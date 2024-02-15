@@ -143,6 +143,10 @@
                                     @if($reservarenta->Nombre_estado == "Pago por confirmar")
                                     <h6 style="color: rgb(142, 122, 7)">{{$reservarenta->Nombre_estado}}</h6>
                                     @endif
+
+                                    @if($reservarenta->Nombre_estado == "Estancia terminada")
+                                    <h6 style="color: rgb(139, 0, 0)">{{$reservarenta->Nombre_estado}}</h6>
+                                    @endif
                                 </td> 
                                 <td data-label="Acciones">
 
@@ -156,10 +160,14 @@
 
                                         @if($reservarenta->Nombre_estado == "Rentada")
                                         <a class="btn btn-info" href="{{route('detallesreservahab', [$reservarenta->Id_reservacion, $reservarenta->Id_habitacion, $reservarenta->Id_lugares_reservados ])}}"><i class="ri-information-line"></i></a>
-                                        <a class="btn btn-danger" href="{{route('viewterminarrentahab', [$reservarenta->Id_reservacion, $reservarenta->Id_habitacion, $reservarenta->Id_lugares_reservados ])}}" >Terminar</a>
+                                        <button class="btn btn-danger clickForm" href="{{route('viewterminarrentahab', [$reservarenta->Id_reservacion, $reservarenta->Id_habitacion, $reservarenta->Id_lugares_reservados ])}}" >Terminar</button>
                                         @endif
 
                                         @if($reservarenta->Nombre_estado == "Pago por confirmar")
+                                        <a class="btn btn-info" href="{{route('detallesreservahab', [$reservarenta->Id_reservacion, $reservarenta->Id_habitacion, $reservarenta->Id_lugares_reservados ])}}"><i class="ri-information-line"></i></a>
+                                        @endif
+
+                                        @if($reservarenta->Nombre_estado == "Estancia terminada")
                                         <a class="btn btn-info" href="{{route('detallesreservahab', [$reservarenta->Id_reservacion, $reservarenta->Id_habitacion, $reservarenta->Id_lugares_reservados ])}}"><i class="ri-information-line"></i></a>
                                         @endif
 
@@ -181,6 +189,10 @@
                                         <a class="btn btn-info" href="{{route('detallesreservacasa', [$reservarenta->Id_reservacion, $reservarenta->Id_locacion, $reservarenta->Id_lugares_reservados ])}}"><i class="ri-information-line"></i></a>
                                         @endif
 
+                                        @if($reservarenta->Nombre_estado == "Estancia terminada")
+                                        <a class="btn btn-info" href="{{route('detallesreservacasa', [$reservarenta->Id_reservacion, $reservarenta->Id_locacion, $reservarenta->Id_lugares_reservados ])}}"><i class="ri-information-line"></i></a>
+                                        @endif
+
                                     @endif
 
                                     @if($reservarenta->Id_departamento == "")
@@ -198,6 +210,11 @@
                                         @if($reservarenta->Nombre_estado == "Pago por confirmar")
                                         <a class="btn btn-info" href="{{route('detallesreservadep', [$reservarenta->Id_reservacion, $reservarenta->Id_departamento, $reservarenta->Id_lugares_reservados ])}}"><i class="ri-information-line"></i></a>
                                         @endif
+
+                                        @if($reservarenta->Nombre_estado == "Estancia terminada")
+                                        <a class="btn btn-info" href="{{route('detallesreservadep', [$reservarenta->Id_reservacion, $reservarenta->Id_departamento, $reservarenta->Id_lugares_reservados ])}}"><i class="ri-information-line"></i></a>
+                                        @endif
+
                                     @endif
 
                                     @if($reservarenta->Id_local == "")

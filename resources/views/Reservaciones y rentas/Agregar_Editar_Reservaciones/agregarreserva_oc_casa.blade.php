@@ -47,6 +47,9 @@
                     </div>
                     <div class="input-group">
                         <label>Busca Por Numero De Celular:</label>
+                        @error('selector_cliente')
+                        <span style="color: crimson">*campo requerido</span>
+                        @enderror
                         <input type="tel" class="form-control" name="mysearch" id="mysearch" placeholder="#">
                         <ul id="showlist" tabindex="1" class="list-group"></ul>
                     </div>
@@ -86,22 +89,37 @@
                 </div>
                 <div class="input-group">
                     <label for="extras">Numero De Personas Extras:</label>
+                    @error('extras')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="number" class="form-control"  name="extras" id="extras">
                 </div>
                 <div class="input-group">
                     <label for="p_total">Numero Total De Personas Que Usaran El Lugar:</label>
+                    @error('p_total')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="number" class="form-control"  name="p_total" id="p_total">
                 </div>
                 <div class="input-group">
                     <label for="f_entrada">Fecha De Entrada:</label>
+                    @error('f_entrada')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="date" class="form-control"  name="f_entrada" id="f_entrada">
                 </div>
                 <div class="input-group">
                     <label for="f_salida">Fecha De Salida:</label>
+                    @error('f_salida')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <input type="date" class="form-control"  name="f_salida" id="f_salida">
                 </div>
                 <div class="input-group">
                     <label for="tipo_renta">¿Como Se Cobrara La Renta?</label>
+                    @error('tipo_renta')
+                    <span style="color: crimson">*campo requerido</span>
+                    @enderror
                     <select name="tipo_renta" id="tipo_renta">
                         <option value="-1" disabled selected>Selecciona una opcion</option>
                         <option value="Noche">Noche ${{$locacion[0]->Precio_noche}}</option>

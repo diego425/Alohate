@@ -125,7 +125,27 @@ public function ViewDepa($Id_locacion){
 
 //funcion para guardar un registro de depas 
 public function DepaStore(Request $request, $Id_locacion, Locacion $locdepastotal){
-try{ 
+  
+
+$request->validate([
+      'cap_personas' => 'required',
+      'garantia' => 'required',
+      'precio_noche' => 'required',
+      'precio_semana'=> 'required',
+      'precio_catorcena'=> 'required',
+      'precio_mes'=> 'required',
+      'superficie'=> 'required',
+      'recamaras'=> 'required',
+      'descripcion'=> 'required',
+      'p_ext_mes'=> 'required',
+      'p_ext_catorce'=> 'required',
+      'p_ext_noche'=> 'required',
+      'c_anticipo_mes'=> 'required',
+      'c_anticipo_catorce'=> 'required',
+      'camas_juntas'=> 'required',
+      'planta'=> 'required',
+
+]);
 //minifuncion para el bucle de crear las depas      
 //hago una consulta a la bd para checar el numero de de depas 
          $locdepastotal=DB::table('locacion')
@@ -148,7 +168,7 @@ try{
       
    $agregardep = new Departamento();
    $agregardep-> Id_locacion = $Id_locacion;
-   $agregardep-> Id_estado_ocupacion = $request->get('estatus');
+   $agregardep-> Id_estado_ocupacion = "2";
    $agregardep-> Nombre_depa = $request->get('nombre');
    $agregardep-> Capacidad_personas = $request->get('cap_personas');
    $agregardep-> Deposito_garantia_dep = $request->get('garantia');
@@ -342,14 +362,11 @@ try{
    else{Alert::error('Error', 'LA IMAGEN 6 NO ES ADMITIDA, CAMBIALA');
       return redirect()->back();}
 
-      
+   UsuariosController::historial_log(Cookie::get('Id_colaborador'),"registro un nuevo departamento"); 
     
     Alert::success('Exito', 'Se agrego el departamento con exito. Ya puedes cerrar esta ventana');
     return redirect()->back();
-}catch(Exception $ex){
-    Alert::error('Error', 'El departamento no se pudo agregar. revisa que todo este en orden');
-    return redirect()->back();
-    }
+
 }
 
 
