@@ -23,18 +23,130 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"
         integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <title>Realizar pago</title>
 </head>
+<style>
+    img {
+        width: 50%;
+        margin-left: 25%;
+    }
+
+    table {
+        font-size: .8em;
+    }
+
+    #mainPrinc{
+        display: none;
+    }
+
+    .copiar{
+        background-color: aquamarine;
+        width: 2em;
+        text-align: center;
+        height: 2em;
+    }
+
+    @media screen and (max-width: 600px) {
+        img {
+            width: 50%;
+            margin-left: 25%;
+        }
+
+        .agregar {
+            width: 10%;
+        }
+
+        table td input {
+            box-shadow: inset 0 0 0 32px c5e8ef !important;
+            border-block: none;
+            outline: none;
+            border-color: inherit;
+        }
+
+        table {
+            border: 0;
+        }
+
+        table thead {
+            display: none;
+        }
+
+        table tr {
+            border-bottom: 3px solid #ddd;
+            display: block;
+            margin-bottom: .625em;
+        }
+
+        table td {
+            border-bottom: 1px solid #ddd;
+            display: block;
+            font-size: .8em;
+            text-align: right;
+        }
+
+        table td::before {
+            content: attr(data-label);
+            float: left;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        table td:last-child {
+            border-bottom: 0;
+        }
+
+        .flex {
+            display: table-cell;
+        }
+
+        .form-switch .form-check-input {
+            margin-left: 50%;
+        }
+
+        h6 {
+            font-size: 1em;
+        }
+
+        #tablaLugares_filter {
+            width: 1rem;
+        }
+
+        .numerosTabla {
+            visibility: hidden;
+        }
+
+        .btnFiltro {
+            margin-left: 1em;
+        }
+
+        #mainPrinc{
+            font-size: .8em;
+        }
+    }
+</style>
 
 <body>
-    <main class="main">
+    <main class="main" id="mainPrinc">
         @if ($totalapagar <= 0)
             <section class="pt-5 pb-9">
                 <div class="container-small container container-fluid">
-                    <div class="alert alert-success alert-dismissible fade show d-flex" role="alert" style="width: 80%; margin-left: 10%;">
-                        <i class='bx bx-like bx-tada' style='color:#07e9f1' ></i>
+                    <div class="alert alert-success alert-dismissible fade show d-flex" role="alert"
+                        style="width: 80%; margin-left: 10%;">
+                        <i class='bx bx-like bx-tada' style='color:#07e9f1'></i>
                         <div>
                             Sin pagos pendientes
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body">
+                            @if (!empty($datosLugar[0]->Nombre_locacion))
+                                <address>
+                                    <strong>{{ $datosLugar[0]->Nombre_locacion }}</strong><br>
+                                    {{ $datosLugar[0]->Nombre }}<br>
+                                </address>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -43,31 +155,40 @@
             <section class="pt-5 pb-9">
                 <div class="container-small container container-fluid">
                     @if (session()->has('message'))
-                        <div class="alert alert-success alert-dismissible fade show d-flex" role="alert" style="width: 80%; margin-left: 10%;">
-                            <i class='bx bx-message-check bx-tada' ></i>
+                        <div class="alert alert-success alert-dismissible fade show d-flex" role="alert"
+                            style="width: 80%; margin-left: 10%;">
+                            <i class='bx bx-message-check bx-tada'></i>
                             <div>
                                 {{ session()->get('message') }}
                             </div>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                aria-label="Close"></button>
                         </div>
                     @else
                         @if (session()->has('error'))
-                            <div class="alert alert-danger alert-dismissible fade show d-flex" role="alert" style="width: 80%; margin-left: 10%;">
-                                <i class='bx bxs-error-alt bx-flashing' ></i>
+                            <div class="alert alert-danger alert-dismissible fade show d-flex" role="alert"
+                                style="width: 80%; margin-left: 10%;">
+                                <i class='bx bxs-error-alt bx-flashing'></i>
                                 <div>
                                     {{ session()->get('error') }}
                                 </div>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
                             </div>
                         @endif
                     @endif
-                    <h2 class="mb-5">Pagar estancia</h2>
                     <div class="row justify-content-between">
                         <div class="col-lg-5 col-xl-4">
                             <div class="card mt-3 mt-lg-0">
                                 <div class="card-body">
                                     <div class="d-flex align-items-center justify-content-between">
-                                        <h3 class="mb-0">Resumen</h3>
+                                        <h3 class="mb-0"><i class='bx bx-home-alt-2'></i></h3>
+                                        @if (!empty($datosLugar[0]->Nombre_locacion))
+                                            <address>
+                                                <strong>{{ $datosLugar[0]->Nombre_locacion }}</strong><br>
+                                                {{ $datosLugar[0]->Nombre }}<br>
+                                            </address>
+                                        @endif
                                     </div>
                                     <div class="border-dashed border-bottom mt-4">
                                         <div class="ms-n2">
@@ -89,17 +210,17 @@
                                     </div>
                                     <div class="border-dashed border-bottom mt-4">
                                         <div class="d-flex justify-content-between mb-2">
-                                            <h5 class="text-900 fw-semi-bold">Subtotal </h5>
-                                            <h5 class="text-900 fw-semi-bold">${{ $cobros[0]->Monto_total }}</h5>
+                                            <h6 class="text-900 fw-semi-bold">Subtotal </h6>
+                                            <h6 class="text-900 fw-semi-bold">${{ $cobros[0]->Monto_total }}</h6>
                                         </div>
                                         <div class="d-flex justify-content-between mb-2">
-                                            <h5 class="text-900 fw-semi-bold">Pagado: </h5>
-                                            <h5 class="text-danger fw-semi-bold">-${{ $cobros[0]->Saldo }}</h5>
+                                            <h6 class="text-900 fw-semi-bold">Pagado: </h6>
+                                            <h6 class="text-danger fw-semi-bold">-${{ $cobros[0]->Saldo }}</h6>
                                         </div>
                                     </div>
                                     <div class="d-flex justify-content-between border-dashed-y pt-3">
-                                        <h4 class="mb-0">Total :</h4>
-                                        <h4 class="mb-0">${{ $cobros[0]->Monto_total }}</h4>
+                                        <h5 class="mb-0">Total :</h5>
+                                        <h5 class="mb-0">${{ $totalapagar }}</h5>
                                     </div>
                                 </div>
                             </div>
@@ -108,9 +229,10 @@
                             <div class="accordion accordion-flush" id="accordionFlushExample">
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#flush-collapseOne" aria-expanded="false"
-                                            aria-controls="flush-collapseOne"><i class='bx bxs-bank'></i>
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#flush-collapseOne"
+                                            aria-expanded="false" aria-controls="flush-collapseOne"><i
+                                                class='bx bxs-bank'></i>
                                             Transferencia
                                         </button>
                                     </h2>
@@ -118,35 +240,108 @@
                                         data-bs-parent="#accordionFlushExample">
                                         <div class="accordion-body">
                                             <div class="registroPago border border-danger-subtle">
+                                                <div class="table-responsive tablaCuentasBancarias">
+                                                    <button class="btn btn-outline-dark center"
+                                                        id="ocultarCuentasBancarias">
+                                                        Ocultar cuentas
+                                                        <i class='bx bx-low-vision'></i>
+                                                    </button>
+                                                    <table
+                                                        class="table table-info table-striped table-hover table-borderless align-middle">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Banco</th>
+                                                                <th>Titular</th>
+                                                                <th>CLABE</th>
+                                                                <th>Número de cuenta</th>
+                                                                <th>Número de tarjeta</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody class="table-group-divider">
+                                                            @foreach ($cuentas as $item)
+                                                                @if ($item->tipo_cuenta)
+                                                                    <tr>
+                                                                        <td data-label="Banco">
+                                                                            {{ $item->Nombre_Abreviado }}</td>
+                                                                        <td data-label="Titular">{{ $item->Nombre }}
+                                                                        </td>
+                                                                        <td data-label="CLABE">
+                                                                            <input type="text"
+                                                                                id="CLABE{{ $item->id_cuenta }}"
+                                                                                value="{{ $item->CLABE }}" readonly>
+                                                                            <button class="btn btn-outline-info copiar"
+                                                                                valor="{{ $item->CLABE }}"
+                                                                                onclick="copiar('{{ $item->CLABE }}','CLABE{{ $item->id_cuenta }}')">
+                                                                                <i class='bx bx-copy-alt'></i>
+                                                                            </button>
+                                                                        </td>
+                                                                        <td data-label="Número de cuenta">
+                                                                            <input type="text"
+                                                                                id="cuenta{{ $item->id_cuenta }}"
+                                                                                value="{{ $item->cuenta }}" readonly>
+                                                                            <button class="btn btn-outline-info copiar"
+                                                                                valor="{{ $item->cuenta }}"
+                                                                                onclick="copiar('{{ $item->cuenta }}','cuenta{{ $item->id_cuenta }}')">
+                                                                                <i class='bx bx-copy-alt'></i>
+                                                                            </button>
+                                                                        </td>
+                                                                        <td data-label="Número de tarjeta">
+                                                                            <input type="text"
+                                                                                id="tarjeta{{ $item->id_cuenta }}"
+                                                                                value="{{ $item->tarjeta }}" readonly>
+                                                                            <button class="btn btn-outline-info copiar"
+                                                                                valor="{{ $item->tarjeta }}"
+                                                                                onclick="copiar('{{ $item->tarjeta }}','tarjeta{{ $item->id_cuenta }}')">
+                                                                                <i class='bx bx-copy-alt'></i>
+                                                                            </button>
+                                                                        </td>
+                                                                    </tr>
+                                                                @endif
+                                                            @endforeach
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                                {{-- <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                                    <button type="button" class="btn btn-primary"
+                                                        data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                                        <i class='bx bx-show-alt'></i> Mostrar Cuentas
+                                                    </button>
+                                                </div> --}}
                                                 <h6 class="card-title center bold">Registrar pago del servicio</h6>
                                                 <div class="user-detail-card justify" data-mh="card-one">
-                                                    <form action="{{ route('pagos.store', $cobros[0]->Id_cobro_renta) }}"
-                                                        method="post" class="row g-3 needs-validation" novalidate>
+                                                    <form
+                                                        action="{{ route('pagos.store', $cobros[0]->Id_cobro_renta) }}"
+                                                        method="post" class="row g-3 needs-validation text-small small" novalidate>
                                                         @csrf
                                                         <div class="form-floating mb-3 col-md-6">
-                                                            <input type="number" class="form-control" name="Monto_pago"
-                                                                id="Monto_pago" placeholder="" required />
+                                                            <input type="number" class="form-control"
+                                                                name="Monto_pago" id="Monto_pago" placeholder=""
+                                                                value="{{ $totalapagar }}" readonly required />
                                                             <label for="Monto_pago">Monto del pago</label>
                                                         </div>
                                                         <div class="form-floating mb-3 col-md-6">
-                                                            <input type="date" class="form-control" name="Fecha_pago"
-                                                                id="Fecha_pago" placeholder="" value="{{ date('Y-m-d') }}"
-                                                                required />
+                                                            <input type="date" class="form-control"
+                                                                name="Fecha_pago" id="Fecha_pago" placeholder=""
+                                                                value="{{ date('Y-m-d') }}" required />
                                                             <label for="Fecha_pago">Fecha de pago</label>
                                                         </div>
-                                                        <div class="form-floating mb-3 col-md-4">
-                                                            <select class="form-select" id="Metodo_pago" name="Metodo_pago"
+                                                        <div class="form-floating mb-3 col-md-4"
+                                                            style="display: none">
+                                                            <select class="form-select" id="Metodo_pago"
+                                                                name="Metodo_pago"
                                                                 aria-label="Floating label select example">
                                                                 {{-- <option value="" selected disabled>Seleccione una opción</option> --}}
-                                                                <option value="PUE">(PUE) Pago en una sola exhibición
+                                                                <option value="PUE">(PUE) Pago en una sola
+                                                                    exhibición
                                                                 </option>
                                                                 {{-- <option value="PIP">(PIP) Pago inicial y en parcialidades</option>
                                                                 <option value="PPD">(PPD) Pago en parcialidades o diferido</option> --}}
                                                             </select>
                                                             <label for="Metodo_pago">Metodo de pago</label>
                                                         </div>
-                                                        <div class="mb-3 col-md-4">
+                                                        <div class="mb-12 col-md-12">
                                                             <label for="c_FormaPago">Forma de pago</label>
+                                                            <br>
                                                             <select
                                                                 class="form-select js-example-basic-single js-example-responsive"
                                                                 id="c_FormaPago" name="c_FormaPago"
@@ -155,14 +350,17 @@
                                                                     opción</option>
                                                                 @foreach ($formaPagos as $item)
                                                                     <option value="{{ $item->c_FormaPago }}">
-                                                                        {{ $item->Descripcion }}</option>
+                                                                        {{ $item->Descripcion }}
+                                                                    </option>
                                                                 @endforeach
                                                             </select>
                                                         </div>
                                                         <div class="form-floating mb-3 col-md-12">
                                                             <input type="text" class="form-control"
                                                                 name="Concepto_pago_renta" id="Concepto_pago_renta"
-                                                                placeholder="" required />
+                                                                placeholder=""
+                                                                value="Renta{{ $cobros[0]->Id_cobro_renta }}"
+                                                                required />
                                                             <label for="Concepto_pago_renta">Concepto</label>
                                                         </div>
                                                         <h6 class="card-title center bold">Foto del comprobante de pago
@@ -171,10 +369,11 @@
                                                             <img src="..." class="" id="fotoComprobante"
                                                                 alt="...">
                                                             <br>
-                                                            <input type="file" class="custom-file-input form-control"
-                                                                name="imagen" id="inputfotoComprobante"
-                                                                foto="fotoComprobante" onchange="revisarImagen(this);"
-                                                                accept="image/*">
+                                                            <input type="file"
+                                                                class="custom-file-input form-control" name="imagen"
+                                                                id="inputfotoComprobante" foto="fotoComprobante"
+                                                                onchange="revisarImagen(this);" accept="image/*"
+                                                                required>
                                                             <input type="textarea" name="fotoComprobante"
                                                                 id="valfotoComprobante" value="" hidden>
                                                             <button class="btn btn-danger" foto="fotoComprobante"
@@ -184,8 +383,6 @@
                                                             </button>
                                                         </div>
                                                         <div class="group-input">
-                                                            <a href="#" type="button"
-                                                                class="btn btn-outline-warning cancelar">Cancelar</a>
                                                             <button type="submit"
                                                                 class="btn btn-outline-success">Registrar</button>
                                                         </div>
@@ -195,7 +392,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="accordion-item">
+                                {{-- <div class="accordion-item">
                                     <h2 class="accordion-header">
                                         <button class="accordion-button collapsed" type="button"
                                             data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo"
@@ -209,7 +406,7 @@
                                             Para pagos en efectivo acuda a recepción
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
                                         <button class="accordion-button collapsed" type="button"
@@ -221,13 +418,14 @@
                                     <div id="flush-collapseThree" class="accordion-collapse collapse"
                                         data-bs-parent="#accordionFlushExample">
                                         <div class="accordion-body row">
-                                            @if (empty($cobros[0]->preference_mp))                                            
+                                            @if (empty($cobros[0]->preference_mp))
                                                 <div class="col-sm-6 mt-3">
                                                     <form action="{{ route('mp.generarLinkPago') }}" method="post"
                                                         class="raw">
                                                         @csrf
                                                         <input type="hidden" value="SinEnvio" name="type">
-                                                        <input type="hidden" value="{{$cobros[0]->Id_cobro_renta}}" name="IdRenta">
+                                                        <input type="hidden"
+                                                            value="{{ $cobros[0]->Id_cobro_renta }}" name="IdRenta">
                                                         <input type="hidden" value="Habitacion 1 del Hotel Medrano"
                                                             name="title">
                                                         <button type="submit" class="btn btn-info">
@@ -301,12 +499,6 @@
                                                         </button>
                                                     </form>
                                                 </div>
-                                                <div class="col-sm-6 mt-3">
-                                                    <button type="submit" class="btn btn-primary">
-                                                        <i class='bx bxl-paypal'></i>
-                                                        PayPal
-                                                    </button>
-                                                </div>
                                             @else
                                                 <div id="wallet_container"></div>
                                             @endif
@@ -316,34 +508,77 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Modal -->
+                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                        tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-fullscreen-lg-down modal-dialog-scrollable">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Números de cuenta para hacer
+                                        sus pagos.</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cerrar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
         @endif
     </main>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"
+    integrity="sha256-+0Qf8IHMJWuYlZ2lQDBrF1+2aigIRZXEdSvegtELo2I=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{{ url('js/pagoclientedirecto.js')}}"></script>
 <script>
     $(document).ready(function() {
+        $("#mainPrinc").hide();
         @if ($totalapagar <= 0)
-        @else 
+            datosLugar = @json($datosLugar);
+            console.log(datosLugar);
+        @else
             @if (!empty($cobros[0]->preference_mp))
-                const mp = new MercadoPago('APP_USR-e5322f5a-f53f-4910-960a-95090076ee83', {
-                    locale: 'es-MX'
-                });
+                @if (!empty($keyMP))
+                    const mp = new MercadoPago('{{ $keyMP }}', {
+                        locale: 'es-MX'
+                    });
 
-                mp.bricks().create("wallet", "wallet_container", {
-                    initialization: {
-                        preferenceId: "{{$cobros[0]->preference_mp}}",
-                    },
-                });
+                    mp.bricks().create("wallet", "wallet_container", {
+                        initialization: {
+                            preferenceId: "{{ $cobros[0]->preference_mp }}",
+                        },
+                    });
+                @endif
             @endif
 
-            data = @json($cobros);
-            console.log(data);
-            
-            const total = "{{$totalapagar}}";
-            console.log(total);
+            Swal.fire({
+                title: "Ingresa tu teléfono",
+                text: "*******{{substr($cobros[0]->Title[0]->Numero_celular,7)}}",
+                input: "text",
+                inputAttributes: {
+                    autocapitalize: "off"
+                },
+                showCancelButton: true,
+                confirmButtonText: "Confirmar",
+                showLoaderOnConfirm: true,
+                allowOutsideClick: false,
+                showCancelButton: false,
+                allowEscapeKey: false,
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    verificarTelefono(result.value,"{{$cobros[0]->Id_cobro_renta}}", "{{route('pagos.verificarTelefono')}}");
+                }
+            });
 
-            console.log('chargeComplate');
+            $('.js-example-basic-single').select2();
             (() => {
                 'use strict'
                 // Fetch all the forms we want to apply custom Bootstrap validation styles to
@@ -360,66 +595,8 @@
                     }, false)
                 })
             })()
-
-            async function clickBtn(input) {
-                const foto = $(input).attr("foto");
-                console.log(foto);
-                $("#input" + foto).click();
-            }
-
-            async function revisarImagen(input) {
-                var id_preview = $(input).attr("foto");
-                console.log(input);
-                if (input.files && input.files[0]) {
-                    var reader = new FileReader();
-                    reader.onloadend = function(e) {
-                        var id_preview_text = "#" + id_preview;
-                        var base64image = e.target.result;
-                        $("body").append(
-                            "<canvas id='tempCanvas' width='800' height='800' style='display:none'></canvas>"
-                        );
-                        var canvas = document.getElementById("tempCanvas");
-                        var ctx = canvas.getContext("2d");
-                        var cw = canvas.width;
-                        var ch = canvas.height;
-                        var maxW = 1000;
-                        var maxH = 1000;
-                        var img = new Image;
-                        img.src = this.result;
-                        img.onload = function() {
-                            var iw = img.width;
-                            var ih = img.height;
-                            var scale = Math.min((maxW / iw), (maxH / ih));
-                            var iwScaled = iw * scale;
-                            var ihScaled = ih * scale;
-                            canvas.width = iwScaled;
-                            canvas.height = ihScaled;
-                            ctx.drawImage(img, 0, 0, iwScaled, ihScaled);
-                            base64image = canvas.toDataURL("image/jpeg");
-                            console.log(base64image);
-                            $(id_preview_text).attr('src', base64image);
-                            $(id_preview_text).attr('xoriginal', base64image);
-                            $("#tempCanvas").remove();
-                            $('#val' + id_preview).val(base64image);
-                            $("#btn" + id_preview).hide();
-                            $("#quitar" + id_preview).show();
-                        }
-                    };
-                    reader.readAsDataURL(input.files[0]);
-                    $('#imagen_preview').show();
-                }
-            }
-
-            async function quitarFoto(input) {
-                const foto = $(input).attr("foto");
-                console.log(foto);
-                $("#" + foto).attr("src", "");
-                $("#" + foto).attr("xoriginal", "");
-                $("#val" + foto).val("");
-                $("#quitar" + foto).hide();
-                $("#btn" + foto).show();
-            }
         @endif
-    });
+    });    
 </script>
+
 </html>

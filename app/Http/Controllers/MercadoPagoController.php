@@ -227,22 +227,16 @@ class MercadoPagoController extends Controller
     }
 
     public static function traerToken() {
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://af86y478.sonarmx.store/plugins/ajax/Prestashop/traerMercadoPago.php',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-        ));
-
-        $response = curl_exec($curl);
-
-        curl_close($curl);
+        $response = DB::select("SELECT * FROM `configuration` WHERE name = 'MERCADOPAGO_ACCESS_TOKEN'");
+        $response = json_encode($response);
+        
+        return json_decode($response);
+    }
+    
+    public static function traerKey() {
+        $response = DB::select("SELECT * FROM `configuration` WHERE name = 'MERCADOPAGO_PUBLIC_KEY'");
+        $response = json_encode($response);
+        
         return json_decode($response);
     }
 
@@ -356,6 +350,8 @@ class MercadoPagoController extends Controller
                 case "ConEnvio":
                     break;
                 case "SinEnvio":
+                    $token = MercadoPagoController::traerToken();
+                    $token = $token[0]->value;
                     $idRenta = $request["IdRenta"];
 
                     $detalleRenta = DB::select("SELECT cobro_renta.*
@@ -394,8 +390,6 @@ class MercadoPagoController extends Controller
 
     
                         $jsonEnvio = json_encode($jsonEnvio);
-                        
-                        $token = "APP_USR-3075988642504072-112417-ff97b9cfc9f031cc6c24f468c9c7696d-349822028";
                         $curl = curl_init();
                         curl_setopt_array($curl, array(
                             CURLOPT_URL => 'https://api.mercadopago.com/checkout/preferences',

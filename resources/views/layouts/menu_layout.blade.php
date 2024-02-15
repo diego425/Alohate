@@ -164,9 +164,31 @@
 <script>
    $(document).ready(function () {
       @if(!empty(Cookie::get('puesto')))
+         if(Notification.permission !== "granted"){
+            Notification.requestPermission();
+         }
       @else
          window.location.href = "{{route('login')}}";
       @endif
    });
+
+   @if(!empty(Cookie::get('puesto')))
+         function notificar(titulo, texto, url){
+            if(Notification.permission !== "granted"){
+                Notification.requestPermission();
+            }else{
+                var notificacion = new Notification(titulo,
+                    {
+                        icon: "https://upload.wikimedia.org/wikipedia/commons/2/21/Speaker_Icon.svg",
+                        body: texto
+                    }
+                );
+                
+                notificacion.onclick = function(){
+                    window.open(url);
+                }
+            }
+        }
+   @endif
 </script>
 </html>
