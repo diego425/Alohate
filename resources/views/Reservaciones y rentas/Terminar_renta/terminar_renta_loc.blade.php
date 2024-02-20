@@ -36,9 +36,9 @@
    <div class="seccion_hijo_t"> 
          <div class="seccion_interno_1">
             <div class="centrar_texto">
-               <p><h5>Nombre De La Habitacion:</h5>
+               <p><h5>Nombre Del Local:</h5>
               <div class="gris">
-                <h6>{{$datos_cobro[0]->Nombre_hab}}</h6>
+                <h6>{{$datos_cobro[0]->Nombre_local}}</h6>
               </div>
             </div>
 
@@ -106,7 +106,6 @@
                                        <tr>
                                           <th>Fecha De Entrada</th>
                                           <th>Fecha De Salida</th>
-                                          <th>Personas Extras</th>
                                           <th>Nombre Del Lugar</th>
                                           <th>Estatus</th>
                                           <th>Tipo De Cobro</th>
@@ -117,14 +116,7 @@
                                        <tr>
                                           <td data-label="Fecha De Entrada">{{$datos_cobro[0]->Start_date}}</td>
                                           <td data-label="Fecha De Salida">{{$datos_cobro[0]->End_date}}</td> 
-                                          <td data-label="Personas Extras">
-                                             @if($datos_cobro[0]->Numero_personas_extras == NULL)
-                                                <h6>0</h6>
-                                             @else
-                                             <i class="fa-solid fa-person"></i> {{$datos_cobro[0]->Numero_personas_extras}}
-                                             @endif
-                                          </td> 
-                                          <td data-label="Nombre Del Lugar">Hab: {{$datos_cobro[0]->Nombre_hab}}</td>
+                                          <td data-label="Nombre Del Lugar">Local: {{$datos_cobro[0]->Nombre_local}}</td>
                                           <td data-label="Estatus">
                                                 @if($datos_cobro[0]->Nombre_estado == "Ocupada")
                                                 <h6 style="color:  rgb(179, 60, 60)">{{$datos_cobro[0]->Nombre_estado}}</h6>
@@ -179,7 +171,7 @@
                <p><h5>Selecciona los desperfectos que hayas notado en el lugar</h5></p>
             </div>
             <div class="gris">
-               <form action="{{route('viewmonto', [$datos_cobro[0]->Id_reservacion, $datos_cobro[0]->Id_habitacion, $datos_cobro[0]->Id_lugares_reservados])}}" method="GET"> 
+               <form action="{{route('viewmontoloc', [$datos_cobro[0]->Id_reservacion, $datos_cobro[0]->Id_local, $datos_cobro[0]->Id_lugares_reservados])}}" method="GET"> 
                   @csrf
                <div class="container_tabla_C">
                   <table class="table table-striped table-hover">
@@ -243,14 +235,14 @@
                   <div class="centrar_texto">
                      <p><h6>Deposito De Garantia:</h6></p>
                     <div class="gris">
-                     <input type="number" name="" id="" value="{{$datos_cobro[0]->Deposito_garantia_hab}}" readonly >
+                     <input type="number" name="" id="" value="{{$datos_cobro[0]->Deposito_garantia_local}}" readonly >
                     </div>
                   </div>
 
                   <div class="centrar_texto">
                      <p><h6>Cambio A Regresar:</h6></p>
                     <div class="gris">
-                     <input type="number" name="" id="total_resta" value="{{$datos_cobro[0]->Deposito_garantia_hab}}" readonly/>
+                     <input type="number" name="" id="total_resta" value="{{$datos_cobro[0]->Deposito_garantia_local}}" readonly/>
                     </div>
                   </div>
 
@@ -320,14 +312,14 @@ function sumar()
     }
   });
   $total.value = subtotal;
-
-  subtotal_res = {{$datos_cobro[0]->Deposito_garantia_hab}} - $total.value;
+//resta automatica
+  subtotal_res = {{$datos_cobro[0]->Deposito_garantia_local}} - $total.value;
 
   $resta.value = subtotal_res;
 
 }
 
-//resta automatica
+
 
 
 //funcion que detecta si se estan seleccionando los checkbox

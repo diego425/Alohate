@@ -36,20 +36,11 @@
    <div class="seccion_hijo_t"> 
          <div class="seccion_interno_1">
             <div class="centrar_texto">
-               <p><h5>Nombre De La Habitacion:</h5>
+               <p><h5>Nombre De La Casa:</h5>
               <div class="gris">
-                <h6>{{$datos_cobro[0]->Nombre_hab}}</h6>
+                <h6>{{$datos_cobro[0]->Nombre_locacion}}</h6>
               </div>
-            </div>
-
-            <div class="centrar_texto">
-               <p><h5>Locacion A La Que Pertenece:
-               </h5>
-              <div class="gris">
-               <h6>{{$datos_cobro[0]->Nombre_locacion}}</h6>
-              </div>
-            </div>
-       
+            </div> 
          </div>
    </div>
 </div>
@@ -124,7 +115,7 @@
                                              <i class="fa-solid fa-person"></i> {{$datos_cobro[0]->Numero_personas_extras}}
                                              @endif
                                           </td> 
-                                          <td data-label="Nombre Del Lugar">Hab: {{$datos_cobro[0]->Nombre_hab}}</td>
+                                          <td data-label="Nombre Del Lugar">Casa: {{$datos_cobro[0]->Nombre_locacion}}</td>
                                           <td data-label="Estatus">
                                                 @if($datos_cobro[0]->Nombre_estado == "Ocupada")
                                                 <h6 style="color:  rgb(179, 60, 60)">{{$datos_cobro[0]->Nombre_estado}}</h6>
@@ -179,7 +170,7 @@
                <p><h5>Selecciona los desperfectos que hayas notado en el lugar</h5></p>
             </div>
             <div class="gris">
-               <form action="{{route('viewmonto', [$datos_cobro[0]->Id_reservacion, $datos_cobro[0]->Id_habitacion, $datos_cobro[0]->Id_lugares_reservados])}}" method="GET"> 
+               <form action="{{route('viewmontocasa', [$datos_cobro[0]->Id_reservacion, $datos_cobro[0]->Id_locacion, $datos_cobro[0]->Id_lugares_reservados])}}" method="GET"> 
                   @csrf
                <div class="container_tabla_C">
                   <table class="table table-striped table-hover">
@@ -243,51 +234,49 @@
                   <div class="centrar_texto">
                      <p><h6>Deposito De Garantia:</h6></p>
                     <div class="gris">
-                     <input type="number" name="" id="" value="{{$datos_cobro[0]->Deposito_garantia_hab}}" readonly >
+                     <input type="number" name="" id="" value="{{$datos_cobro[0]->Deposito_garantia_casa}}" readonly >
                     </div>
                   </div>
 
                   <div class="centrar_texto">
                      <p><h6>Cambio A Regresar:</h6></p>
                     <div class="gris">
-                     <input type="number" name="" id="total_resta" value="{{$datos_cobro[0]->Deposito_garantia_hab}}" readonly/>
+                     <input type="number" name="" id="total_resta" value="{{$datos_cobro[0]->Deposito_garantia_casa}}" readonly/>
                     </div>
+                  </div>
+                  <br>
+                  
+                  <div class="centrar_texto">
+                        <div>
+                              <p><h5>Reporte De Mtto</h5></p>
+                              <i id="despliegue_mtto" class="fa-solid fa-chevron-down" onclick="presentar_mtto()"></i>
+                              <i id="ocultar_mtto" class="fa-solid fa-chevron-up" onclick="esconder_mtto()"></i>
+                              </p>
+                        </div>
+                        <div class="detalle_mtto" id="detalle_mtto">
+                           <div class="gris">
+                                 <p>
+                                    <p><label for="mtto">Tipo De Mtto</label></p>
+                                 <select name="mtto" id="mtto" class="form-control">
+                                    <option value="-1" disabled selected>Selecciona una opcion</option>
+                                    <option value="Correctivo">Correctivo</option>
+                                    <option value="Preventivo">Preventivo</option>
+                                 </select>
+                                 </p>
+
+                                 <p>
+                                    <p><label for="descripcion_m">Descripcion Del Trabajo</label></p>
+                                    <textarea name="descripcion_m" id="descripcion_m" cols="30" rows="4" class="form-control" placeholder="escribe aqui"></textarea>
+                                 </p>
+                              <br>
+                           </div>
+                        </div>
                   </div>
 
                   <div class="centrar_texto">
-                     <div>
-                           <p><h5>Reporte De Mtto</h5></p>
-                           <i id="despliegue_mtto" class="fa-solid fa-chevron-down" onclick="presentar_mtto()"></i>
-                           <i id="ocultar_mtto" class="fa-solid fa-chevron-up" onclick="esconder_mtto()"></i>
-                           </p>
-                     </div>
-                     <div class="detalle_mtto" id="detalle_mtto">
-                        <div class="gris">
-                           
-                              <p>
-                                 <p><label for="mtto">Tipo De Mtto</label></p>
-                              <select name="mtto" id="mtto" class="form-control">
-                                 <option value="-1" disabled selected>Selecciona una opcion</option>
-                                 <option value="Correctivo">Correctivo</option>
-                                 <option value="Preventivo">Preventivo</option>
-                              </select>
-                              </p>
-
-                              <p>
-                                 <p><label for="descripcion_m">Descripcion Del Trabajo</label></p>
-                              <textarea name="descripcion_m" id="descripcion_m" cols="30" rows="4" class="form-control" placeholder="escribe aqui"></textarea>
-                              </p>
-                              <br>
-                          
-                        </div>
-                     </div>
-               </div>
-
-               <div class="centrar_texto">
-                  <button type="submit" class="btn btn-success">Guardar</button>
-               </div>
-               <br>
-                  
+                     <button type="submit" class="btn btn-success">Guardar</button>
+                  </div>
+                  <br>
                </form>
          </div>
    </div>
@@ -321,7 +310,7 @@ function sumar()
   });
   $total.value = subtotal;
 
-  subtotal_res = {{$datos_cobro[0]->Deposito_garantia_hab}} - $total.value;
+  subtotal_res = {{$datos_cobro[0]->Deposito_garantia_casa}} - $total.value;
 
   $resta.value = subtotal_res;
 
@@ -393,6 +382,7 @@ function activar_olor(){
     }
    }
 
+
 function esconder_mtto(){
     document.getElementById('ocultar_mtto').style.display = 'none';
     document.getElementById('despliegue_mtto').style.display = 'block';
@@ -404,6 +394,7 @@ function presentar_mtto(){
     document.getElementById('despliegue_mtto').style.display = 'none';
     document.getElementById('detalle_mtto').style.display = 'block';
 }
+
 </script>
 
 </html>

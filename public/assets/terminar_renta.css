@@ -507,7 +507,20 @@
       display: none;
     }
     
-
+  /*reporte mttoo*/
+  #despliegue_mtto{
+    cursor: pointer;
+    transition: all 2s;
+  }
+  #ocultar_mtto{
+    cursor: pointer;
+    display: none;
+    transition: all 2s;
+  }
+  #detalle_mtto{
+    display: none;
+    transition: all 2s;
+  }
 
 
 /*TABLA PARA MOSTRAR LOS CLIENTES QUE ESTAN EN LA CASA*/
