@@ -63,7 +63,41 @@
              <li><a href="{{route('reservaciones_renta')}}" class="lol__link">Reservaciones y Rentas</a></li>
              @if(!empty(Cookie::get('puesto')))
                @if(Cookie::get('puesto') == "ADMIN" || Cookie::get('puesto') == "OPERADOR")
-                  <li><a href="{{route('pagos.index')}}" class="lol__link">Cobros y Adeudos de Renta</a></li>
+                  <li class="dropdown__item">
+                     <div class="lol__link">
+                        Cobros y Adeudos de Renta<i class="ri-arrow-down-s-line dropdown__arrow"></i>
+                     </div>   
+                     <ul class="dropdown__menu">
+                        <li>
+                           <a href="{{route('pagos.index')}}" class="dropdown__link">
+                              <i class='bx bxs-coin-stack'></i>Cobros de renta
+                           </a>
+                        </li>
+   
+                        <li>
+                           <a href="{{route('caja.index')}}" class="dropdown__link">
+                              <i class='bx bx-coin' ></i>
+                              Caja chica
+                           </a>
+                        </li>
+                        
+                        @if(Cookie::get('puesto') == "ADMIN")
+                           <li>
+                              <a href="{{route('cuentas.create')}}" class="dropdown__link" title="Cuentas bancarias">
+                                 <box-icon name='cog' type='solid' animation='spin' ></box-icon>Cuentas bancarias
+                              </a>
+                           </li>
+                        @endif
+
+                        @if(Cookie::get('puesto') == "ADMIN" || Cookie::get('puesto') == "OPERADOR")
+                           <li>
+                              <a href="{{route('pagos.generarLinkPago')}}" class="dropdown__link">
+                                 <i class='bx bx-link'></i>Links de pago
+                              </a>
+                           </li>
+                        @endif
+                     </ul>
+                  </li>
                @endif
              @endif
              @if(!empty(Cookie::get('puesto')))

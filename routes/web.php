@@ -22,6 +22,7 @@ use App\Http\Controllers\LimpiezaMantenimientoController;
 use App\Http\Controllers\PagosController;
 use App\Http\Controllers\DatatableController;
 use App\Http\Controllers\MercadoPagoController;
+use App\Http\Controllers\CajasController;
 
 //ruta para el menu
 Route::get('menu', 'MenuController@VistaMenu')->name('menu');
@@ -490,6 +491,18 @@ Route::controller(CuentasBancariasController::class)->group(function (){
     Route::get('cuentas/bancarias/edit/{id}', 'edit')->name('cuentas.edit');
     Route::post('cuentas/bancarias/update/{id}', 'update')->name('cuentas.update');
     Route::post('cuentas/bancarias/destroy/{id}', 'destroy')->name('cuentas.destroy');
+});
+
+Route::controller(CajasController::class)->group(function (){
+    Route::get('caja/chica', 'index')->name('caja.index');
+    Route::get('caja/chica/create', 'create')->name('caja.create');
+    Route::get('caja/chica/create/movimiento/{idCajas}', 'createMovimiento')->name('caja.createMovimiento');
+    Route::post('caja/chica/store', 'store')->name('caja.store');
+    Route::post('caja/chica/storeMovimiento', 'storeMovimiento')->name('caja.storeMovimiento');
+    Route::get('caja/chica/{id}', 'show')->name('caja.show');
+    Route::get('caja/chica/edit/{id}', 'edit')->name('caja.edit');
+    Route::post('caja/chica/update/{id}', 'update')->name('caja.update');
+    Route::post('caja/chica/destroy/{id}', 'destroy')->name('caja.destroy');
 });
 
 

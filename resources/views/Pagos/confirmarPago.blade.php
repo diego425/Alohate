@@ -124,6 +124,7 @@
                             <th scope="row">Id</th>
                             <th scope="col">Fecha</th>
                             <th scope="col">Comprobante</th>
+                            <th scope="col">Concepto</th>
                             <th scope="col">Monto</th>
                             <th scope="col">Forma de pago</th>
                             <th scope="col" colspan="2">Accion</th>
@@ -151,6 +152,7 @@
                                 No encontrado
                                 @endif
                             </td>
+                            <td data-label="Concepto" class="table-danger">{{ $pago->Concepto_pago_renta }}</td>
                             <td data-label="Monto" class="table-danger">{{ $pago->Monto_pago }}</td>
                             <td data-label="Forma de pago">{{ $pago->Descripcion }}</td>
                             @if ($pago->Estatus_pago == 'Pendiente')

@@ -48,7 +48,26 @@
         height: 2em;
     }
 
+    .center {
+        margin: auto;
+        margin-left: 25%;
+    }
+
     @media screen and (max-width: 600px) {
+        .select2-container{
+            width: 100%;
+        }
+
+        .center {
+            margin: auto;
+            margin-left: 20%;
+            padding: .5em;
+        }
+
+        .registroPago{
+            padding: inherit;
+        }
+
         img {
             width: 50%;
             margin-left: 25%;
@@ -181,6 +200,9 @@
                         <div class="col-lg-5 col-xl-4">
                             <div class="card mt-3 mt-lg-0">
                                 <div class="card-body">
+                                    <div class="card-title">
+                                        <h6>Bienvenido: <h5 id="txtBienvenida"></h5></h6>
+                                    </div>
                                     <div class="d-flex align-items-center justify-content-between">
                                         <h3 class="mb-0"><i class='bx bx-home-alt-2'></i></h3>
                                         @if (!empty($datosLugar[0]->Nombre_locacion))
@@ -240,12 +262,17 @@
                                         data-bs-parent="#accordionFlushExample">
                                         <div class="accordion-body">
                                             <div class="registroPago border border-danger-subtle">
+                                                <button class="btn btn-outline-dark center"
+                                                    id="ocultarCuentasBancarias">
+                                                    Ocultar cuentas
+                                                    <i class='bx bx-low-vision'></i>
+                                                </button>
+                                                <button class="btn btn-outline-dark center"
+                                                    id="mostrarCuentasBancarias" style="display: none">
+                                                    Mostrar cuentas
+                                                    <i class='bx bx-show'></i>
+                                                </button>
                                                 <div class="table-responsive tablaCuentasBancarias">
-                                                    <button class="btn btn-outline-dark center"
-                                                        id="ocultarCuentasBancarias">
-                                                        Ocultar cuentas
-                                                        <i class='bx bx-low-vision'></i>
-                                                    </button>
                                                     <table
                                                         class="table table-info table-striped table-hover table-borderless align-middle">
                                                         <thead>
@@ -313,7 +340,7 @@
                                                         action="{{ route('pagos.store', $cobros[0]->Id_cobro_renta) }}"
                                                         method="post" class="row g-3 needs-validation text-small small" novalidate>
                                                         @csrf
-                                                        <div class="form-floating mb-3 col-md-6">
+                                                        <div class="form-floating mb-3 col-md-12">
                                                             <input type="number" class="form-control"
                                                                 name="Monto_pago" id="Monto_pago" placeholder=""
                                                                 value="{{ $totalapagar }}" readonly required />
@@ -323,7 +350,12 @@
                                                             <input type="date" class="form-control"
                                                                 name="Fecha_pago" id="Fecha_pago" placeholder=""
                                                                 value="{{ date('Y-m-d') }}" required />
-                                                            <label for="Fecha_pago">Fecha de pago</label>
+                                                            <label for="Fecha_pago">Fecha de deposito</label>
+                                                        </div>
+                                                        <div class="form-floating mb-3 col-md-6">
+                                                            <input type="time" class="form-control"
+                                                                name="Hora_pago" id="Hora_pago" placeholder="" required />
+                                                            <label for="Fecha_pago">Hora de deposito</label>
                                                         </div>
                                                         <div class="form-floating mb-3 col-md-4"
                                                             style="display: none">
@@ -343,7 +375,7 @@
                                                             <label for="c_FormaPago">Forma de pago</label>
                                                             <br>
                                                             <select
-                                                                class="form-select js-example-basic-single js-example-responsive"
+                                                                class="form-select js-example-basic-single"
                                                                 id="c_FormaPago" name="c_FormaPago"
                                                                 aria-label="Floating label select example" required>
                                                                 <option value="" selected disabled>Seleccione una
@@ -356,11 +388,19 @@
                                                             </select>
                                                         </div>
                                                         <div class="form-floating mb-3 col-md-12">
-                                                            <input type="text" class="form-control"
-                                                                name="Concepto_pago_renta" id="Concepto_pago_renta"
-                                                                placeholder=""
-                                                                value="Renta{{ $cobros[0]->Id_cobro_renta }}"
-                                                                required />
+                                                            @if(!empty($cobros[0]->lugarEspecifico[0]["id"]))
+                                                                <input type="text" class="form-control"
+                                                                    name="Concepto_pago_renta" id="Concepto_pago_renta"
+                                                                    placeholder=""
+                                                                    value="{{ substr($cobros[0]->lugarEspecifico[0]["Nombre_locacion"],0,3).substr($cobros[0]->lugarEspecifico[0]["Nombre"],0,3).$cobros[0]->lugarEspecifico[0]["id"] }}"
+                                                                    required />
+                                                            @else
+                                                                <input type="text" class="form-control"
+                                                                    name="Concepto_pago_renta" id="Concepto_pago_renta"
+                                                                    placeholder=""
+                                                                    value=""
+                                                                    required />
+                                                            @endif
                                                             <label for="Concepto_pago_renta">Concepto</label>
                                                         </div>
                                                         <h6 class="card-title center bold">Foto del comprobante de pago
@@ -384,7 +424,7 @@
                                                         </div>
                                                         <div class="group-input">
                                                             <button type="submit"
-                                                                class="btn btn-outline-success">Registrar</button>
+                                                                class="btn btn-outline-success">Pagar</button>
                                                         </div>
                                                     </form>
                                                 </div>
@@ -407,7 +447,7 @@
                                         </div>
                                     </div>
                                 </div> --}}
-                                <div class="accordion-item">
+                                {{-- <div class="accordion-item">
                                     <h2 class="accordion-header">
                                         <button class="accordion-button collapsed" type="button"
                                             data-bs-toggle="collapse" data-bs-target="#flush-collapseThree"
@@ -504,7 +544,7 @@
                                             @endif
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
@@ -541,12 +581,11 @@
     $(document).ready(function() {
         $("#mainPrinc").hide();
         @if ($totalapagar <= 0)
-            datosLugar = @json($datosLugar);
-            console.log(datosLugar);
+            $("#mainPrinc").show();
         @else
             @if (!empty($cobros[0]->preference_mp))
                 @if (!empty($keyMP))
-                    const mp = new MercadoPago('{{ $keyMP }}', {
+                    /* const mp = new MercadoPago(' $keyMP ', {
                         locale: 'es-MX'
                     });
 
@@ -554,14 +593,14 @@
                         initialization: {
                             preferenceId: "{{ $cobros[0]->preference_mp }}",
                         },
-                    });
+                    }); */
                 @endif
             @endif
 
             Swal.fire({
                 title: "Ingresa tu teléfono",
                 text: "*******{{substr($cobros[0]->Title[0]->Numero_celular,7)}}",
-                input: "text",
+                input: "number",
                 inputAttributes: {
                     autocapitalize: "off"
                 },
@@ -571,14 +610,27 @@
                 allowOutsideClick: false,
                 showCancelButton: false,
                 allowEscapeKey: false,
-                allowOutsideClick: () => !Swal.isLoading()
+                inputValidator: (value) => {
+                    return new Promise((resolve) => {
+                        if (value === "") {
+                            resolve("Invalido");
+                        }else if (value.length < 10) {
+                            resolve("Invalido");
+                        }else{
+                            resolve();
+                        }
+                    });
+                }
             }).then((result) => {
                 if (result.isConfirmed) {
                     verificarTelefono(result.value,"{{$cobros[0]->Id_cobro_renta}}", "{{route('pagos.verificarTelefono')}}");
+                }else{
+                    location.reload();
                 }
             });
 
             $('.js-example-basic-single').select2();
+            $(".select2-container").removeAttr("style");
             (() => {
                 'use strict'
                 // Fetch all the forms we want to apply custom Bootstrap validation styles to
@@ -590,7 +642,6 @@
                             event.preventDefault()
                             event.stopPropagation()
                         }
-
                         form.classList.add('was-validated')
                     }, false)
                 })
