@@ -15,6 +15,7 @@ use Illuminate\Database\Query\Builder;
 use RealRashid\SweetAlert\Facades\Alert;
 use App\Models\Locacion;
 use App\Models\Reservacion;
+use App\Models\Cobro_desperfectos;
 use App\Models\Cliente;
 use App\Models\Contrato;
 use App\Models\Cobro_renta;
@@ -116,7 +117,7 @@ public function DetalleReservaHab($Id_reservacion, $Id_habitacion, $Id_lugares_r
         ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
         ->where('reserva.Id_reservacion', '=', $Id_reservacion)
         ->where('hab.Id_habitacion', '=', $Id_habitacion)
-        ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+        // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
         ->get();
 
 //funcion para calcular dias entre 2 fechas
@@ -299,7 +300,20 @@ public function ViewReservaHabNC($Id_locacion, $Id_habitacion){
 
 //funcion que guarda el registro de una reservacion para una hab para un cliente nuevo
 public function StoreReservaHabNC(Request $request, $Id_locacion, $Id_habitacion){
-try{
+
+    $request->validate([
+        'cel' => 'required',
+        'nombre' => 'required',
+        'a_paterno'=> 'required',
+        'a_materno'=> 'required',
+        'email'=> 'required',
+        'extras'=> 'required',
+        'f_entrada'=> 'required',
+        'f_salida'=> 'required',
+        'p_total'=> 'required',
+        'tipo_renta'=> 'required',
+    ]);
+
 //consulta que me revisa las fechas ya agendadas en la bd para que no se repitan las fechas
     $fecha_bd = DB::table('reservacion')
     ->select('hab.Id_habitacion', 'Start_date', 'End_date' )
@@ -395,6 +409,8 @@ try{
             ->where('Id_reservacion', '=', $lastreservacion)
             ->update(['Foto_comprobante_anticipo' => $nombreImagen]);
       }}
+
+      UsuariosController::historial_log(Cookie::get('Id_colaborador'),"registro una nueva reservacion para una hab con un nuevo cliente");
       
         Alert::success('Exito', 'Se ha registrado la reservacion con exito');
         return redirect()->back();
@@ -407,10 +423,7 @@ try{
         Alert::warning('Advertencia', 'La fecha seleccionada ya esta ocupada, por favor selecciona otra');
         return redirect()->back();
     }
-}catch(Exception $ex){
-        Alert::error('Error', 'La reservacion no se pudo registrar revisa que todo este en orden');
-        return redirect()->back();
-}
+
 }
     
 //funcion que muestra el formulario para añadir una reservacion con cliente existente en una hab
@@ -464,7 +477,16 @@ public function ViewReservaHabOC($Id_locacion, $Id_habitacion){
 
 //funcion que guarda el registro para añadir una reservacion con cliente existente en una hab
 public function StoreReservaHabOC(Request $request, $Id_locacion, $Id_habitacion){
-//try{
+
+    $request->validate([
+        'extras'=> 'required',
+        'f_entrada'=> 'required',
+        'f_salida'=> 'required',
+        'p_total'=> 'required',
+        'tipo_renta'=> 'required',
+        'selector_cliente'=> 'required',
+    ]);
+
 //consulta que me revisa las fechas ya agendadas en la bd para que no se repitan las fechas
     $fecha_bd = DB::table('reservacion')
     ->select('hab.Id_habitacion', 'Start_date', 'End_date' )
@@ -552,6 +574,7 @@ public function StoreReservaHabOC(Request $request, $Id_locacion, $Id_habitacion
               ->update(['Foto_comprobante_anticipo' => $nombreImagen]);
         }}
         
+        UsuariosController::historial_log(Cookie::get('Id_colaborador'),"se registro ua nueva reservacion para una hab con un cliente existente");
 
         Alert::success('Exito', 'Se ha registrado la reservacion con exito');
         return redirect()->back();
@@ -563,10 +586,7 @@ public function StoreReservaHabOC(Request $request, $Id_locacion, $Id_habitacion
         Alert::warning('Advertencia', 'La fecha seleccionada ya esta ocupada, por favor selecciona otra');
         return redirect()->back();
     }
-// }catch(Exception $ex){
-//      Alert::error('Error', 'La reservacion no se pudo registrar revisa que todo este en orden');
-//      return redirect()->back();
-//}
+
 
 }
 
@@ -624,7 +644,7 @@ public function EditarReservaHab($Id_reservacion, $Id_locacion, $Id_habitacion, 
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('hab.Id_habitacion', '=', $Id_habitacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
     
@@ -853,7 +873,7 @@ public function EditarReservaHabNC($Id_reservacion, $Id_lugares_reservados, $Id_
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('hab.Id_habitacion', '=', $Id_habitacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+//->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
     
@@ -1059,7 +1079,7 @@ public function ViewCliente1Hab($Id_reservacion, $Id_habitacion, $Id_lugares_res
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('hab.Id_habitacion', '=', $Id_habitacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    //->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
     return view('Reservaciones y rentas.Rentar.Habitacion.form_dato_c1_hab', compact('renta'));
@@ -1217,7 +1237,7 @@ if($request->get('idcliente') == $cliente_reserva[0]->Id_cliente){
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('hab.Id_habitacion', '=', $Id_habitacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    //->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
     if($num_personas_reserva[0]->Registro_personas < $total_personas[0]->Total_de_personas){
@@ -1378,7 +1398,7 @@ if($request->get('idcliente') == $cliente_reserva[0]->Id_cliente){
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('hab.Id_habitacion', '=', $Id_habitacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    //->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
     if($num_personas_reserva[0]->Registro_personas < $total_personas[0]->Total_de_personas){
@@ -1430,7 +1450,7 @@ public function ViewIntroHabC2($Id_reservacion, $Id_habitacion, $Id_lugares_rese
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('hab.Id_habitacion', '=', $Id_habitacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    //->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
     return view('Reservaciones y rentas.Rentar.Habitacion.form_dato_c2_hab', compact('Id_reservacion', 'Id_lugares_reservados', 'renta', 'Id_habitacion')); 
@@ -1590,7 +1610,7 @@ if($request->get('idcliente') == ""){
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('hab.Id_habitacion', '=', $Id_habitacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    //->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
 
@@ -1744,7 +1764,7 @@ if($num_personas_reserva[0]->Registro_personas == $total_personas[0]->Total_de_p
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('hab.Id_habitacion', '=', $Id_habitacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    //->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
 if($num_personas_reserva[0]->Registro_personas < $total_personas[0]->Total_de_personas){
@@ -1799,7 +1819,7 @@ public function ViewRentarHab($Id_reservacion, $Id_habitacion, $Id_lugares_reser
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('hab.Id_habitacion', '=', $Id_habitacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    //->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
     return view('Reservaciones y rentas.Rentar.Habitacion.form_rentar_hab', compact('Id_reservacion', 'Id_lugares_reservados', 'renta', 'Id_habitacion'));
@@ -1840,7 +1860,7 @@ try{
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('hab.Id_habitacion', '=', $Id_habitacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    //->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
 
@@ -1870,7 +1890,7 @@ try{
         ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
         ->where('reserva.Id_reservacion', '=', $Id_reservacion)
         ->where('hab.Id_habitacion', '=', $Id_habitacion)
-        ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+       // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
         ->get();
 
 //funcion para calcular dias entre 2 fechas
@@ -2218,7 +2238,7 @@ if($request->get('tipo_contrato') == "Rigido"){
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('hab.Id_habitacion', '=', $Id_habitacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    //->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
 //array que guarda la foto del contrato
@@ -2346,7 +2366,7 @@ if($request->get('tipo_contrato') == "Flexible"){
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('hab.Id_habitacion', '=', $Id_habitacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    //->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
 //array que guarda la foto del contrato
@@ -2397,7 +2417,7 @@ if($request->get('tipo_contrato') == "Flexible"){
 
 public function ViewTerminarRentaHab($Id_reservacion, $Id_habitacion, $Id_lugares_reservados){
 
-    $renta = DB::table('lugares_reservados')
+    $datos_cobro = DB::table('lugares_reservados')
     ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion','lugares_reservados.Id_locacion', 
      'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
      'est.Nombre_estado',
@@ -2428,8 +2448,9 @@ public function ViewTerminarRentaHab($Id_reservacion, $Id_habitacion, $Id_lugare
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('hab.Id_habitacion', '=', $Id_habitacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
+
+
 
     $consulta_pago_renta = DB::table('cobro_renta')
     ->select('cobro_renta.Id_cobro_renta','cobro_renta.Id_reservacion','cobro_renta.Id_lugares_reservados',
@@ -2440,21 +2461,141 @@ public function ViewTerminarRentaHab($Id_reservacion, $Id_habitacion, $Id_lugare
     ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "cobro_renta.Id_reservacion")
     ->leftJoin("lugares_reservados", "lugares_reservados.Id_lugares_reservados", "=", "cobro_renta.Id_lugares_reservados")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
-    if($consulta_pago_renta[0]->Saldo == $consulta_pago_renta[0]->Monto_total){
+    if($consulta_pago_renta[0]->Saldo >= $consulta_pago_renta[0]->Monto_total){
 
-        return view('Reservaciones y rentas.Terminar_renta.terminar_renta_hab', compact('renta'));
+        return view('Reservaciones y rentas.Terminar_renta.terminar_renta_hab', compact('datos_cobro', 'consulta_pago_renta'));
     }else{
-        Alert::error('Alto', 'Se detecto que este cliente no ha pagado el monto total de renta. por favor pidele que pague para que pueda irse');
-        return redirect()->back();
+        return view('Reservaciones y rentas.Terminar_renta.cliente_sin_pagar');
     }
-
-    
 
 }
 
+public function CalcularMontoDesHab(Request $request, $Id_reservacion, $Id_habitacion, $Id_lugares_reservados){
+try{
+
+      /* en esta funcion me hara un calculo de los desperfectos, desde los checksbox me dira cuales son las cantidades a sumar
+ y despues esto me lo guardara en un campo llamado monto total desperfectos que estara en la tabla de reservacion*/
+//hago una consulta para sacar algunos datos
+$consulta = DB::table('lugares_reservados')
+->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_habitacion','lugares_reservados.Id_locacion', 
+'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
+'est.Nombre_estado',
+'reserva.Id_reservacion','reserva.Id_colaborador',
+'reserva.Start_date','reserva.End_date', 'reserva.Title','reserva.Fecha_reservacion',
+'reserva.Numero_personas_extras', 'reserva.Foto_comprobante_anticipo', 'reserva.Fecha_pago_anticipo',
+'reserva.Foto_aviso_privacidad', 'reserva.Foto_reglamento','reserva.Monto_uso_cochera', 
+'reserva.Metodo_pago_anticipo','reserva.Espacios_cochera','reserva.Monto_pagado_anticipo',
+'reserva.Tipo_de_cobro','reserva.Nota_pago_anticipo',
+'cliente.Id_cliente','cliente.Id_colaborador','cliente.Nombre',
+'cliente.Apellido_paterno','cliente.Apellido_materno','cliente.Email', 
+'cliente.Numero_celular','cliente.Ciudad','cliente.Estado',
+'cliente.Pais', 'cliente.Ref1_nombre','cliente.Ref2_nombre',
+'cliente.Ref1_celular','cliente.Ref2_celular','cliente.Ref1_parentesco',
+'cliente.Ref2_parentesco','cliente.Motivo_visita', 'cliente.Lugar_motivo_visita', 
+'cliente.Foto_cliente', 'cliente.INE_frente', 'cliente.INE_reverso',
+'hab.Id_habitacion','hab.Id_locacion','hab.Id_estado_ocupacion', 
+'hab.Id_colaborador','hab.Nombre_hab', 'hab.Capacidad_personas',  'hab.Deposito_garantia_hab', 
+'hab.Precio_noche', 'hab.Precio_semana','hab.Precio_catorcedias', 'hab.Precio_mes', 
+'hab.Encargado','hab.Espacio_superficie', 'hab.Nota','hab.Descripcion',
+'hab.Cobro_p_ext_mes_h','hab.Cobro_p_ext_catorcena_h','hab.Cobro_p_ext_noche_h',
+'hab.Cobro_anticipo_mes_h','hab.Cobro_anticipo_catorcena_h','hab.Camas_juntas',
+'loc.Nombre_locacion')
+->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
+->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+->leftJoin("habitacion as hab", "hab.Id_habitacion", "=", "lugares_reservados.Id_habitacion")
+->leftJoin("locacion as loc", "loc.Id_locacion", "=", "hab.Id_locacion")
+->where('reserva.Id_reservacion', '=', $Id_reservacion)
+->where('hab.Id_habitacion', '=', $Id_habitacion)
+->get();
+//suma de los datos obtenidos para sacar el total del cobro 
+$suma_total = (int)$request->get('monto_olor') + (int)$request->get('monto_plaga') + (int)$request->get('monto_muebles') + (int)$request->get('monto_ropa') + (int)$request->get('monto_limpieza') + (int)$request->get('monto_vidrio') + (int)$request->get('monto_otro');
+//resta del monto al deposito de g para saber cuanto devolverle al cliente
+$calculo_cambio = $consulta[0]->Deposito_garantia_hab - $suma_total;
+//recopilo la info del cobro de los desperfectos
+    $agregarcobro = new Cobro_desperfectos();
+    $agregarcobro-> Id_reservacion = $Id_reservacion;
+    $agregarcobro-> Olor_cigarro = $request->get('monto_olor');
+    $agregarcobro-> Deteccion_plagas = $request->get('monto_plaga');
+    $agregarcobro-> Muebles_dañados = $request->get('monto_muebles');
+    $agregarcobro-> Ropa_cama_dañada = $request->get('monto_ropa');
+    $agregarcobro-> Limpieza_profunda = $request->get('monto_limpieza');
+    $agregarcobro-> Vidrios_rotos = $request->get('monto_vidrio');
+    $agregarcobro-> Otro_desperfecto = $request->get('titulo_otro');
+    $agregarcobro-> Monto_otro_desperfecto = $request->get('monto_otro');
+    $agregarcobro-> Monto_total_desperfecto = $suma_total;
+    $agregarcobro-> Saldo_a_regresar = $calculo_cambio;
+    $agregarcobro->save();
+
+    $last_cobro_desp =DB::getPdo()->lastInsertId();
+
+//actualizo el estatus del lugar utilizado y de la reservacion
+    $affected = DB::table('lugares_reservados')
+    ->where('Id_reservacion', '=', $Id_reservacion)
+    ->update(['Id_estado_ocupacion' => 9]);
+
+    $affectedat = DB::table('habitacion')
+    ->where('Id_habitacion', '=', $Id_habitacion)
+    ->update(['Id_estado_ocupacion' => 1]);
+
+
+//hago un registro de limpieza para que pasen a limpiar el lugar
+    $insert = DB::table('reportes_m_l')->insert([
+        'Id_locacion' => $consulta[0]->Id_locacion,
+        'Id_habitacion' => $consulta[0]->Id_habitacion,
+        'Id_colaborador' => Cookie::get('Id_colaborador'),
+        'Descripcion_Reporte' => "Este lugar se acaba de desocupar y necesita limpieza",
+        'Fecha_del_reporte' => date("Y-m-d"),
+        'Estatus' => "Pendiente",
+        'Tipo_reporte' => "Limpieza",
+        'tipoLocacion' => "Habitación",
+    ]);
+
+    if($request->get('mtto') == "Correctivo"){
+
+        $insert = DB::table('reportes_m_l')->insert([
+            'Id_locacion' => $consulta[0]->Id_locacion,
+            'Id_habitacion' => $consulta[0]->Id_habitacion,
+            'Id_colaborador' => Cookie::get('Id_colaborador'),
+            'Descripcion_Reporte' => $request->get('descripcion_m'),
+            'Fecha_del_reporte' => date("Y-m-d"),
+            'Estatus' => "Pendiente",
+            'Tipo_reporte' => "Mantenimiento",
+            'Categoria_mtto' => $request->get('mtto'),
+            'tipoLocacion' => "Habitación",
+        ]);
+
+    }else{
+        if($request->get('mtto') == "Preventivo"){
+            $insert = DB::table('reportes_m_l')->insert([
+                'Id_locacion' => $consulta[0]->Id_locacion,
+                'Id_habitacion' => $consulta[0]->Id_habitacion,
+                'Id_colaborador' => Cookie::get('Id_colaborador'),
+                'Descripcion_Reporte' => $request->get('descripcion_m'),
+                'Fecha_del_reporte' => date("Y-m-d"),
+                'Estatus' => "Pendiente",
+                'Tipo_reporte' => "Mantenimiento",
+                'Categoria_mtto' => $request->get('mtto'),
+                'tipoLocacion' => "Habitación",
+            ]);
+        }
+    }
+
+    UsuariosController::historial_log(Cookie::get('Id_colaborador'),"Dio por terminada la estancia de la persona"." ".$consulta[0]->Numero_celular);
+
+    Alert::success('Exito', 'Se ha dado por terminada esta estancia. puedes cerrar esta ventana');
+    return redirect()->back();
+
+}catch(Exception $ex){
+        Alert::error('Error', 'No se pudo terminar la estancia, comunicate con el equipo de soporte');
+        return redirect()->back();
+
+}
+
+
+}
 
 
 
@@ -2592,8 +2733,16 @@ public function ViewReservaDepOC($Id_locacion, $Id_departamento){
 
 //funcion que guarda el registro de una reservacion de un cliente existete en un depa
 public function StoreReservaDepOC(Request $request, $Id_locacion ,$Id_departamento){
+    
+    $request->validate([
+        'extras'=> 'required',
+        'f_entrada'=> 'required',
+        'f_salida'=> 'required',
+        'p_total'=> 'required',
+        'tipo_renta'=> 'required',
+        'selector_cliente'=> 'required',
+    ]);
 
- try{
 //consulta que me revisa las fechas ya agendadas en la bd para que no se repitan las fechas
         $fecha_bd = DB::table('reservacion')
         ->select('depa.Id_departamento', 'Start_date', 'End_date' )
@@ -2683,6 +2832,8 @@ public function StoreReservaDepOC(Request $request, $Id_locacion ,$Id_departamen
                     ->update(['Foto_comprobante_anticipo' => $nombreImagen]);
             }}
 
+            UsuariosController::historial_log(Cookie::get('Id_colaborador'),"registro una nueva reservacion para un depa con un cliente existente");
+
             Alert::success('Exito', 'Se ha registrado la reservacion con exito');
             return redirect()->back();
 
@@ -2695,10 +2846,6 @@ public function StoreReservaDepOC(Request $request, $Id_locacion ,$Id_departamen
             return redirect()->back();
         }
 
-}catch(Exception $ex){
-        Alert::error('Error', 'La reservacion no se pudo registrar revisa que todo este en orden');
-        return redirect()->back();
-}
     
 }
     
@@ -2756,7 +2903,20 @@ public function ViewReservaDepNC($Id_locacion, $Id_departamento){
 //funcion que guarda el registro de una reservacion para un nuevo cliente en un depa
 public function StoreReservaDepNC(Request $request, $Id_locacion, $Id_departamento){
 
-try{
+    
+    $request->validate([
+        'cel' => 'required',
+        'nombre' => 'required',
+        'a_paterno'=> 'required',
+        'a_materno'=> 'required',
+        'email'=> 'required',
+        'extras'=> 'required',
+        'f_entrada'=> 'required',
+        'f_salida'=> 'required',
+        'p_total'=> 'required',
+        'tipo_renta'=> 'required',
+    ]);
+
     //consulta que me revisa las fechas ya agendadas en la bd para que no se repitan las fechas
     $fecha_bd = DB::table('reservacion')
     ->select('depa.Id_departamento', 'Start_date', 'End_date' )
@@ -2855,7 +3015,8 @@ try{
               ->update(['Foto_comprobante_anticipo' => $nombreImagen]);
         }}
         
-        
+        UsuariosController::historial_log(Cookie::get('Id_colaborador'),"registro una nueva reservacion para un dep con un nuevo cliente");
+
         Alert::success('Exito', 'Se ha registrado la reservacion con exito');
         return redirect()->back();
 
@@ -2867,10 +3028,7 @@ try{
         Alert::warning('Advertencia', 'La fecha seleccionada ya esta ocupada, por favor selecciona otra');
         return redirect()->back();
     }
-}catch(Exception $ex){
-        Alert::error('Error', 'La reservacion no se pudo registrar revisa que todo este en orden');
-        return redirect()->back();
-}
+
 }
 
 
@@ -2902,7 +3060,7 @@ public function DetalleReservaDep($Id_reservacion, $Id_departamento, $Id_lugares
         ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "dep.Id_locacion")
         ->where('reserva.Id_reservacion', '=', $Id_reservacion)
         ->where('dep.Id_departamento', '=', $Id_departamento)
-        ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+        //->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
         ->get();
     
 //funcion para calcular dias entre 2 fechas
@@ -3040,7 +3198,7 @@ public function EditarReservaDep($Id_reservacion, $Id_locacion, $Id_departamento
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "dep.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('dep.Id_departamento', '=', $Id_departamento)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    //->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
     
@@ -3267,7 +3425,7 @@ public function EditarReservaDepNC($Id_reservacion,  $Id_lugares_reservados, $Id
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "dep.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('dep.Id_departamento', '=', $Id_departamento)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    //->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
     
@@ -3471,7 +3629,7 @@ public function ViewCliente1Dep($Id_reservacion, $Id_departamento, $Id_lugares_r
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "dep.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('dep.Id_departamento', '=', $Id_departamento)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    //->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
     return view('Reservaciones y rentas.Rentar.Departamento.form_dato_c1_dep', compact('renta'));
@@ -3631,7 +3789,7 @@ if($request->get('idcliente') == $cliente_reserva[0]->Id_cliente){
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "dep.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('dep.Id_departamento', '=', $Id_departamento)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
     if($num_personas_reserva[0]->Registro_personas < $total_personas[0]->Total_de_personas){
@@ -3793,7 +3951,7 @@ if($request->get('idcliente') == $cliente_reserva[0]->Id_cliente){
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "dep.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('dep.Id_departamento', '=', $Id_departamento)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
     if($num_personas_reserva[0]->Registro_personas < $total_personas[0]->Total_de_personas){
@@ -3848,7 +4006,7 @@ public function ViewIntroDepC2($Id_reservacion, $Id_departamento, $Id_lugares_re
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "dep.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('dep.Id_departamento', '=', $Id_departamento)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
     return view('Reservaciones y rentas.Rentar.Departamento.form_dato_c2_dep', compact('Id_reservacion', 'Id_lugares_reservados', 'renta', 'Id_departamento')); 
@@ -4012,7 +4170,7 @@ $renta = DB::table('lugares_reservados')
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "dep.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('dep.Id_departamento', '=', $Id_departamento)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
 
@@ -4168,7 +4326,7 @@ $renta = DB::table('lugares_reservados')
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "dep.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('dep.Id_departamento', '=', $Id_departamento)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
 if($num_personas_reserva[0]->Registro_personas < $total_personas[0]->Total_de_personas){
@@ -4226,7 +4384,7 @@ public function ViewRentarDep($Id_reservacion, $Id_departamento, $Id_lugares_res
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "dep.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('dep.Id_departamento', '=', $Id_departamento)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
     return view('Reservaciones y rentas.Rentar.Departamento.form_rentar_dep', compact('Id_reservacion', 'Id_lugares_reservados', 'renta', 'Id_departamento'));
@@ -4268,7 +4426,7 @@ $cliente = DB::table('lugares_reservados')
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "dep.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('dep.Id_departamento', '=', $Id_departamento)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
 
@@ -4298,7 +4456,7 @@ $cliente = DB::table('lugares_reservados')
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "dep.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('dep.Id_departamento', '=', $Id_departamento)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
 //funcion para calcular dias entre 2 fechas
@@ -4645,7 +4803,7 @@ $this->validate($request, array(
   ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "dep.Id_locacion")
   ->where('reserva.Id_reservacion', '=', $Id_reservacion)
   ->where('dep.Id_departamento', '=', $Id_departamento)
-  ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+//   ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
   ->get();
 
 //array que guarda la foto del contrato
@@ -4774,7 +4932,7 @@ $this->validate($request, array(
   ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "dep.Id_locacion")
   ->where('reserva.Id_reservacion', '=', $Id_reservacion)
   ->where('dep.Id_departamento', '=', $Id_departamento)
-  ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+//   ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
   ->get();
 
 //array que guarda la foto del contrato
@@ -4823,6 +4981,190 @@ $this->validate($request, array(
 }
 
 
+public function ViewTerminarRentaDep($Id_reservacion, $Id_departamento, $Id_lugares_reservados){
+
+    $datos_cobro = DB::table('lugares_reservados')
+    ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_departamento','lugares_reservados.Id_locacion', 
+    'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
+    'est.Nombre_estado',
+    'reserva.Id_reservacion','reserva.Id_colaborador',
+    'reserva.Start_date','reserva.End_date', 'reserva.Title','reserva.Fecha_reservacion',
+    'reserva.Numero_personas_extras', 'reserva.Foto_comprobante_anticipo', 'reserva.Fecha_pago_anticipo',
+    'reserva.Foto_aviso_privacidad', 'reserva.Foto_reglamento','reserva.Monto_uso_cochera', 
+    'reserva.Metodo_pago_anticipo','reserva.Espacios_cochera','reserva.Monto_pagado_anticipo',
+    'reserva.Tipo_de_cobro','reserva.Nota_pago_anticipo',
+    'cliente.Id_cliente','cliente.Id_colaborador','cliente.Nombre',
+    'cliente.Apellido_paterno','cliente.Apellido_materno','cliente.Email', 
+    'cliente.Numero_celular','cliente.Ciudad','cliente.Estado',
+    'cliente.Pais', 'cliente.Ref1_nombre','cliente.Ref2_nombre',
+    'cliente.Ref1_celular','cliente.Ref2_celular','cliente.Ref1_parentesco',
+    'cliente.Ref2_parentesco','cliente.Motivo_visita', 'cliente.Lugar_motivo_visita', 
+    'cliente.Foto_cliente', 'cliente.INE_frente', 'cliente.INE_reverso',
+    'dep.Id_departamento','dep.Id_locacion',
+    'dep.Id_estado_ocupacion', 'dep.Id_colaborador','dep.Nombre_depa',
+    'dep.Capacidad_personas', 'dep.Deposito_garantia_dep', 'dep.Precio_noche', 
+    'dep.Precio_semana','dep.Precio_catorcedias', 'dep.Precio_mes', 'dep.Habitaciones_total', 
+    'dep.Encargado','dep.Espacio_superficie','dep.Nota','dep.Descripcion',
+    'dep.Cobro_p_ext_mes_d','dep.Cobro_p_ext_catorcena_d','dep.Cobro_p_ext_noche_d',
+    'dep.Cobro_anticipo_mes_d','dep.Cobro_anticipo_catorcena_d','dep.Camas_juntas',
+    'loc.Nombre_locacion')
+   ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
+   ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+   ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+   ->leftJoin("departamento as dep", "dep.Id_departamento", "=", "lugares_reservados.Id_departamento")
+   ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "dep.Id_locacion")
+   ->where('reserva.Id_reservacion', '=', $Id_reservacion)
+   ->where('dep.Id_departamento', '=', $Id_departamento)
+   ->get();
+
+
+
+    $consulta_pago_renta = DB::table('cobro_renta')
+    ->select('cobro_renta.Id_cobro_renta','cobro_renta.Id_reservacion','cobro_renta.Id_lugares_reservados',
+    'cobro_renta.Id_colaborador','cobro_renta.Cobro_persona_extra',
+    'cobro_renta.Periodo_total','cobro_renta.Estatus_cobro',
+    'cobro_renta.Tiempo_rebasado','cobro_renta.Deposito_garantia',
+    'cobro_renta.Monto_total','cobro_renta.Saldo','cobro_renta.Id_locacion')
+    ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "cobro_renta.Id_reservacion")
+    ->leftJoin("lugares_reservados", "lugares_reservados.Id_lugares_reservados", "=", "cobro_renta.Id_lugares_reservados")
+    ->where('reserva.Id_reservacion', '=', $Id_reservacion)
+    ->get();
+
+    if($consulta_pago_renta[0]->Saldo >= $consulta_pago_renta[0]->Monto_total){
+
+        return view('Reservaciones y rentas.Terminar_renta.terminar_renta_dep', compact('datos_cobro', 'consulta_pago_renta'));
+    }else{
+        return view('Reservaciones y rentas.Terminar_renta.cliente_sin_pagar');
+    }
+
+}
+
+public function CalcularMontoDesDep(Request $request, $Id_reservacion, $Id_departamento, $Id_lugares_reservados){
+try{
+
+/* en esta funcion me hara un calculo de los desperfectos, desde los checksbox me dira cuales son las cantidades a sumar
+y despues esto me lo guardara en un campo llamado monto total desperfectos que estara en la tabla de reservacion*/
+//hago una consulta para sacar algunos datos
+$consulta =  DB::table('lugares_reservados')
+->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_departamento','lugares_reservados.Id_locacion', 
+'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
+'est.Nombre_estado',
+'reserva.Id_reservacion','reserva.Id_colaborador',
+'reserva.Start_date','reserva.End_date', 'reserva.Title','reserva.Fecha_reservacion',
+'reserva.Numero_personas_extras', 'reserva.Foto_comprobante_anticipo', 'reserva.Fecha_pago_anticipo',
+'reserva.Foto_aviso_privacidad', 'reserva.Foto_reglamento','reserva.Monto_uso_cochera', 
+'reserva.Metodo_pago_anticipo','reserva.Espacios_cochera','reserva.Monto_pagado_anticipo',
+'reserva.Tipo_de_cobro','reserva.Nota_pago_anticipo',
+'cliente.Id_cliente','cliente.Id_colaborador','cliente.Nombre',
+'cliente.Apellido_paterno','cliente.Apellido_materno','cliente.Email', 
+'cliente.Numero_celular','cliente.Ciudad','cliente.Estado',
+'cliente.Pais', 'cliente.Ref1_nombre','cliente.Ref2_nombre',
+'cliente.Ref1_celular','cliente.Ref2_celular','cliente.Ref1_parentesco',
+'cliente.Ref2_parentesco','cliente.Motivo_visita', 'cliente.Lugar_motivo_visita', 
+'cliente.Foto_cliente', 'cliente.INE_frente', 'cliente.INE_reverso',
+'dep.Id_departamento','dep.Id_locacion',
+'dep.Id_estado_ocupacion', 'dep.Id_colaborador','dep.Nombre_depa',
+'dep.Capacidad_personas', 'dep.Deposito_garantia_dep', 'dep.Precio_noche', 
+'dep.Precio_semana','dep.Precio_catorcedias', 'dep.Precio_mes', 'dep.Habitaciones_total', 
+'dep.Encargado','dep.Espacio_superficie','dep.Nota','dep.Descripcion',
+'dep.Cobro_p_ext_mes_d','dep.Cobro_p_ext_catorcena_d','dep.Cobro_p_ext_noche_d',
+'dep.Cobro_anticipo_mes_d','dep.Cobro_anticipo_catorcena_d','dep.Camas_juntas',
+'loc.Nombre_locacion')
+->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
+->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+->leftJoin("departamento as dep", "dep.Id_departamento", "=", "lugares_reservados.Id_departamento")
+->leftJoin("locacion as loc", "loc.Id_locacion", "=", "dep.Id_locacion")
+->where('reserva.Id_reservacion', '=', $Id_reservacion)
+->where('dep.Id_departamento', '=', $Id_departamento)
+->get();
+//suma de los datos obtenidos para sacar el total del cobro 
+$suma_total = (int)$request->get('monto_olor') + (int)$request->get('monto_plaga') + (int)$request->get('monto_muebles') + (int)$request->get('monto_ropa') + (int)$request->get('monto_limpieza') + (int)$request->get('monto_vidrio') + (int)$request->get('monto_otro');
+//resta del monto al deposito de g para saber cuanto devolverle al cliente
+$calculo_cambio = $consulta[0]->Deposito_garantia_dep - $suma_total;
+//recopilo la info del cobro de los desperfectos
+    $agregarcobro = new Cobro_desperfectos();
+    $agregarcobro-> Id_reservacion = $Id_reservacion;
+    $agregarcobro-> Olor_cigarro = $request->get('monto_olor');
+    $agregarcobro-> Deteccion_plagas = $request->get('monto_plaga');
+    $agregarcobro-> Muebles_dañados = $request->get('monto_muebles');
+    $agregarcobro-> Ropa_cama_dañada = $request->get('monto_ropa');
+    $agregarcobro-> Limpieza_profunda = $request->get('monto_limpieza');
+    $agregarcobro-> Vidrios_rotos = $request->get('monto_vidrio');
+    $agregarcobro-> Otro_desperfecto = $request->get('titulo_otro');
+    $agregarcobro-> Monto_otro_desperfecto = $request->get('monto_otro');
+    $agregarcobro-> Monto_total_desperfecto = $suma_total;
+    $agregarcobro-> Saldo_a_regresar = $calculo_cambio;
+    $agregarcobro->save();
+
+    $last_cobro_desp =DB::getPdo()->lastInsertId();
+
+//actualizo el estatus del lugar utilizado y de la reservacion
+    $affected = DB::table('lugares_reservados')
+    ->where('Id_reservacion', '=', $Id_reservacion)
+    ->update(['Id_estado_ocupacion' => 9]);
+
+    $affectedat = DB::table('departamento')
+    ->where('Id_departamento', '=', $Id_departamento)
+    ->update(['Id_estado_ocupacion' => 1]);
+
+
+
+//hago un registro de limpieza para que pasen a limpiar el lugar
+    $insert = DB::table('reportes_m_l')->insert([
+        'Id_locacion' => $consulta[0]->Id_locacion,
+        'Id_departamento' => $consulta[0]->Id_departamento,
+        'Id_colaborador' => Cookie::get('Id_colaborador'),
+        'Descripcion_Reporte' => "Este lugar se acaba de desocupar y necesita limpieza",
+        'Fecha_del_reporte' => date("Y-m-d"),
+        'Estatus' => "Pendiente",
+        'Tipo_reporte' => "Limpieza",
+        'tipoLocacion' => "Departamento",
+    ]);
+
+    if($request->get('mtto') == "Correctivo"){
+
+        $insert = DB::table('reportes_m_l')->insert([
+            'Id_locacion' => $consulta[0]->Id_locacion,
+            'Id_departamento' => $consulta[0]->Id_departamento,
+            'Id_colaborador' => Cookie::get('Id_colaborador'),
+            'Descripcion_Reporte' => $request->get('descripcion_m'),
+            'Fecha_del_reporte' => date("Y-m-d"),
+            'Estatus' => "Pendiente",
+            'Tipo_reporte' => "Mantenimiento",
+            'Categoria_mtto' => $request->get('mtto'),
+            'tipoLocacion' => "Departamento",
+        ]);
+
+    }else{
+        if($request->get('mtto') == "Preventivo"){
+            $insert = DB::table('reportes_m_l')->insert([
+                'Id_locacion' => $consulta[0]->Id_locacion,
+                'Id_departamento' => $consulta[0]->Id_departamento,
+                'Id_colaborador' => Cookie::get('Id_colaborador'),
+                'Descripcion_Reporte' => $request->get('descripcion_m'),
+                'Fecha_del_reporte' => date("Y-m-d"),
+                'Estatus' => "Pendiente",
+                'Tipo_reporte' => "Mantenimiento",
+                'Categoria_mtto' => $request->get('mtto'),
+                'tipoLocacion' => "Departamento",
+            ]);
+        }
+    }
+
+    UsuariosController::historial_log(Cookie::get('Id_colaborador'),"Dio por terminada la estancia de la persona"." ".$consulta[0]->Numero_celular);
+
+    Alert::success('Exito', 'Se ha dado por terminada esta estancia. puedes cerrar esta ventana');
+    return redirect()->back();
+
+}catch(Exception $ex){
+        Alert::error('Error', 'No se pudo terminar la estancia, comunicate con el equipo de soporte');
+        return redirect()->back();
+
+}
+
+
+}
 
 
 
@@ -4908,7 +5250,16 @@ public function ViewReservaCasaOC($Id_locacion){
 
 //funcion que guarda el registro de una reservacion de un cliente existete en una casa
 public function StoreReservaCasaOC(Request $request, $Id_locacion){
-try{
+
+    $request->validate([
+        'extras'=> 'required',
+        'f_entrada'=> 'required',
+        'f_salida'=> 'required',
+        'p_total'=> 'required',
+        'tipo_renta'=> 'required',
+        'selector_cliente'=> 'required',
+    ]);
+
 //consulta que me revisa las fechas ya agendadas en la bd para que no se repitan las fechas
         $fecha_bd = DB::table('reservacion')
         ->select('locacion.Id_locacion', 'Start_date', 'End_date' )
@@ -4984,7 +5335,9 @@ try{
                     ->where('Id_reservacion', '=', $lastreservacion)
                     ->update(['Foto_comprobante_anticipo' => $nombreImagen]);
                 }}
-        
+      
+            UsuariosController::historial_log(Cookie::get('Id_colaborador'),"registro una nueva reservacion para una casa con un cliente existente");
+
 
             Alert::success('Exito', 'Se ha registrado la reservacion con exito');
             return redirect()->back();
@@ -4997,11 +5350,6 @@ try{
             Alert::warning('Advertencia', 'La fecha seleccionada ya esta ocupada, por favor selecciona otra');
             return redirect()->back();
         }
-
-}catch(Exception $ex){
-        Alert::error('Error', 'La reservacion no se pudo registrar revisa que todo este en orden');
-        return redirect()->back();
-}
 }
     
 
@@ -5040,7 +5388,20 @@ public function ViewReservaCasaNC($Id_locacion){
 
 //funcion que guarda el registro de una reservacion para un nuevo cliente en una casa
 public function StoreReservaCasaNC(Request $request, $Id_locacion){
-try{
+
+    $request->validate([
+        'cel' => 'required',
+        'nombre' => 'required',
+        'a_paterno'=> 'required',
+        'a_materno'=> 'required',
+        'email'=> 'required',
+        'extras'=> 'required',
+        'f_entrada'=> 'required',
+        'f_salida'=> 'required',
+        'p_total'=> 'required',
+        'tipo_renta'=> 'required',
+    ]);
+
     //consulta que me revisa las fechas ya agendadas en la bd para que no se repitan las fechas
     $fecha_bd = DB::table('reservacion')
     ->select('locacion.Id_locacion', 'Start_date', 'End_date' )
@@ -5126,7 +5487,8 @@ try{
               ->update(['Foto_comprobante_anticipo' => $nombreImagen]);
         }}
        
-    
+        UsuariosController::historial_log(Cookie::get('Id_colaborador'),"registro una nueva reservacion para una casa con un nuevo cliente");
+
         Alert::success('Exito', 'Se ha registrado la reservacion con exito');
         return redirect()->back();
 
@@ -5138,10 +5500,7 @@ try{
         Alert::warning('Advertencia', 'La fecha seleccionada ya esta ocupada, por favor selecciona otra');
         return redirect()->back();
     }
-}catch(Exception $ex){
-        Alert::error('Error', 'La reservacion no se pudo registrar revisa que todo este en orden');
-        return redirect()->back();
-}
+
 }
 
 
@@ -5176,7 +5535,7 @@ public function DetalleReservaCasa($Id_reservacion, $Id_locacion, $Id_lugares_re
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "lugares_reservados.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('loc.Id_locacion', '=', $Id_locacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
     
 //funcion para calcular dias entre 2 fechas
@@ -5297,7 +5656,7 @@ public function EditarReservaCasa($Id_reservacion, $Id_locacion, $Id_lugares_res
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "lugares_reservados.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('loc.Id_locacion', '=', $Id_locacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
     
@@ -5445,7 +5804,7 @@ public function EditarReservaCasaNC($Id_reservacion , $Id_lugares_reservados, $I
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "lugares_reservados.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('loc.Id_locacion', '=', $Id_locacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
     
@@ -5591,7 +5950,7 @@ public function ViewCliente1Casa($Id_reservacion, $Id_locacion, $Id_lugares_rese
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "lugares_reservados.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('loc.Id_locacion', '=', $Id_locacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
     return view('Reservaciones y rentas.Rentar.Locacion.form_dato_c1_casa', compact('renta'));
@@ -5761,7 +6120,7 @@ if($request->get('idcliente') == $cliente_reserva[0]->Id_cliente){
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "lugares_reservados.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('loc.Id_locacion', '=', $Id_locacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
     if($num_personas_reserva[0]->Registro_personas < $total_personas[0]->Total_de_personas){
@@ -5932,7 +6291,7 @@ if($request->get('idcliente') == $cliente_reserva[0]->Id_cliente){
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "lugares_reservados.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('loc.Id_locacion', '=', $Id_locacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
     if($num_personas_reserva[0]->Registro_personas < $total_personas[0]->Total_de_personas){
@@ -5996,7 +6355,7 @@ public function ViewIntroCasaC2($Id_reservacion, $Id_locacion, $Id_lugares_reser
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "lugares_reservados.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('loc.Id_locacion', '=', $Id_locacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
     return view('Reservaciones y rentas.Rentar.Locacion.form_dato_c2_casa', compact('Id_reservacion', 'Id_lugares_reservados', 'renta', 'Id_locacion')); 
@@ -6166,7 +6525,7 @@ if($request->get('idcliente') == ""){
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "lugares_reservados.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('loc.Id_locacion', '=', $Id_locacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
 
@@ -6330,7 +6689,7 @@ if($num_personas_reserva[0]->Registro_personas == $total_personas[0]->Total_de_p
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "lugares_reservados.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('loc.Id_locacion', '=', $Id_locacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
 if($num_personas_reserva[0]->Registro_personas < $total_personas[0]->Total_de_personas){
@@ -6397,7 +6756,7 @@ public function ViewRentarCasa($Id_reservacion, $Id_locacion, $Id_lugares_reserv
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "lugares_reservados.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('loc.Id_locacion', '=', $Id_locacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
     return view('Reservaciones y rentas.Rentar.Locacion.form_rentar_casa', compact('Id_reservacion', 'Id_lugares_reservados', 'renta', 'Id_locacion'));
 
@@ -6446,7 +6805,7 @@ try{
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "lugares_reservados.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('loc.Id_locacion', '=', $Id_locacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
     $detallereserva = DB::table('lugares_reservados')
@@ -6478,7 +6837,7 @@ try{
     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "lugares_reservados.Id_locacion")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('loc.Id_locacion', '=', $Id_locacion)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
     
 //funcion para calcular dias entre 2 fechas
@@ -6831,7 +7190,7 @@ $this->validate($request, array(
    ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "lugares_reservados.Id_locacion")
    ->where('reserva.Id_reservacion', '=', $Id_reservacion)
    ->where('loc.Id_locacion', '=', $Id_locacion)
-   ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+//    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
    ->get();
 
 //array que guarda la foto del contrato
@@ -6968,7 +7327,7 @@ $this->validate($request, array(
    ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "lugares_reservados.Id_locacion")
    ->where('reserva.Id_reservacion', '=', $Id_reservacion)
    ->where('loc.Id_locacion', '=', $Id_locacion)
-   ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+//    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
    ->get();
 
 //array que guarda la foto del contrato
@@ -7017,6 +7376,202 @@ $this->validate($request, array(
 }
 
 
+
+public function ViewTerminarRentaCasa($Id_reservacion, $Id_locacion, $Id_lugares_reservados){
+
+    $datos_cobro = DB::table('lugares_reservados')
+    ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_departamento','lugares_reservados.Id_locacion', 
+    'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
+    'est.Nombre_estado',
+    'reserva.Id_reservacion','reserva.Id_colaborador',
+    'reserva.Start_date','reserva.End_date', 'reserva.Title','reserva.Fecha_reservacion',
+    'reserva.Numero_personas_extras', 'reserva.Foto_comprobante_anticipo', 'reserva.Fecha_pago_anticipo',
+    'reserva.Foto_aviso_privacidad', 'reserva.Foto_reglamento','reserva.Monto_uso_cochera', 
+    'reserva.Metodo_pago_anticipo','reserva.Espacios_cochera','reserva.Monto_pagado_anticipo',
+    'reserva.Tipo_de_cobro','reserva.Nota_pago_anticipo',
+    'cliente.Id_cliente','cliente.Id_colaborador','cliente.Nombre',
+    'cliente.Apellido_paterno','cliente.Apellido_materno','cliente.Email', 
+    'cliente.Numero_celular','cliente.Ciudad','cliente.Estado',
+    'cliente.Pais', 'cliente.Ref1_nombre','cliente.Ref2_nombre',
+    'cliente.Ref1_celular','cliente.Ref2_celular','cliente.Ref1_parentesco',
+    'cliente.Ref2_parentesco','cliente.Motivo_visita', 'cliente.Lugar_motivo_visita', 
+    'cliente.Foto_cliente', 'cliente.INE_frente', 'cliente.INE_reverso',
+    'loc.Id_locacion', 'loc.Id_colaborador','loc.Id_estado_ocupacion',
+    'loc.Nombre_locacion','loc.Tipo_renta', 
+    'loc.Calle','loc.Numero_ext', 
+    'loc.Colonia', 'loc.Ubi_google_maps', 
+    'loc.Numero_total_de_pisos','loc.Numero_total_habitaciones', 
+    'loc.Numero_total_depas', 'loc.Numero_total_locales',
+    'loc.Capacidad_personas', 'loc.Precio_noche', 
+    'loc.Precio_semana','loc.Precio_catorcedias',
+    'loc.Precio_mes', 'loc.Deposito_garantia_casa', 
+    'loc.Uso_cocheras', 'loc.Total_cocheras',
+    'loc.Encargado','loc.Espacio_superficie',
+    'loc.Zona_ciudad', 'loc.Numero_habs_actuales', 
+    'loc.Numero_depas_actuales', 'loc.Numero_locs_actuales',
+    'loc.Nota','loc.Descripcion',
+    'loc.Cobro_p_ext_mes_c','loc.Cobro_p_ext_catorcena_c',
+    'loc.Cobro_p_ext_noche_c','loc.Cobro_anticipo_mes_c',
+    'loc.Cobro_anticipo_catorcena_c','loc.Camas_juntas')
+    ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
+    ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+    ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+    ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "lugares_reservados.Id_locacion")
+    ->where('reserva.Id_reservacion', '=', $Id_reservacion)
+    ->where('loc.Id_locacion', '=', $Id_locacion)
+    ->get();
+
+
+
+    $consulta_pago_renta = DB::table('cobro_renta')
+    ->select('cobro_renta.Id_cobro_renta','cobro_renta.Id_reservacion','cobro_renta.Id_lugares_reservados',
+    'cobro_renta.Id_colaborador','cobro_renta.Cobro_persona_extra',
+    'cobro_renta.Periodo_total','cobro_renta.Estatus_cobro',
+    'cobro_renta.Tiempo_rebasado','cobro_renta.Deposito_garantia',
+    'cobro_renta.Monto_total','cobro_renta.Saldo','cobro_renta.Id_locacion')
+    ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "cobro_renta.Id_reservacion")
+    ->leftJoin("lugares_reservados", "lugares_reservados.Id_lugares_reservados", "=", "cobro_renta.Id_lugares_reservados")
+    ->where('reserva.Id_reservacion', '=', $Id_reservacion)
+    ->get();
+
+    if($consulta_pago_renta[0]->Saldo >= $consulta_pago_renta[0]->Monto_total){
+
+        return view('Reservaciones y rentas.Terminar_renta.terminar_renta_casa', compact('datos_cobro', 'consulta_pago_renta'));
+    }else{
+        return view('Reservaciones y rentas.Terminar_renta.cliente_sin_pagar');
+    }
+
+}
+
+public function CalcularMontoDesCasa(Request $request, $Id_reservacion, $Id_locacion, $Id_lugares_reservados){
+try{
+
+/* en esta funcion me hara un calculo de los desperfectos, desde los checksbox me dira cuales son las cantidades a sumar
+y despues esto me lo guardara en un campo llamado monto total desperfectos que estara en la tabla de reservacion*/
+//hago una consulta para sacar algunos datos
+$consulta = DB::table('lugares_reservados')
+->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_departamento','lugares_reservados.Id_locacion', 
+'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
+'est.Nombre_estado',
+'reserva.Id_reservacion','reserva.Id_colaborador',
+'reserva.Start_date','reserva.End_date', 'reserva.Title','reserva.Fecha_reservacion',
+'reserva.Numero_personas_extras', 'reserva.Foto_comprobante_anticipo', 'reserva.Fecha_pago_anticipo',
+'reserva.Foto_aviso_privacidad', 'reserva.Foto_reglamento','reserva.Monto_uso_cochera', 
+'reserva.Metodo_pago_anticipo','reserva.Espacios_cochera','reserva.Monto_pagado_anticipo',
+'reserva.Tipo_de_cobro','reserva.Nota_pago_anticipo',
+'cliente.Id_cliente','cliente.Id_colaborador','cliente.Nombre',
+'cliente.Apellido_paterno','cliente.Apellido_materno','cliente.Email', 
+'cliente.Numero_celular','cliente.Ciudad','cliente.Estado',
+'cliente.Pais', 'cliente.Ref1_nombre','cliente.Ref2_nombre',
+'cliente.Ref1_celular','cliente.Ref2_celular','cliente.Ref1_parentesco',
+'cliente.Ref2_parentesco','cliente.Motivo_visita', 'cliente.Lugar_motivo_visita', 
+'cliente.Foto_cliente', 'cliente.INE_frente', 'cliente.INE_reverso',
+'loc.Id_locacion', 'loc.Id_colaborador','loc.Id_estado_ocupacion',
+'loc.Nombre_locacion','loc.Tipo_renta', 
+'loc.Calle','loc.Numero_ext', 
+'loc.Colonia', 'loc.Ubi_google_maps', 
+'loc.Numero_total_de_pisos','loc.Numero_total_habitaciones', 
+'loc.Numero_total_depas', 'loc.Numero_total_locales',
+'loc.Capacidad_personas', 'loc.Precio_noche', 
+'loc.Precio_semana','loc.Precio_catorcedias',
+'loc.Precio_mes', 'loc.Deposito_garantia_casa', 
+'loc.Uso_cocheras', 'loc.Total_cocheras',
+'loc.Encargado','loc.Espacio_superficie',
+'loc.Zona_ciudad', 'loc.Numero_habs_actuales', 
+'loc.Numero_depas_actuales', 'loc.Numero_locs_actuales',
+'loc.Nota','loc.Descripcion',
+'loc.Cobro_p_ext_mes_c','loc.Cobro_p_ext_catorcena_c',
+'loc.Cobro_p_ext_noche_c','loc.Cobro_anticipo_mes_c',
+'loc.Cobro_anticipo_catorcena_c','loc.Camas_juntas')
+->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
+->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+->leftJoin("locacion as loc", "loc.Id_locacion", "=", "lugares_reservados.Id_locacion")
+->where('reserva.Id_reservacion', '=', $Id_reservacion)
+->where('loc.Id_locacion', '=', $Id_locacion)
+->get();
+
+//suma de los datos obtenidos para sacar el total del cobro 
+$suma_total = (int)$request->get('monto_olor') + (int)$request->get('monto_plaga') + (int)$request->get('monto_muebles') + (int)$request->get('monto_ropa') + (int)$request->get('monto_limpieza') + (int)$request->get('monto_vidrio') + (int)$request->get('monto_otro');
+//resta del monto al deposito de g para saber cuanto devolverle al cliente
+$calculo_cambio = $consulta[0]->Deposito_garantia_casa - $suma_total;
+//recopilo la info del cobro de los desperfectos
+    $agregarcobro = new Cobro_desperfectos();
+    $agregarcobro-> Id_reservacion = $Id_reservacion;
+    $agregarcobro-> Olor_cigarro = $request->get('monto_olor');
+    $agregarcobro-> Deteccion_plagas = $request->get('monto_plaga');
+    $agregarcobro-> Muebles_dañados = $request->get('monto_muebles');
+    $agregarcobro-> Ropa_cama_dañada = $request->get('monto_ropa');
+    $agregarcobro-> Limpieza_profunda = $request->get('monto_limpieza');
+    $agregarcobro-> Vidrios_rotos = $request->get('monto_vidrio');
+    $agregarcobro-> Otro_desperfecto = $request->get('titulo_otro');
+    $agregarcobro-> Monto_otro_desperfecto = $request->get('monto_otro');
+    $agregarcobro-> Monto_total_desperfecto = $suma_total;
+    $agregarcobro-> Saldo_a_regresar = $calculo_cambio;
+    $agregarcobro->save();
+
+    $last_cobro_desp =DB::getPdo()->lastInsertId();
+
+//actualizo el estatus del lugar utilizado y de la reservacion
+    $affected = DB::table('lugares_reservados')
+    ->where('Id_reservacion', '=', $Id_reservacion)
+    ->update(['Id_estado_ocupacion' => 9]);
+
+    $affectedat = DB::table('locacion')
+    ->where('Id_locacion', '=', $Id_locacion)
+    ->update(['Id_estado_ocupacion' => 1]);
+
+
+//hago un registro de limpieza para que pasen a limpiar el lugar
+    $insert = DB::table('reportes_m_l')->insert([
+        'Id_locacion' => $consulta[0]->Id_locacion,
+        'Id_colaborador' => Cookie::get('Id_colaborador'),
+        'Descripcion_Reporte' => "Este lugar se acaba de desocupar y necesita limpieza",
+        'Fecha_del_reporte' => date("Y-m-d"),
+        'Estatus' => "Pendiente",
+        'Tipo_reporte' => "Limpieza",
+        'tipoLocacion' => "Casa",
+    ]);
+
+    if($request->get('mtto') == "Correctivo"){
+
+        $insert = DB::table('reportes_m_l')->insert([
+            'Id_locacion' => $consulta[0]->Id_locacion,
+            'Id_colaborador' => Cookie::get('Id_colaborador'),
+            'Descripcion_Reporte' => $request->get('descripcion_m'),
+            'Fecha_del_reporte' => date("Y-m-d"),
+            'Estatus' => "Pendiente",
+            'Tipo_reporte' => "Mantenimiento",
+            'Categoria_mtto' => $request->get('mtto'),
+            'tipoLocacion' => "Casa",
+        ]);
+
+    }else{
+        if($request->get('mtto') == "Preventivo"){
+            $insert = DB::table('reportes_m_l')->insert([
+                'Id_locacion' => $consulta[0]->Id_locacion,
+                'Id_colaborador' => Cookie::get('Id_colaborador'),
+                'Descripcion_Reporte' => $request->get('descripcion_m'),
+                'Fecha_del_reporte' => date("Y-m-d"),
+                'Estatus' => "Pendiente",
+                'Tipo_reporte' => "Mantenimiento",
+                'Categoria_mtto' => $request->get('mtto'),
+                'tipoLocacion' => "Casa",
+            ]);
+        }
+    }
+
+    UsuariosController::historial_log(Cookie::get('Id_colaborador'),"Dio por terminada la estancia de la persona"." ".$consulta[0]->Numero_celular);
+
+    Alert::success('Exito', 'Se ha dado por terminada esta estancia. puedes cerrar esta ventana');
+    return redirect()->back();
+
+}catch(Exception $ex){
+        Alert::error('Error', 'No se pudo terminar la estancia, comunicate con el equipo de soporte');
+        return redirect()->back();
+
+}
+}
 
 
 
@@ -7466,7 +8021,7 @@ public function ViewRentarLoc($Id_local, $nombreclient, $Id_reservacion, $Id_lug
     ->leftJoin("local", "local.Id_local", "=", "lugares_reservados.Id_local")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('local.Id_local', '=', $Id_local)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
     return view('Reservaciones y rentas.Rentar.Local.form_rentar_loc', compact('Id_reservacion', 'Id_lugares_reservados', 'lugar_renta', 'Id_local', 'nombreclient'));
@@ -7502,7 +8057,7 @@ try{
     ->leftJoin("local", "local.Id_local", "=", "lugares_reservados.Id_local")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('local.Id_local', '=', $Id_local)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
 
@@ -7532,7 +8087,7 @@ try{
     ->leftJoin("local", "local.Id_local", "=", "lugares_reservados.Id_local")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('local.Id_local', '=', $Id_local)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
 //funcion para calcular dias entre 2 fechas
@@ -7789,7 +8344,7 @@ $this->validate($request, array(
     ->leftJoin("local", "local.Id_local", "=", "lugares_reservados.Id_local")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('local.Id_local', '=', $Id_local)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
 //array que guarda la foto del contrato
@@ -7912,7 +8467,7 @@ $this->validate($request, array(
     ->leftJoin("local", "local.Id_local", "=", "lugares_reservados.Id_local")
     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
     ->where('local.Id_local', '=', $Id_local)
-    ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
+    // ->where('lugares_reservados.Id_lugares_reservados', '=', $Id_lugares_reservados)
     ->get();
 
 //array que guarda la foto del contrato
@@ -7962,6 +8517,179 @@ $this->validate($request, array(
 
 
 
+
+public function ViewTerminarRentaLoc($Id_reservacion, $Id_local, $Id_lugares_reservados){
+
+    $datos_cobro = DB::table('lugares_reservados')
+    ->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_departamento','lugares_reservados.Id_locacion', 
+     'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
+     'est.Nombre_estado',
+     'reserva.Id_reservacion','reserva.Id_colaborador',
+     'reserva.Start_date','reserva.End_date', 'reserva.Title','reserva.Fecha_reservacion',
+     'reserva.Numero_personas_extras', 'reserva.Foto_comprobante_anticipo', 'reserva.Fecha_pago_anticipo',
+     'reserva.Foto_aviso_privacidad', 'reserva.Foto_reglamento','reserva.Monto_uso_cochera', 
+     'reserva.Metodo_pago_anticipo','reserva.Espacios_cochera','reserva.Monto_pagado_anticipo',
+     'reserva.Tipo_de_cobro','reserva.Nota_pago_anticipo',
+     'cliente.Id_cliente','cliente.Id_colaborador','cliente.Nombre',
+     'cliente.Apellido_paterno','cliente.Apellido_materno','cliente.Email', 
+     'cliente.Numero_celular','cliente.Ciudad','cliente.Estado',
+     'cliente.Pais', 'cliente.Ref1_nombre','cliente.Ref2_nombre',
+     'cliente.Ref1_celular','cliente.Ref2_celular','cliente.Ref1_parentesco',
+     'cliente.Ref2_parentesco','cliente.Motivo_visita', 'cliente.Lugar_motivo_visita', 
+     'cliente.Foto_cliente', 'cliente.INE_frente', 'cliente.INE_reverso',
+     'local.Id_local', 'local.Id_colaborador','local.Id_estado_ocupacion',
+     'local.Id_locacion','local.Nombre_local', 'local.Precio_renta','local.Espacio_superficie', 
+     'local.Encargado','local.Nota','local.Descripcion', 'local.Deposito_garantia_local',
+     'loc.Nombre_locacion')
+     ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
+     ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+     ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+     ->leftJoin("local", "local.Id_local", "=", "lugares_reservados.Id_local")
+     ->leftJoin("locacion as loc", "loc.Id_locacion", "=", "local.Id_locacion")
+     ->where('reserva.Id_reservacion', '=', $Id_reservacion)
+     ->where('local.Id_local', '=', $Id_local)
+     ->get();
+
+
+
+    $consulta_pago_renta = DB::table('cobro_renta')
+    ->select('cobro_renta.Id_cobro_renta','cobro_renta.Id_reservacion','cobro_renta.Id_lugares_reservados',
+    'cobro_renta.Id_colaborador','cobro_renta.Cobro_persona_extra',
+    'cobro_renta.Periodo_total','cobro_renta.Estatus_cobro',
+    'cobro_renta.Tiempo_rebasado','cobro_renta.Deposito_garantia',
+    'cobro_renta.Monto_total','cobro_renta.Saldo','cobro_renta.Id_locacion')
+    ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "cobro_renta.Id_reservacion")
+    ->leftJoin("lugares_reservados", "lugares_reservados.Id_lugares_reservados", "=", "cobro_renta.Id_lugares_reservados")
+    ->where('reserva.Id_reservacion', '=', $Id_reservacion)
+    ->get();
+
+    if($consulta_pago_renta[0]->Saldo >= $consulta_pago_renta[0]->Monto_total){
+
+        return view('Reservaciones y rentas.Terminar_renta.terminar_renta_loc', compact('datos_cobro', 'consulta_pago_renta'));
+    }else{
+        return view('Reservaciones y rentas.Terminar_renta.cliente_sin_pagar');
+    }
+
+}
+
+public function CalcularMontoDesLoc(Request $request, $Id_reservacion, $Id_local, $Id_lugares_reservados){
+try{
+
+/* en esta funcion me hara un calculo de los desperfectos, desde los checksbox me dira cuales son las cantidades a sumar
+y despues esto me lo guardara en un campo llamado monto total desperfectos que estara en la tabla de reservacion*/
+//hago una consulta para sacar algunos datos
+$consulta = DB::table('lugares_reservados')
+->select('lugares_reservados.Id_lugares_reservados','lugares_reservados.Id_reservacion','lugares_reservados.Id_departamento','lugares_reservados.Id_locacion', 
+ 'lugares_reservados.Id_local', 'lugares_reservados.Id_cliente',
+ 'est.Nombre_estado',
+ 'reserva.Id_reservacion','reserva.Id_colaborador',
+ 'reserva.Start_date','reserva.End_date', 'reserva.Title','reserva.Fecha_reservacion',
+ 'reserva.Numero_personas_extras', 'reserva.Foto_comprobante_anticipo', 'reserva.Fecha_pago_anticipo',
+ 'reserva.Foto_aviso_privacidad', 'reserva.Foto_reglamento','reserva.Monto_uso_cochera', 
+ 'reserva.Metodo_pago_anticipo','reserva.Espacios_cochera','reserva.Monto_pagado_anticipo',
+ 'reserva.Tipo_de_cobro','reserva.Nota_pago_anticipo',
+ 'cliente.Id_cliente','cliente.Id_colaborador','cliente.Nombre',
+ 'cliente.Apellido_paterno','cliente.Apellido_materno','cliente.Email', 
+ 'cliente.Numero_celular','cliente.Ciudad','cliente.Estado',
+ 'cliente.Pais', 'cliente.Ref1_nombre','cliente.Ref2_nombre',
+ 'cliente.Ref1_celular','cliente.Ref2_celular','cliente.Ref1_parentesco',
+ 'cliente.Ref2_parentesco','cliente.Motivo_visita', 'cliente.Lugar_motivo_visita', 
+ 'cliente.Foto_cliente', 'cliente.INE_frente', 'cliente.INE_reverso',
+ 'local.Id_local', 'local.Id_colaborador','local.Id_estado_ocupacion',
+ 'local.Id_locacion','local.Nombre_local', 'local.Precio_renta','local.Espacio_superficie', 
+ 'local.Encargado','local.Nota','local.Descripcion', 'local.Deposito_garantia_local')
+ ->leftJoin("estado_ocupacion as est", "est.Id_estado_ocupacion", "=", "lugares_reservados.Id_estado_ocupacion")
+ ->leftJoin("cliente", "cliente.Id_cliente", "=", "lugares_reservados.Id_cliente")
+ ->leftJoin("reservacion as reserva", "reserva.Id_reservacion", "=", "lugares_reservados.Id_reservacion")
+ ->leftJoin("local", "local.Id_local", "=", "lugares_reservados.Id_local")
+ ->where('reserva.Id_reservacion', '=', $Id_reservacion)
+ ->where('local.Id_local', '=', $Id_local)
+ ->get();
+
+//suma de los datos obtenidos para sacar el total del cobro 
+$suma_total = (int)$request->get('monto_olor') + (int)$request->get('monto_plaga') + (int)$request->get('monto_muebles') + (int)$request->get('monto_ropa') + (int)$request->get('monto_limpieza') + (int)$request->get('monto_vidrio') + (int)$request->get('monto_otro');
+//resta del monto al deposito de g para saber cuanto devolverle al cliente
+$calculo_cambio = $consulta[0]->Deposito_garantia_local - $suma_total;
+//recopilo la info del cobro de los desperfectos
+    $agregarcobro = new Cobro_desperfectos();
+    $agregarcobro-> Id_reservacion = $Id_reservacion;
+    $agregarcobro-> Olor_cigarro = $request->get('monto_olor');
+    $agregarcobro-> Deteccion_plagas = $request->get('monto_plaga');
+    $agregarcobro-> Muebles_dañados = $request->get('monto_muebles');
+    $agregarcobro-> Ropa_cama_dañada = $request->get('monto_ropa');
+    $agregarcobro-> Limpieza_profunda = $request->get('monto_limpieza');
+    $agregarcobro-> Vidrios_rotos = $request->get('monto_vidrio');
+    $agregarcobro-> Otro_desperfecto = $request->get('titulo_otro');
+    $agregarcobro-> Monto_otro_desperfecto = $request->get('monto_otro');
+    $agregarcobro-> Monto_total_desperfecto = $suma_total;
+    $agregarcobro-> Saldo_a_regresar = $calculo_cambio;
+    $agregarcobro->save();
+
+    $last_cobro_desp =DB::getPdo()->lastInsertId();
+
+//actualizo el estatus del lugar utilizado y de la reservacion
+    $affected = DB::table('lugares_reservados')
+    ->where('Id_reservacion', '=', $Id_reservacion)
+    ->update(['Id_estado_ocupacion' => 9]);
+
+    $affectedat = DB::table('local')
+    ->where('Id_local', '=', $Id_local)
+    ->update(['Id_estado_ocupacion' => 1]);
+
+
+//hago un registro de limpieza para que pasen a limpiar el lugar
+    $insert = DB::table('reportes_m_l')->insert([
+        'Id_locacion' => $consulta[0]->Id_locacion, 
+        'Id_local' => $consulta[0]->Id_local,
+        'Id_colaborador' => Cookie::get('Id_colaborador'),
+        'Descripcion_Reporte' => "Este lugar se acaba de desocupar y necesita limpieza",
+        'Fecha_del_reporte' => date("Y-m-d"),
+        'Estatus' => "Pendiente",
+        'Tipo_reporte' => "Limpieza",
+        'tipoLocacion' => "Local",
+    ]);
+
+    if($request->get('mtto') == "Correctivo"){
+
+        $insert = DB::table('reportes_m_l')->insert([
+            'Id_locacion' => $consulta[0]->Id_locacion,
+            'Id_local' => $consulta[0]->Id_local,
+            'Id_colaborador' => Cookie::get('Id_colaborador'),
+            'Descripcion_Reporte' => $request->get('descripcion_m'),
+            'Fecha_del_reporte' => date("Y-m-d"),
+            'Estatus' => "Pendiente",
+            'Tipo_reporte' => "Mantenimiento",
+            'Categoria_mtto' => $request->get('mtto'),
+            'tipoLocacion' => "Local",
+        ]);
+
+    }else{
+        if($request->get('mtto') == "Preventivo"){
+            $insert = DB::table('reportes_m_l')->insert([
+                'Id_locacion' => $consulta[0]->Id_locacion,
+                'Id_local' => $consulta[0]->Id_local,
+                'Id_colaborador' => Cookie::get('Id_colaborador'),
+                'Descripcion_Reporte' => $request->get('descripcion_m'),
+                'Fecha_del_reporte' => date("Y-m-d"),
+                'Estatus' => "Pendiente",
+                'Tipo_reporte' => "Mantenimiento",
+                'Categoria_mtto' => $request->get('mtto'),
+                'tipoLocacion' => "Local",
+            ]);
+        }
+    }
+
+    UsuariosController::historial_log(Cookie::get('Id_colaborador'),"Dio por terminada la estancia de la persona"." ".$consulta[0]->Numero_celular);
+
+    Alert::success('Exito', 'Se ha dado por terminada esta estancia. puedes cerrar esta ventana');
+    return redirect()->back();
+
+}catch(Exception $ex){
+        Alert::error('Error', 'No se pudo terminar la estancia, comunicate con el equipo de soporte');
+        return redirect()->back();
+
+}
+}
 
 
 

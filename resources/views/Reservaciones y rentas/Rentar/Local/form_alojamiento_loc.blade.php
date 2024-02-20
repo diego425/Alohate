@@ -156,19 +156,7 @@
     <script src="https://kit.fontawesome.com/110428e727.js" crossorigin="anonymous"></script>
     <script type="text/javascript" src="{{ url('js/Movimiento.js')}}"></script>
     <script type="text/javascript" src="{{ url('js/reservacion.js')}}"></script>
-    <script type="module" src="{{ url('js/buscarnum.js')}}"></script>
 
-<script>
-    function seleccionar(Id_cliente, Nombre,Apellido_paterno,Apellido_materno,Numero_celular){
-
-    $("#idcliente").val(Id_cliente);
-    $("#nombrec").text(Nombre);
-    $("#apellidopat").text(Apellido_paterno);
-    $("#apellidomat").text(Apellido_materno);
-    $("#celularc").text(Numero_celular);
-    document.getElementById('showlist').style.display = 'none';
-}
-</script>
 <script>
 //funciones js para las fotografias 
 

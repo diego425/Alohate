@@ -150,7 +150,10 @@ Route::get('view_rentar_casa/reserva/{Id_reservacion}/casa/{Id_locacion}/lugar/{
 //ruta que guarda el registro del form de los datos del lugar que es reglamento, contrato y fiador de una casa
 Route::post('store_rentar_casa/reserva/{Id_reservacion}/casa/{Id_locacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@StoreRentarCasa')->name('storerentarcasa');
 
-
+//rutas para terminar la renta de una casa
+Route::get('view_terminar_renta_casa/reserva/{Id_reservacion}/casa/{Id_locacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@ViewTerminarRentaCasa')->name('viewterminarrentacasa');
+//ruta que calcula el monto por desperfectos
+Route::get('view_monto_desperfecto/reserva/{Id_reservacion}/casa/{Id_locacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@CalcularMontoDesCasa')->name('viewmontocasa');
 
 
 
@@ -248,7 +251,8 @@ Route::post('store_rentar_hab/reserva/{Id_reservacion}/hab/{Id_habitacion}/lugar
 
 //rutas para terminar la renta de una hab
 Route::get('view_terminar_renta_hab/reserva/{Id_reservacion}/hab/{Id_habitacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@ViewTerminarRentaHab')->name('viewterminarrentahab');
-
+//ruta que calcula el monto por desperfectos
+Route::get('view_monto_desperfecto/reserva/{Id_reservacion}/hab/{Id_habitacion}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@CalcularMontoDesHab')->name('viewmonto');
 
 
 
@@ -331,8 +335,12 @@ Route::get('view_rentar_depa/reserva/{Id_reservacion}/dep/{Id_departamento}/luga
 Route::post('store_rentar_depa/reserva/{Id_reservacion}/dep/{Id_departamento}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@StoreRentarDep')->name('storerentardep');
 
 //ruta que actualiza la fecha de salida de un huesped
-Route::put('updatesalida_dep/reserva/{Id_reservacion}/hab/{Id_departamento}', 'ReservacionRentasController@UpdateFechaSalidaD')->name('updatesalidadep');
+Route::put('updatesalida_dep/reserva/{Id_reservacion}/dep/{Id_departamento}', 'ReservacionRentasController@UpdateFechaSalidaD')->name('updatesalidadep');
 
+//rutas para terminar la renta de un depa
+Route::get('view_terminar_renta_dep/reserva/{Id_reservacion}/dep/{Id_departamento}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@ViewTerminarRentaDep')->name('viewterminarrentadep');
+//ruta que calcula el monto por desperfectos
+Route::get('view_monto_desperfecto/reserva/{Id_reservacion}/dep/{Id_departamento}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@CalcularMontoDesDep')->name('viewmontodep');
 
 
 
@@ -386,6 +394,19 @@ Route::post('store_rentar_loc/loc/{Id_local}/client/{nombreclient}/reserva/{Id_r
 Route::get('view_reservaloc/loc/{Id_local}/client/{nombreclient}', 'ReservacionRentasController@ViewAlojamientoLoc')->name('viewreservaloc');
 //ruta para guardar el registro de una nueva renta para el local
 Route::post('store_reservaloc/loc/{Id_local}/client/{nombreclient}', 'ReservacionRentasController@StoreReservaLoc')->name('storereservaloc');
+
+//rutas para terminar la renta de un local
+Route::get('view_terminar_renta_loc/reserva/{Id_reservacion}/loc/{Id_local}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@ViewTerminarRentaLoc')->name('viewterminarrentaloc');
+//ruta que calcula el monto por desperfectos
+Route::get('view_monto_desperfecto/reserva/{Id_reservacion}/loc/{Id_local}/lugar/{Id_lugares_reservados}', 'ReservacionRentasController@CalcularMontoDesLoc')->name('viewmontoloc');
+
+
+
+
+
+
+
+
 
 
 

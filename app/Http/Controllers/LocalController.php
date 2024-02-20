@@ -124,7 +124,16 @@ public function ViewLocal($Id_locacion){
     
 //funcion para guardar el registro de los depas y vincula a la intro de los locales
 public function LocStore(Request $request, $Id_locacion, Locacion $loclocstotal){
-try{
+
+
+   $request->validate([
+      'renta' => 'required',
+      'superficie' => 'required',
+      'descripcion' => 'required',
+      'garantia'=> 'required',
+      'planta'=> 'required',
+  ]);
+
 //aqui envie la vairable de "Id_locacion" como parametro para obtener el id al que corresponde la hab y lo envio en el compact
 //minifuncion para el bucle de crear los depas     
 //hago una consulta a la bd para checar el numero de de habs 
@@ -147,7 +156,7 @@ try{
              
        $agregarloc = new Local();
        $agregarloc-> Id_locacion = $Id_locacion;
-       $agregarloc-> Id_estado_ocupacion = $request->get('estatus');
+       $agregarloc-> Id_estado_ocupacion = "2";
        $agregarloc-> Nombre_local = $request->get('nombre');
        $agregarloc-> Precio_renta = $request->get('renta');
        $agregarloc-> Espacio_superficie = $request->get('superficie');
@@ -320,14 +329,11 @@ try{
        else{Alert::error('Error', 'LA IMAGEN 6 NO ES ADMITIDA, CAMBIALA');
           return redirect()->back();}
     
-    
+      UsuariosController::historial_log(Cookie::get('Id_colaborador'),"registro un nuevo local");
     
     Alert::success('Exito', 'Se agrego el local con exito. Ya puedes cerrar esta ventana');
         return redirect()->back();
-    }catch(Exception $ex){
-        Alert::error('Error', 'El local no se pudo agregar. revisa que todo este en orden');
-        return redirect()->back();
-    }
+
 
 }
 

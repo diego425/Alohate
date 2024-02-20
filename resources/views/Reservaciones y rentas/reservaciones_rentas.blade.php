@@ -36,20 +36,16 @@
                             </select>
                       </div>
                       <div class="titulos_buscador">
-                            <label>Tipo De Lugar</label>
-                            <input type="text" class="form-control" name="personas" id="personas" placeholder="Numero de personas">
-                      </div>
-                      <div class="titulos_buscador">
-                            <label>Fecha De Reservacion</label>
-                            <input type="text" class="form-control" name="personas" id="personas" placeholder="Numero de personas">
+                            <label>Fecha De Entrada</label>
+                            <input type="date" class="form-control" name="fecha_entrada" id="f_entrada" >
                       </div>
                       <div class="titulos_buscador">
                             <label>No. De Celular Del Cliente</label>
-                            <input type="text" class="form-control" name="personas" id="personas" placeholder="Numero de personas">
+                            <input type="number" class="form-control" name="no_cel" id="no_cel" placeholder="#">
                       </div>
                       <div class="titulos_buscador">
                             <label>Estatus</label>
-                            <input type="date" class="form-control" name="reservacion" id="reservacion" placeholder="$">
+                            <input type="text" class="form-control" name="estatus" id="estatus" >
                       </div>
                       <br>
                       <div style="text-align: center;">
@@ -143,6 +139,10 @@
                                     @if($reservarenta->Nombre_estado == "Pago por confirmar")
                                     <h6 style="color: rgb(142, 122, 7)">{{$reservarenta->Nombre_estado}}</h6>
                                     @endif
+
+                                    @if($reservarenta->Nombre_estado == "Estancia terminada")
+                                    <h6 style="color: rgb(139, 0, 0)">{{$reservarenta->Nombre_estado}}</h6>
+                                    @endif
                                 </td> 
                                 <td data-label="Acciones">
 
@@ -151,15 +151,19 @@
 
                                         @if($reservarenta->Nombre_estado == "Reservada")
                                         <a class="btn btn-info" href="{{route('detallesreservahab', [$reservarenta->Id_reservacion, $reservarenta->Id_habitacion, $reservarenta->Id_lugares_reservados ])}}"><i class="ri-information-line"></i></a>
-                                        <button class="btn btn-success clickForm" href="{{route('viewrentarc1hab', [$reservarenta->Id_reservacion, $reservarenta->Id_habitacion, $reservarenta->Id_lugares_reservados ])}}">Rentar</button>
+                                        <button class="btn btn-success clickForm" href="{{route('viewrentarc1hab', [$reservarenta->Id_reservacion, $reservarenta->Id_habitacion, $reservarenta->Id_lugares_reservados ])}}">Pasar a rentar</button>
                                         @endif
 
                                         @if($reservarenta->Nombre_estado == "Rentada")
                                         <a class="btn btn-info" href="{{route('detallesreservahab', [$reservarenta->Id_reservacion, $reservarenta->Id_habitacion, $reservarenta->Id_lugares_reservados ])}}"><i class="ri-information-line"></i></a>
-                                        <a class="btn btn-danger" href="{{route('viewterminarrentahab', [$reservarenta->Id_reservacion, $reservarenta->Id_habitacion, $reservarenta->Id_lugares_reservados ])}}" >Terminar</a>
+                                        <button class="btn btn-danger clickForm" href="{{route('viewterminarrentahab', [$reservarenta->Id_reservacion, $reservarenta->Id_habitacion, $reservarenta->Id_lugares_reservados ])}}" >Terminar</button>
                                         @endif
 
                                         @if($reservarenta->Nombre_estado == "Pago por confirmar")
+                                        <a class="btn btn-info" href="{{route('detallesreservahab', [$reservarenta->Id_reservacion, $reservarenta->Id_habitacion, $reservarenta->Id_lugares_reservados ])}}"><i class="ri-information-line"></i></a>
+                                        @endif
+
+                                        @if($reservarenta->Nombre_estado == "Estancia terminada")
                                         <a class="btn btn-info" href="{{route('detallesreservahab', [$reservarenta->Id_reservacion, $reservarenta->Id_habitacion, $reservarenta->Id_lugares_reservados ])}}"><i class="ri-information-line"></i></a>
                                         @endif
 
@@ -169,15 +173,19 @@
                                     @else
                                         @if($reservarenta->Nombre_estado == "Reservada")
                                         <a class="btn btn-info" href="{{route('detallesreservacasa', [$reservarenta->Id_reservacion, $reservarenta->Id_locacion, $reservarenta->Id_lugares_reservados ])}}"><i class="ri-information-line"></i></a>
-                                        <button class="btn btn-success clickForm" href="{{route('viewrentarc1casa', [$reservarenta->Id_reservacion, $reservarenta->Id_locacion, $reservarenta->Id_lugares_reservados ])}}">Rentar</button>
+                                        <button class="btn btn-success clickForm" href="{{route('viewrentarc1casa', [$reservarenta->Id_reservacion, $reservarenta->Id_locacion, $reservarenta->Id_lugares_reservados ])}}">Pasar a rentar</button>
                                         @endif
 
                                         @if($reservarenta->Nombre_estado == "Rentada")
                                         <a class="btn btn-info" href="{{route('detallesreservacasa', [$reservarenta->Id_reservacion, $reservarenta->Id_locacion, $reservarenta->Id_lugares_reservados ])}}"><i class="ri-information-line"></i></a>
-                                        <button class="btn btn-danger clickForm" href="" >Terminar</button>
+                                        <button class="btn btn-danger clickForm" href="{{route('viewterminarrentacasa', [$reservarenta->Id_reservacion, $reservarenta->Id_locacion, $reservarenta->Id_lugares_reservados ])}}" >Terminar</button>
                                         @endif
 
                                         @if($reservarenta->Nombre_estado == "Pago por confirmar")
+                                        <a class="btn btn-info" href="{{route('detallesreservacasa', [$reservarenta->Id_reservacion, $reservarenta->Id_locacion, $reservarenta->Id_lugares_reservados ])}}"><i class="ri-information-line"></i></a>
+                                        @endif
+
+                                        @if($reservarenta->Nombre_estado == "Estancia terminada")
                                         <a class="btn btn-info" href="{{route('detallesreservacasa', [$reservarenta->Id_reservacion, $reservarenta->Id_locacion, $reservarenta->Id_lugares_reservados ])}}"><i class="ri-information-line"></i></a>
                                         @endif
 
@@ -187,23 +195,28 @@
                                     @else
                                         @if($reservarenta->Nombre_estado == "Reservada")
                                         <a class="btn btn-info" href="{{route('detallesreservadep', [$reservarenta->Id_reservacion, $reservarenta->Id_departamento, $reservarenta->Id_lugares_reservados ])}}"><i class="ri-information-line"></i></a>
-                                        <button class="btn btn-success clickForm" href="{{route('viewrentarc1dep', [$reservarenta->Id_reservacion, $reservarenta->Id_departamento, $reservarenta->Id_lugares_reservados ])}}">Rentar</button>
+                                        <button class="btn btn-success clickForm" href="{{route('viewrentarc1dep', [$reservarenta->Id_reservacion, $reservarenta->Id_departamento, $reservarenta->Id_lugares_reservados ])}}">Pasar a rentar</button>
                                         @endif
 
                                         @if($reservarenta->Nombre_estado == "Rentada")
                                         <a class="btn btn-info" href="{{route('detallesreservadep', [$reservarenta->Id_reservacion, $reservarenta->Id_departamento, $reservarenta->Id_lugares_reservados ])}}"><i class="ri-information-line"></i></a>
-                                        <button class="btn btn-danger clickForm" href="" >Terminar</button>
-                                        @endif
+                                        <button class="btn btn-danger clickForm" href="{{route('viewterminarrentadep', [$reservarenta->Id_reservacion, $reservarenta->Id_departamento, $reservarenta->Id_lugares_reservados ])}}" >Terminar</button>
+                                        @endif 
 
                                         @if($reservarenta->Nombre_estado == "Pago por confirmar")
                                         <a class="btn btn-info" href="{{route('detallesreservadep', [$reservarenta->Id_reservacion, $reservarenta->Id_departamento, $reservarenta->Id_lugares_reservados ])}}"><i class="ri-information-line"></i></a>
                                         @endif
+
+                                        @if($reservarenta->Nombre_estado == "Estancia terminada")
+                                        <a class="btn btn-info" href="{{route('detallesreservadep', [$reservarenta->Id_reservacion, $reservarenta->Id_departamento, $reservarenta->Id_lugares_reservados ])}}"><i class="ri-information-line"></i></a>
+                                        @endif
+
                                     @endif
 
                                     @if($reservarenta->Id_local == "")
                                     @else
                                     <a class="btn btn-info" href=""><i class="ri-information-line"></i></a>
-                                    <button class="btn btn-danger clickForm" href="" >Terminar</button>
+                                    <button class="btn btn-danger clickForm" href="{{route('viewterminarrentaloc', [$reservarenta->Id_reservacion, $reservarenta->Id_local, $reservarenta->Id_lugares_reservados ])}}" >Terminar</button>
                                     @endif
 
                                 </td> 

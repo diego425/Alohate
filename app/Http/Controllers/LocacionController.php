@@ -388,12 +388,35 @@ public function ViewEntera(){
    
    //funcion que guarda un registro de locacion entera
 public function StoreEntera(Request $request){
-   try{
-   //info basica
+
+   $request->validate([
+      'nombre' => 'required',
+      'calle' => 'required',
+      'numero_ext'=> 'required',
+      'colonia'=> 'required',
+      'LinkGM'=> 'required',
+      'pisos'=> 'required',
+      'cap_personas'=> 'required',
+      'precio_noche'=> 'required',
+      'precio_semana'=> 'required',
+      'precio_catorcena'=> 'required',
+      'precio_mes'=> 'required',
+      'garantia'=> 'required',
+      'total_hab'=> 'required',
+      'superficie'=> 'required',
+      'zona'=> 'required',
+      'descripcion'=> 'required',
+      'p_ext_mes'=> 'required',
+      'p_ext_catorce'=> 'required',
+      'p_ext_noche'=> 'required',
+      'c_anticipo_mes'=> 'required',
+      'c_anticipo_catorce'=> 'required',
+      'camas_juntas'=> 'required'
+  ]);
+
+//info basica
    
    $agregarLocEntera = new Locacion();
-   $agregarLocEntera-> Tipo_renta = $request->get('tipo_renta');
-   $agregarLocEntera-> Id_estado_ocupacion = $request->get('estatus');
    $agregarLocEntera-> Nombre_locacion = $request->get('nombre');
    $agregarLocEntera-> Calle = $request->get('calle');
    $agregarLocEntera-> Numero_ext = $request->get('numero_ext');
@@ -418,6 +441,8 @@ public function StoreEntera(Request $request){
    $agregarLocEntera-> Cobro_anticipo_mes_c = $request->get('c_anticipo_mes');
    $agregarLocEntera-> Cobro_anticipo_catorcena_c = $request->get('c_anticipo_catorce');
    $agregarLocEntera-> Camas_juntas = $request->get('camas_juntas');
+   $agregarLocEntera-> Tipo_renta = "Entera";
+   $agregarLocEntera-> Id_estado_ocupacion = "2";
    $agregarLocEntera->save();
 //obtengo el id del ultimo registro guardado
    $idlocacion =DB::getPdo()->lastInsertId();
@@ -587,13 +612,11 @@ public function StoreEntera(Request $request){
    else{  Alert::warning('cuidado', 'LA IMAGEN 6 NO ES ADMITIDA, CAMBIALA');
       return redirect()->back();}
 
+      UsuariosController::historial_log(Cookie::get('Id_colaborador'),"registro una nueva locacion entera");
    
    return view('Locaciones.finalizarFormSecc');
-   }catch(Exception $ex){
-      Alert::error('Error', 'Hay un problema con los datos ingresados revisalo y vuelve a intentarlo');
-      return redirect()->back();
-   }
-      }
+  
+}
    
    
 
@@ -912,11 +935,28 @@ public function ViewSecciones(){
 
 //funcion para guardar el registro de la locacion por secciones y vincula a la intro de habs
 public function StoreSecciones(Request $request){
-      
-   try{
+     
+   
+   
+   $request->validate([
+      'nombre' => 'required',
+      'calle' => 'required',
+      'numero_ext'=> 'required',
+      'colonia'=> 'required',
+      'LinkGM'=> 'required',
+      'pisos'=> 'required',
+      'cap_personas'=> 'required',
+      'zona'=> 'required',
+      'descripcion'=> 'required',
+      'total_hab'=> 'required',
+      'total_dep'=> 'required',
+      'total_loc'=> 'required',
+
+  ]);
+
       $agregarLocSecc = new Locacion();
-      $agregarLocSecc-> Tipo_renta = $request->get('tipo_renta');
-      $agregarLocSecc-> Id_estado_ocupacion = $request->get('estatus');
+      $agregarLocSecc-> Tipo_renta = "Secciones";
+      $agregarLocSecc-> Id_estado_ocupacion = "2";
       $agregarLocSecc-> Nombre_locacion = $request->get('nombre');
       $agregarLocSecc-> Calle = $request->get('calle');
       $agregarLocSecc-> Numero_ext = $request->get('numero_ext');
@@ -924,15 +964,9 @@ public function StoreSecciones(Request $request){
       $agregarLocSecc-> Ubi_google_maps = $request->get('LinkGM');
       $agregarLocSecc-> Numero_total_de_pisos = $request->get('pisos');
       $agregarLocSecc-> Capacidad_personas = $request->get('cap_personas');
-      $agregarLocSecc-> Precio_noche = $request->get('precio_noche');
-      $agregarLocSecc-> Precio_semana = $request->get('precio_semana');
-      $agregarLocSecc-> Precio_catorcedias = $request->get('precio_catorcena');
-      $agregarLocSecc-> Precio_mes = $request->get('precio_mes');
-      $agregarLocSecc-> Deposito_garantia_casa = $request->get('garantia');
       $agregarLocSecc-> Numero_total_habitaciones = $request->get('total_hab');
       $agregarLocSecc-> Numero_total_depas = $request->get('total_dep');
       $agregarLocSecc-> Numero_total_locales = $request->get('total_loc');
-      $agregarLocSecc-> Espacio_superficie = $request->get('superficie');
       $agregarLocSecc-> Zona_ciudad = $request->get('zona'); 
       $agregarLocSecc-> Total_cocheras = $request->get('num_cochera');
       $agregarLocSecc-> Nota = $request->get('nota');
@@ -1091,14 +1125,34 @@ public function StoreSecciones(Request $request){
         else{ Alert::error('Error', 'LA IMAGEN 6 NO ES ADMITIDA, CAMBIALA');
          return redirect()->back();}
 
-//aqui mando la variable de "id locacion en el metodo compact, esta variable la pondre en las rutas y en los forms"
-   return view('Locaciones.Locacion_secciones.introHabs',compact('idlocacion'));
+         UsuariosController::historial_log(Cookie::get('Id_colaborador'),"registro una nueva locacion por secciones");
 
-   }
-   catch(Exception $ex){
-      Alert::error('Error', 'Error al guardar la locacion revisa que los datos esten bien y vuelve a intentarlo');
-      return redirect()->back();
-   }
+         $lochabstotal=DB::table('locacion')
+         ->select('Id_locacion', 'Numero_total_habitaciones', 
+                   'Numero_total_depas', 'Numero_total_locales')
+         ->where('Id_locacion', '=', $idlocacion)
+         ->get();
+   
+         UsuariosController::historial_log(Cookie::get('Id_colaborador'),"registro una nueva habitacion");
+   
+   //creo un ciclo con if para que iguale el numero de de habs actuales y totales, si no es igual se repite el form pero si es igual pasa a los depas      
+         if($lochabstotal[0]->Numero_total_habitaciones != 0){
+           //aqui mando la variable de "id locacion en el metodo compact, esta variable la pondre en las rutas y en los forms"
+            return view('Locaciones.Locacion_secciones.introHabs',compact('idlocacion'));
+         }
+            else{
+               if($lochabstotal[0]->Numero_total_depas != 0){
+                  return view('Locaciones.Locacion_secciones.introDepas', compact('idlocacion'));
+                  }
+                  else{
+                     if($lochabstotal[0]->Numero_total_locales != 0){
+                        return view('Locaciones.Locacion_secciones.introLocales', compact('idlocacion'));
+                        }
+                        else{
+                           return view('Locaciones.finalizarFormSecc', compact('idlocacion'));
+                            }
+                      }
+                }
 } 
 
 //funcion para actualizar los registros de las locaciones por secciones
@@ -1295,12 +1349,28 @@ public function ViewHabs($idlocacion){
 //funcion para guardar el registro de las habitaciones y vincula a la intro de depas
 public function HabsStore(Request $request, $idlocacion, Locacion $lochabstotal){
 //aqui envie la vairable de "idlocacion" como parametro para obtener el id al que corresponde la hab y lo envio en el compact
-   
+$request->validate([
+   'planta' => 'required',
+   'cap_personas' => 'required',
+   'precio_noche'=> 'required',
+   'precio_semana'=> 'required',
+   'precio_catorcena'=> 'required',
+   'precio_mes'=> 'required',
+   'garantia'=> 'required',
+   'p_ext_mes'=> 'required',
+   'p_ext_catorce'=> 'required',
+   'p_ext_noche'=> 'required',
+   'c_anticipo_mes'=> 'required',
+   'c_anticipo_catorce'=> 'required',
+   'superficie'=> 'required',
+   'descripcion'=> 'required',
+   'camas_juntas'=> 'required',
+]);
 //info basica
       
       $agregarhab = new Habitacion();
       $agregarhab-> Id_locacion = $idlocacion;
-      $agregarhab-> Id_estado_ocupacion = $request->get('estatus');
+      $agregarhab-> Id_estado_ocupacion = "2";
       $agregarhab-> Nombre_hab = $request->get('nombre');
       $agregarhab-> Capacidad_personas = $request->get('cap_personas');
       $agregarhab-> Deposito_garantia_hab = $request->get('garantia');
@@ -1515,6 +1585,8 @@ public function HabsStore(Request $request, $idlocacion, Locacion $lochabstotal)
       ->where('Id_locacion', '=', $idlocacion)
       ->get();
 
+      UsuariosController::historial_log(Cookie::get('Id_colaborador'),"registro una nueva habitacion");
+
 //creo un ciclo con if para que iguale el numero de de habs actuales y totales, si no es igual se repite el form pero si es igual pasa a los depas      
       if( $lochabstotal[0]->Numero_habs_actuales < $lochabstotal[0]->Numero_total_habitaciones){
         
@@ -1551,12 +1623,29 @@ public function ViewDepas($idlocacion){
 //funcion para guardar el registro de los depas y vincula a la intro de los locales
 public function DepasStore(Request $request, $idlocacion, Locacion $locdepstotal){
 //aqui envie la vairable de "idlocacion" como parametro para obtener el id al que corresponde la hab y lo envio en el compact
-  
+$request->validate([
+   'planta' => 'required',
+   'cap_personas' => 'required',
+   'precio_noche'=> 'required',
+   'precio_semana'=> 'required',
+   'precio_catorcena'=> 'required',
+   'precio_mes'=> 'required',
+   'garantia'=> 'required',
+   'p_ext_mes'=> 'required',
+   'p_ext_catorce'=> 'required',
+   'p_ext_noche'=> 'required',
+   'c_anticipo_mes'=> 'required',
+   'c_anticipo_catorce'=> 'required',
+   'superficie'=> 'required',
+   'recamaras'=> 'required',
+   'descripcion'=> 'required',
+   'camas_juntas'=> 'required',
+]);
 //info basica
       
    $agregardep = new Departamento();
    $agregardep-> Id_locacion = $idlocacion;
-   $agregardep-> Id_estado_ocupacion = $request->get('estatus');
+   $agregardep-> Id_estado_ocupacion = "2";
    $agregardep-> Nombre_depa = $request->get('nombre');
    $agregardep-> Capacidad_personas = $request->get('cap_personas');
    $agregardep-> Deposito_garantia_dep = $request->get('garantia');
@@ -1770,6 +1859,8 @@ public function DepasStore(Request $request, $idlocacion, Locacion $locdepstotal
       ->where('Id_locacion', '=', $idlocacion)
       ->get();
       
+      UsuariosController::historial_log(Cookie::get('Id_colaborador'),"registro un nuevo departamento");
+
 //creo un ciclo con if para que iguale el numero de de habs actuales y totales, si no es igual se repite el form pero si es igual pasa a los depas      
       if( $locdepstotal[0]->Numero_depas_actuales < $locdepstotal[0]->Numero_total_depas){
          Alert::info('Exito', 'Se agrego el departamento con exito pero aun quedan departamentos por registrar');
@@ -1802,12 +1893,18 @@ public function ViewLocales($idlocacion){
 //funcion para guardar el registro de los depas y vincula a la intro de los locales
 public function LocsStore(Request $request, $idlocacion, Locacion $loclocstotal){
 //aqui envie la vairable de "idlocacion" como parametro para obtener el id al que corresponde la hab y lo envio en el compact
-
+$request->validate([
+   'planta' => 'required',
+   'renta' => 'required',
+   'superficie'=> 'required',
+   'descripcion'=> 'required',
+   'garantia'=> 'required',
+]);
 //info basica
          
    $agregarloc = new Local();
    $agregarloc-> Id_locacion = $idlocacion;
-   $agregarloc-> Id_estado_ocupacion = $request->get('estatus');
+   $agregarloc-> Id_estado_ocupacion = "2";
    $agregarloc-> Nombre_local = $request->get('nombre');
    $agregarloc-> Precio_renta = $request->get('renta');
    $agregarloc-> Espacio_superficie = $request->get('superficie');
@@ -1998,6 +2095,9 @@ public function LocsStore(Request $request, $idlocacion, Locacion $loclocstotal)
       ->select('Id_locacion', 'Numero_locs_actuales' ,'Numero_total_locales')
       ->where('Id_locacion', '=', $idlocacion)
       ->get();
+
+      UsuariosController::historial_log(Cookie::get('Id_colaborador'),"registro un nuevo local");
+
 //creo un ciclo con if para que iguale el numero de de habs actuales y totales, si no es igual se repite el form pero si es igual pasa a los depas      
       if( $loclocstotal[0]->Numero_locs_actuales < $loclocstotal[0]->Numero_total_locales){   
          Alert::info('Exito', 'Se agrego el local con exito pero aun quedan locales por registrar');

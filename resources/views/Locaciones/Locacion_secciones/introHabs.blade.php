@@ -23,7 +23,7 @@
     </div>
 
     <div class="titulo">
-      <p>Haz Concluido El Registro De La Locacion, Ahora Vamos A Registrar Las Habitaciones Que Tiene El Lugar.</p>
+      <p>Ahora Vamos A Registrar Las Habitaciones Que Tiene El Lugar.</p>
     </div> 
 
     <div class="sub">
