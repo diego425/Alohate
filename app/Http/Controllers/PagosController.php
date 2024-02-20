@@ -265,7 +265,8 @@ class PagosController extends Controller
                 'Id_lugares_reservados' => $data[0]->Id_lugares_reservados,
                 'Id_colaborador' => Cookie::get('Id_colaborador'),
                 'Monto_pago' => $request->Monto_pago,
-                'Fecha_pago' => date("Y-m-d"),
+                'Fecha_pago' => $request->Fecha_pago,
+                'Hora_pago' => $request->Hora_pago,
                 'Metodo_pago' => $request->Metodo_pago,
                 'c_FormaPago' => $request->c_FormaPago,
                 'Concepto_pago_renta' => $request->Concepto_pago_renta,
@@ -274,6 +275,12 @@ class PagosController extends Controller
             
             if ($insert) {
                 $idPago = DB::getPdo()->lastInsertId();
+
+                /* DB::table('users')->insert([
+                    'email' => 'kayla@example.com',
+                    'votes' => 0
+                ]); */
+
                 if (!empty($request->fotoComprobante)) {
                     $base64Img = $request->fotoComprobante;
                     $base_to_php = explode(',', $base64Img);
@@ -645,7 +652,7 @@ class PagosController extends Controller
             ->selectRaw('cr.preference_mp,cr.Id_cobro_renta,cr.Id_reservacion, cr.Cobro_persona_extra, cr.Periodo_total, cr.Estatus_cobro,
                 cr.Tiempo_rebasado, cr.Deposito_garantia, cr.Monto_total, cr.Saldo, res.Start_date, res.End_date,
                 res.Monto_pagado_anticipo, res.Title,lr.Id_habitacion, lr.Id_locacion, lr.Id_local, lr.Id_departamento, eo.Nombre_estado
-                , ("") AS lugarEspecifico, ("") AS tipoLocacion, eso.Nombre_estado AS Estado,lr.Id_lugares_reservados')
+                , ("") AS lugarEspecifico, ("") AS tipoLocacion, eso.Nombre_estado AS Estado,lr.Id_lugares_reservados, ("") AS Cliente, lr.Id_cliente')
             ->leftJoin('reservacion AS res', 'res.Id_reservacion', '=', 'cr.Id_reservacion')
             ->leftJoin('lugares_reservados AS lr', 'cr.Id_lugares_reservados', '=', 'lr.Id_lugares_reservados')
             ->leftJoin('estado_ocupacion AS eo', 'eo.Id_estado_ocupacion', '=', 'lr.Id_estado_ocupacion')
@@ -658,7 +665,7 @@ class PagosController extends Controller
                         return $query->where('lr.Id_local', '=', "$Id_lugar");
                     }elseif ($tipoLugar == "departamento" || $tipoLugar == "Departamento") {
                         return $query->where('lr.Id_departamento', '=', "$Id_lugar");
-                    }elseif ($tipoLugar == "habitación" || $tipoLugar == "habitacion" || $tipoLugar == "Habitación") {
+                    }elseif ($tipoLugar == "habitación" || $tipoLugar == "habitacion" || $tipoLugar == "Habitación" || $tipoLugar == "Habitacion") {
                         return $query->where('lr.Id_habitacion', '=', "$Id_lugar");
                     }else{
                         return $query->whereRaw('cr.Id_cobro_renta IS NULL');
@@ -717,7 +724,7 @@ class PagosController extends Controller
                 $lugar = json_decode(json_encode($lugar), true);
     
                 $cobros[$key]->lugarEspecifico = $lugar;
-                $cobros[$key]->tipoLocacion = $tipoLocacion;
+                $cobros[$key]->tipoLocacion = $tipoLocacion;                
             }
 
             $formaPagos = DB::table('forma_pago')
@@ -1003,20 +1010,24 @@ class PagosController extends Controller
     function verificarTelefono(Request $request) {
         if (!empty($request->telefono) && !empty($request->idCobro)) {
             $cobros = DB::table('cobro_renta AS cr')
-                ->selectRaw('cr.Id_cobro_renta,cr.Id_reservacion, cr.Cobro_persona_extra, cr.Periodo_total, cr.Estatus_cobro,
-                    cr.Tiempo_rebasado, cr.Deposito_garantia, cr.Monto_total, cr.Saldo, res.Start_date, res.End_date,
-                    res.Monto_pagado_anticipo, res.Title,lr.Id_habitacion, lr.Id_locacion, lr.Id_local, lr.Id_departamento, eo.Nombre_estado
-                    , ("") AS lugarEspecifico, ("") AS tipoLocacion, eso.Nombre_estado AS Estado')
+                ->selectRaw('res.Title,lr.Id_lugares_reservados,cl.Id_cliente')
                 ->leftJoin('reservacion AS res', 'res.Id_reservacion', '=', 'cr.Id_reservacion')
                 ->leftJoin('lugares_reservados AS lr', 'cr.Id_lugares_reservados', '=', 'lr.Id_lugares_reservados')
+                ->leftJoin('cliente AS cl', 'cl.Id_cliente', '=', 'lr.Id_cliente')
                 ->leftJoin('estado_ocupacion AS eo', 'eo.Id_estado_ocupacion', '=', 'lr.Id_estado_ocupacion')
                 ->leftJoin('estado_ocupacion AS eso', 'eso.Id_estado_ocupacion', '=', 'cr.Estatus_cobro')
                 ->where('cr.Id_cobro_renta', $request->idCobro)
+                ->where('cl.Numero_celular', '=', $request->telefono)
                 ->groupByRaw('cr.Id_cobro_renta')
             ->get();
 
             foreach ($cobros as $key => $value) {
                 $cobros[$key]->Title = json_decode($cobros[$key]->Title);
+
+                $cliente = DB::table('cliente')
+                ->where('cliente.Id_cliente','=',$value->Id_cliente)
+                ->get();
+                $cobros[$key]->Cliente = $cliente;
             }
 
             return $cobros;

@@ -106,10 +106,15 @@
                                 <input type="number" class="form-control" name="Monto_pago" id="Monto_pago" placeholder="" required/>
                                 <label for="Monto_pago">Monto del pago</label>
                             </div>
-                            <div class="form-floating mb-3 col-md-6">
+                            <div class="form-floating mb-3 col-md-12">
                                 <input type="date" class="form-control" name="Fecha_pago" id="Fecha_pago" placeholder=""
                                     value="{{ date('Y-m-d') }}" required/>
                                 <label for="Fecha_pago">Fecha de pago</label>
+                            </div>
+                            <div class="form-floating mb-3 col-md-6">
+                                <input type="time" class="form-control"
+                                    name="Hora_pago" id="Hora_pago" placeholder="" required />
+                                <label for="Fecha_pago">Hora de pago</label>
                             </div>
                             <div class="form-floating mb-3 col-md-4">
                                 <select class="form-select" id="Metodo_pago" name="Metodo_pago"

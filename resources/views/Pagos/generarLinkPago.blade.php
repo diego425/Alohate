@@ -118,7 +118,7 @@
                             @if ($locacion->mostrar == 'mostrar')
                                 @if ($locacion->tipoLocacion == 'Entera')
                                     <tr class="{{ $locacion->tipoLocacion }} table-warning">
-                                    @else
+                                @else
                                     <tr class="{{ $locacion->tipoLocacion }}">
                                 @endif
                                 <td style="display: none;">{{ $locacion->id }}</td>
@@ -266,6 +266,7 @@
             });
 
             $(".generarQR").click(function(e) {
+                console.log('click');
                 qrcode.clear(); // clear the code.
                 const locacion = $(this).attr("locacion");
                 const lugar = $(this).attr("lugar");

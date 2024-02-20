@@ -98,16 +98,6 @@
                     Filtros
                 </button>
             </div>
-            @if(Cookie::get('puesto') == "ADMIN")
-            <div class="col-sm-3">
-                <a href="{{route('cuentas.create')}}" class="btn btn-outline-danger" title="Cuentas bancarias"><box-icon name='cog' type='solid' animation='spin' ></box-icon>Gestionar cuentas</a>
-            </div>
-            @endif
-            @if(Cookie::get('puesto') == "ADMIN" || Cookie::get('puesto') == "OPERADOR")
-            <div class="col-sm-3">
-                <a href="{{route('pagos.generarLinkPago')}}" class="btn btn-outline-danger"><i class='bx bx-link'></i>Links de pago</a>
-            </div>
-            @endif
         </div>
     </div>
     <br>
