@@ -430,6 +430,8 @@ Route::get('view_nuevo_cliente', 'ClienteController@ViewNuevoCliente')->name('vi
 Route::post('store_cliente', 'ClienteController@ClienteStore')->name('storecliente');
 
 
+//vista de confirmacion de pagos
+Route::get('view_confirmar_pagos', 'ConfirmarPagosController@ViewCPagos')->name('viewconfirmarpagos');
 
 
 Route::controller(LimpiezaMantenimientoController::class)->group(function (){
